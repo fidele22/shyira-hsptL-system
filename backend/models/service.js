@@ -1,4 +1,4 @@
-// models/item.js
+// models/service.js
 const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({

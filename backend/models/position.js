@@ -1,4 +1,4 @@
-// models/item.js
+// models/position.js
 const mongoose = require('mongoose');
 
 const positionSchema = new mongoose.Schema({

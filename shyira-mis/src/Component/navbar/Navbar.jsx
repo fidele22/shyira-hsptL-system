@@ -7,10 +7,10 @@ function Navbar() {
     <div className='Navbar'>
         <div className='Navbar-logo'>
             
-            <p>SHYIRA MIS</p>
+            <p>SHYIRA HOSPITAL MIS</p>
         </div>
         <ul className='navbar-menu'>
-            <li onClick={()=>{setMenu('home')}}><Link style={{textDecoration:'none'}}to='/'>Home</Link>{menu==='home'? <hr/>:<></>}</li>
+            <li onClick={()=>{setMenu('home')}}><Link style={{textDecoration:'none'}}to='/'>Login</Link>{menu==='home'? <hr/>:<></>}</li>
             
         </ul>
        

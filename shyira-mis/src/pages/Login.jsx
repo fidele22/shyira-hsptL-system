@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 function Login() {
   return (
     <div className='loginsignup'>
-      <div className='loginsignup-container'>
-        <h1>Sign In</h1>
+      <div className='login-container'>
+        <h1>Login</h1>
         <div className='loginsignup-fields'>
          <label>Username</label>
           <input type="text" name="" id="" placeholder='Username' />

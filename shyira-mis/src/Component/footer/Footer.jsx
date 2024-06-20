@@ -9,15 +9,15 @@ function Footer() {
             <p>Shyira district hospital</p>
         </div>
         <ul className='footer-links'>
-            <li>company</li>
-            <li>company</li>
-            <li>company</li>
-            <li>company</li>
+            <li>users</li>
+            <li>services</li>
+            <li>departments</li>
+            <li>postions</li>
         </ul>
      
      <div className="footer-copyright">
         <hr />
-        <p>Copyright@2023 | All right reserved</p>
+        <p>Copyright@2024 | All right reserved</p>
      </div>
     </div>
   )

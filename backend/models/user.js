@@ -1,16 +1,17 @@
-// models/item.js
+// models/user.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-
-  positionId:{ type: mongoose.Schema.Types.ObjectId, ref: 'position', required: true },
+  positionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Position' },
+  departmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  phone:{type:Number,required:true},
-  signature:{type:String}
+  phone: { type: String, required: true },
+  password:{type:String,required: true},
+  signature: { type: String, required: true },
+  
+},
+{ timestamps: true });
 
-});
+module.exports = mongoose.model('User', userSchema);
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './Component/navbar/Navbar';
-import Loginsignup from './pages/Loginsignup';
 import Login from './pages/Login';
+import Loginsignup from './pages/Loginsignup';
 import Footer from './Component/footer/Footer';
 function App() {
   return (
@@ -11,9 +11,9 @@ function App() {
        <Navbar />
         
         <Routes>
-         <Route path="/" element={<Loginsignup />} />
-         <Route path="/signup" element={<Loginsignup />} />
+         <Route path="/" element={<Login />} />
          <Route path="/login" element={<Login />} />
+         <Route path="/signup" element={<Loginsignup />} />
         
         </Routes>
         <Footer />
