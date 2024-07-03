@@ -1,21 +1,15 @@
 *{
     margin: 0;
 }
-.loginsignup{
-    width: 100%;
-    height:auto;
-    background:#ffffff;
-    padding-top: 100px;
-    margin-top: 2rem;
-}
+
+
 .login-container{
     width: 270px;
     height: auto;
-    background:white;
     margin: auto;
     padding: 20px 60px;
     border-radius: 4px;
-    margin-bottom: 5rem;
+    margin-bottom: 12rem;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 .login-container h1{
@@ -52,6 +46,9 @@
     font-size: 20px;
     color: white;
     cursor: pointer;
+}
+.login-container button:hover{
+    background-color:rgb(151, 42, 42) ;
 }
 .login{
     margin: 10px 0px;

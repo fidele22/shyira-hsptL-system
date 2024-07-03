@@ -38,6 +38,7 @@ const RegisterForm = () => {
     signature: '',
     password: '',
     confirmPassword: '',
+    role: 'pending' 
       });
     } catch (error) {
       console.error('Error registering user:', error);

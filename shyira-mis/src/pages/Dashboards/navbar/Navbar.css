@@ -1,0 +1,53 @@
+.Navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: white;
+    height: 4.5rem;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    /*z-index: 1000; /* Ensure the navbar stays above other content */
+  }
+  
+  .Navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .Navbar-logo p {
+    color: black;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .navbar-menu {
+    position: absolute;
+    display: block; /* Hide the menu by default */
+    list-style: none;
+    right: 10%;
+    
+  }
+  .navbar-menu h1{
+   color: black;
+  }
+  
+  
+  @media (min-width: 768px) {
+    .Navbar {
+      padding: 10px 40px;
+    }
+  
+    .navbar-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  
+    .navbar-login {
+      margin-left: auto;
+    }
+  }
+  

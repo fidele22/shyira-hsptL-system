@@ -32,7 +32,10 @@
     cursor: pointer;
     font-size: 18px; /* Adjust font size as needed */
   }
-  
+  .footer-links div{
+    padding: 40px;
+    background-color: blue;
+  }
   .footer-copyright {
     display: flex;
     flex-direction: column;
@@ -54,7 +57,8 @@
   /* Responsive Adjustments */
   @media screen and (max-width: 768px) {
     .footer {
-      padding: 20px 10px; /* Adjust padding for smaller screens */
+      /* Adjust padding for smaller screens */
+      width: 100%;
     }
   
     .footer-logo p {
@@ -64,7 +68,9 @@
     .footer-links li {
       font-size: 16px; /* Adjust font size for smaller screens */
     }
-  
+    .footer-links div{
+     width: 100%;
+  }
     .footer-copyright {
       font-size: 14px; /* Adjust font size for smaller screens */
     }

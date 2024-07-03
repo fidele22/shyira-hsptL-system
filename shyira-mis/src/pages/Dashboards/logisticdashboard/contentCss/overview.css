@@ -1,0 +1,94 @@
+
+.dashboard-content {
+    padding: 20px;
+    background-color:white;
+    min-height:30vh;
+    width:160vh;
+    border-radius: 20px;
+   
+    
+  }
+  .dashboard-content h1{
+    text-align: center;
+    color:black;
+  }
+  .dashboard-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .dashboard-content h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  .overview-section {
+    margin-top: 30px;
+  }
+  
+  .overview-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .overview-section p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .overview-widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .widget {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  .widget h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .widget p {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .additional-section {
+    margin-top: 30px;
+  }
+  
+  .additional-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .additional-section p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .additional-section ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .additional-section ul li {
+    margin-bottom: 10px;
+  }
+  
+  .additional-section ul li a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .additional-section ul li a:hover {
+    text-decoration: underline;
+  }
+  
