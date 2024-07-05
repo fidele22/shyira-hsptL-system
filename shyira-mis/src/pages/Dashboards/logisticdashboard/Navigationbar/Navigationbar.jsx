@@ -22,12 +22,12 @@ const Navbar = ({ setCurrentPage }) => {
       // Redirect to login page or home page
       window.location.href = '/'; // Adjust as needed
     } catch (error) {
-      console.error('Error logging out:', error);
+      alert('error to logout')
     }
   };
 
   return (
-    <div className="navbar">
+    <div className="navigation">
       <h2>Logistic Dashboard</h2>
       <ul>
         <li onClick={() => setCurrentPage('overview')}>Overview</li>

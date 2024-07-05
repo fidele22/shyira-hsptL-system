@@ -40,6 +40,9 @@
     color: white;
    
   }
+  .delete-btn:hover{
+    background-color: rgb(203, 18, 18);
+  }
   .pagination {
     margin-top: 20px;
     list-style-type: none;
@@ -47,7 +50,10 @@
     justify-content: center;
     align-items: center;
   }
-  
+  .pagination button{
+    padding:5px;
+    margin-bottom: 10px;
+  }
   .page-btn {
     padding: 8px 12px;
     margin: 0 5px;

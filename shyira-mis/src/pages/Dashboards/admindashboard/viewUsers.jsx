@@ -4,6 +4,7 @@ import './css/admin.css';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
+  //const [positions, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
     firstName: '',

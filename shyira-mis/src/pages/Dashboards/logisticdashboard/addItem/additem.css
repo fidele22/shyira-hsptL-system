@@ -1,51 +1,55 @@
-.add-item-form {
-    max-width: 500px;
+
+
+.add-item{
+  width: 95%;
+  margin: 0 auto;
+  padding: 20px;
+}
+.add-form {
+    
     margin: auto;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #f9f5f5;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color:white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     
   }
   
-  .add-item-form h2 {
+  .add-form h2 {
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
     text-align: center;
   }
   
-  .form-group {
-    margin-bottom: 20px;
-    
-  }
+
   
   label {
     display: block;
     font-weight: bold;
+    font-size: 22px;
     margin-bottom: 5px;
   }
   
-  input[type='text'],
-  input[type='number'],
-  textarea {
-    width: 100%;
-    padding: 10px;
+  .flex-container{
+    width: 90%;
+    padding: 5px;
     font-size: 16px;
-    border: 1px solid #ccc;
+   
     border-radius: 4px;
     transition: border-color 0.3s ease-in-out;
   }
   
   textarea {
-    height: 100px;
+    height: 80px;
     resize: vertical;
   }
   
   input[type='text']:focus,
   input[type='number']:focus,
-  textarea:focus {
+  textarea:focus
+  {
     outline: none;
     border-color: #6c63ff;
   }
@@ -57,7 +61,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     transition: background-color 0.3s ease-in-out;
   }
   
@@ -68,5 +72,17 @@
   .button-container {
     text-align: center;
   }
-  
+  .form-actions button[type='button']{
+    font-size: 20px;
+    padding: 10px;
+    margin-left: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #b53131;
+    color: rgb(247, 246, 244);
+  }
+  .form-actions button[type='button']:hover{
+    background-color: rgb(245, 6, 6);
+  }
   

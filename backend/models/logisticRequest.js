@@ -9,10 +9,12 @@ const logisticRequestSchema = new mongoose.Schema({
   unitOfMeasurement:{type:String,required:true},
   quantity:{type:String,required:true},
   pricePerUnit:{type:String,required:true},
-  created:{type: Date,required: true,default: Date.now},
-  status:{type: String, required:true}
-  
-});
+  date:{type: Date,required: true,default: Date.now},
+  status:{type: String, required:true}},
+  {
+    timestamps: true // This will add `createdAt` and `updatedAt` fields
+  });
+
 
 const logisticRequest = mongoose.model('logisticRequest', logisticRequestSchema);
 

@@ -4,7 +4,7 @@ import Navbar from './Navigationbar/Navigationbar';
 import Footer from '../footer/Footer'
 import Overview from './Overview';
 import ViewItem from './viewItems/Viewitem'
-import AddItem from './AddItem';
+import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
 import LogisticProfile from './LogisticProfile'
 import OrderSupplies from './OrderSupplies';

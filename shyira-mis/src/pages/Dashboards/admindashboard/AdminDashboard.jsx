@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './Navigationbar';
 import AdminOverview from './AdminOverview';
-import ViewUser from './viewUsers'
+import ViewUser from './users'
 import AddUser from './AddUser';
 
 import './css/admin.css';

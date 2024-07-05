@@ -43,8 +43,7 @@ function Navbar() {
   return (
     <div className='Navbar'>
         <div className='Navbar-logo'>
-            
-      
+        
         </div>
         <ul className='navbar-menu'>
         <h1>{userName}</h1>    

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './viewitems.css'
-import AddItemForm from '../AddItem';
+import AddItemForm from '../addItem/addingitem';
 
 const ViewItems = () => {
   const [items, setItems] = useState([]);
