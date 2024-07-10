@@ -2,7 +2,7 @@
     width: 95%;
     margin: 0 auto;
     padding: 20px;
-   
+    
   }
   
   .items-table {
@@ -35,9 +35,18 @@
     border-radius: 5px;
     font-size:16px;
   }
+  .details-btn{
+    background-color: #007bff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
   .delete-btn{
     background-color: red;
     color: white;
+    margin-left: 5px;
    
   }
   .delete-btn:hover{

@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './Component/navbar/Navbar';
+//import Navbar from './Component/navbar/Navbar';
 import Login from './pages/Login';
 import Loginsignup from './pages/Loginsignup';
-import Footer from './Component/footer/Footer';
+//import Footer from './Component/footer/Footer';
 import AdminDashboard from './pages/Dashboards/admindashboard/AdminDashboard';
 import ProtectedRoute from './Component/ProtectedRoute';
 import LogisticDashboard from './pages/Dashboards/logisticdashboard/LogisticDashboard';

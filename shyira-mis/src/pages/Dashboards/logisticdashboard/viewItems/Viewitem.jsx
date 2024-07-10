@@ -8,7 +8,7 @@ const ViewItems = () => {
   const [itemToEdit, setItemToEdit] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Number of items per page
+  const [itemsPerPage] = useState(15); // Number of items per page
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -102,8 +102,10 @@ const ViewItems = () => {
               <td>{item.category}</td>
               <td>{item.price}</td>
               <td>
-                <button className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
+                <button  className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
+                <button  className="details-btn" onClick={() => handleDeleteClick(item._id)}>Details</button>
                 <button  className="delete-btn" onClick={() => handleDeleteClick(item._id)}>Delete</button>
+               
               </td>
             </tr>
           ))}

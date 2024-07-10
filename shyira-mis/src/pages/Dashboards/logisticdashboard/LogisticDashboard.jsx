@@ -8,6 +8,7 @@ import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
 import LogisticProfile from './LogisticProfile'
 import OrderSupplies from './OrderSupplies';
+import RequisitionReceive from './Requests/RequisitionReceive'
 import './contentCss/LogisticDashboard.css';
 
 const LogisticDashboard = () => {
@@ -23,10 +24,12 @@ const LogisticDashboard = () => {
         return <ViewItem />;
       case 'order-supplies':
         return <OrderSupplies />;
-        case 'make-requist':
+      case 'make-requist':
         return <MakeRequist />;
       case 'logistic-profile':
-          return <LogisticProfile />;
+        return <LogisticProfile />;
+      case 'requisition-receive':
+        return <RequisitionReceive />;
       default:
         return <Overview />;
     }

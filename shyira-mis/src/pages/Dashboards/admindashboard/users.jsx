@@ -91,7 +91,7 @@ const ViewItems = () => {
 
   // Filter items based on search term
  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Pagination logic
