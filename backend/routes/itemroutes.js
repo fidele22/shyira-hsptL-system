@@ -1,16 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const Item = require('../models/item');
+const Stock = require('../models/ficheDeStock');
 
 // Add item
 // Add new item
 router.post('/add', async (req, res) => {
   try {
     const newItem = new Item(req.body);
-    await newItem.save();
-    res.status(201).json(newItem);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const savedItem = await newItem.save();
+
+    // Create initial stock entry for the new item
+    const newStock = new Stock({
+      itemId: savedItem._id,
+      entries: [],
+      exits: [],
+      balances: []
+    });
+    await newStock.save();
+
+    res.status(201).json(savedItem);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 

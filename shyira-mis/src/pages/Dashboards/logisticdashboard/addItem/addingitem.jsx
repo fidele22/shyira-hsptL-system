@@ -56,6 +56,12 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
      catch (error) {
       console.error('Error saving item:', error);
       alert('Item saved successfully');
+      setFormData({
+        name: '',
+        description: '',
+        category: '',
+        price: '',
+      });
     }
   };
 
@@ -71,7 +77,7 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
 
   return (
     <div className="add-item">
- <h1>Add new item</h1>
+ <h1>{itemToEdit ? 'Edit Item' : 'Add New Item'}</h1>
  
     <div className="add-form">
       <h2>{itemToEdit ? 'Edit Item' : 'Add New Item'}</h2>

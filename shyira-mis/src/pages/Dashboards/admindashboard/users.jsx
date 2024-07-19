@@ -35,16 +35,59 @@ const ViewItems = () => {
 
       fetchUsers();
     }, []);
-  
+  // fetching data from department ,service position collection
+  const [departments, setDepartments] = useState([]);
+  const [services, setServices] = useState([]);
+  const [positions, setPositions] = useState([]);
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/departments');
+        setDepartments(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/services');
+        setServices(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  useEffect(() => {
+    const fetchPositions = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/positions');
+        setPositions(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchPositions();
+  }, []);
+
 
     const handleEditClick = (user) => {
         setEditingUser(user._id);
         setFormData({
           firstName: user.firstName,
           lastName: user.lastName,
-          position: user.positionId.positionName,
-          service: user.serviceId.service_name,
-          department: user.departmentId.departmentName,
+          position: user.positionName,
+          service: user.serviceName,
+          department: user.departmentName,
           phone: user.phone,
           email: user.email,
           role:user.role,
@@ -83,6 +126,7 @@ const ViewItems = () => {
             role:'',
             signature: '',
           });
+          alert('User updated successfuly')
         } catch (error) {
           console.error('Error updating user:', error);
         }
@@ -141,19 +185,19 @@ const ViewItems = () => {
         <tbody>
           {currentusers.map((user,index) => (
             <tr key={user._id}>
-              <td>{index}</td>
+              <td>{index+1}</td>
               <td>{user.firstName}</td>
               <td>{user.lastName}</td>
-              <td>{user.positionId ? user.positionId.positionName : 'N/A'}</td>
-              <td>{user.serviceId ? user.serviceId.service_name : 'N/A'}</td>
-              <td>{user.departmentId ? user.departmentId.departmentName : 'N/A'}</td>
+              <td>{user.positionName}</td>
+              <td>{user.serviceName}</td>
+              <td>{user.departmentName}</td>
               <td>{user.phone}</td>
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>{user.signature}</td>
               <td>
-                <button onClick={() => handleEditClick(user)}>Edit</button>
-                <button onClick={() => handleDeleteClick(user._id)}>Delete</button>
+                <button className='edit-btn' onClick={() => handleEditClick(user)}>Edit</button>
+                <button className='delete-btn' onClick={() => handleDeleteClick(user._id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -169,6 +213,8 @@ const ViewItems = () => {
       </ul>
       {/* Add item form if editing */}
       {editingUser && (
+        <div className="editing-userdata-ovelay">
+          <div className="editinguser-form">
         <form onSubmit={handleSubmit}>
         <h2>Edit User</h2>
         <label>First Name</label>
@@ -176,27 +222,27 @@ const ViewItems = () => {
         <label>Last Name</label>
         <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
         <label>Position</label>
-        <select name="position" value={formData.position} onChange={handleChange} >
-                <option value="">Select Position</option>
-                <option value="position1">Position 1</option>
-                <option value="position2">Position 2</option>
-                <option value="position3">Position 3</option>
-              </select>
+        <select name="positionName" value={formData.positionName} onChange={handleChange} required>
+                  <option value="">Select Position</option>
+                  {positions.map((position) => (
+                    <option key={position._id} value={position.name}>{position.name}</option>
+                  ))}
+                </select>
         
         <label>Service</label>
-        <select name="service" value={formData.service} onChange={handleChange}>
-                <option value="">Select Service</option>
-                <option value="service1">Service 1</option>
-                <option value="service2">Service 2</option>
-                <option value="service3">Service 3</option>
-              </select>
+        <select name="serviceName" value={formData.serviceName} onChange={handleChange}>
+                  <option value="">Select Service</option>
+                  {services.map((service) => (
+                    <option key={service._id} value={service.name}>{service.name}</option>
+                  ))}
+                </select>
         <label>Department</label>
-        <select name="department" value={formData.department} onChange={handleChange}>
-                <option value="">Select Department</option>
-                <option value="department1">Department 1</option>
-                <option value="department2">Department 2</option>
-                <option value="department3">Department 3</option>
-              </select>
+        <select name="departmentName" value={formData.departmentName} onChange={handleChange}>
+                  <option value="">Select Department</option>
+                  {departments.map((department) => (
+                    <option key={department._id} value={department.name}>{department.name}</option>
+                  ))}
+                </select>
         <label>Phone</label>
         <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
         <label>Email</label>
@@ -206,13 +252,20 @@ const ViewItems = () => {
                 <option value="">Select Role</option>
                 <option value="logistic">LOGISTIC</option>
                 <option value="accountant">ACCOUNTANT</option>
+                <option value="hod">HOD</option>
+                <option value="daf">DAF</option>
                 <option value="dg">DG</option>
               </select>
         <label>Signature</label>
         <input type="text" name="signature" value={formData.signature} onChange={handleChange} />
+        <div className="buttons">
         <button type="submit">Update user</button>
-        <button type="button" onClick={() => setEditingUser(null)}>Cancel</button>
+        <button type="button"  className='cancel-btn' onClick={() => setEditingUser(null)}>Cancel</button>
+        </div>
+        
       </form>
+      </div>
+      </div>
     )}
       </div>
     </div>

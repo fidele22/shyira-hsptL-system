@@ -40,7 +40,7 @@ const LogisticDashboard = () => {
       <Navigation />
       <Navbar setCurrentPage={setCurrentPage} />
       
-      <div className="content">
+      <div className="logisticcontent">
         {renderContent()}
         <Footer />
       </div>

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
-const Position = require('../models/position');
+const Position = require('../models/position'); // Import Position model
 const Service = require('../models/service');
 const Department = require('../models/department');
 
@@ -14,38 +14,31 @@ const createAdmin = async () => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash('admin', salt);
 
-  // Find or create the related department
-  let departmentObj = await Department.findOne({ departmentName: 'Admin Department' });
-  if (!departmentObj) {
-    departmentObj = new Department({ departmentName: 'Admin Department' });
-    await departmentObj.save();
-  }
-
-  // Find or create the related service and associate it with the department
-  let serviceObj = await Service.findOne({ service_name: 'Admin Service', departmentId: departmentObj._id });
-  if (!serviceObj) {
-    serviceObj = new Service({ service_name: 'Admin Service', departmentId: departmentObj._id });
-    await serviceObj.save();
-  }
-
-  // Find or create the related position and associate it with the service
-  let positionObj = await Position.findOne({ positionName: 'Admin Position', serviceId: serviceObj._id });
-  if (!positionObj) {
-    positionObj = new Position({ positionName: 'Admin Position', serviceId: serviceObj._id });
-    await positionObj.save();
+  // Fetch the desired position data
+  let position;
+  try {
+    position = await Position.findOne({ name: 'position111' }); // Adjust query as per your Position model
+    if (!position) {
+      throw new Error('Admin Position not found');
+    }
+  } catch (err) {
+    console.error('Error fetching position:', err);
+    mongoose.connection.close();
+    return;
   }
 
   const admin = new User({
     firstName: 'Admin',
     lastName: 'User',
     phone: '123456789',
-    email: 'admin@example.com',
+    email: 'admin@.com',
     signature: 'AdminSignature',
     password: hashedPassword,
     role: 'admin',
-    positionId: positionObj._id,
-    departmentId: departmentObj._id,
-    serviceId: serviceObj._id
+    positionName: position.name, // Assign positionName from fetched position
+    // serviceName and departmentName can be similarly fetched and assigned
+    serviceName: 'admin', // Example, replace with actual fetched data
+    departmentName: 'admin', // Example, replace with actual fetched data
   });
 
   try {

@@ -2,10 +2,10 @@
 const mongoose = require('mongoose');
 
 const positionSchema = new mongoose.Schema({
-  positionName: { type: String, required: true },
- 
+  name: { type: String, required: true, unique: true },
+  description: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-const Position = mongoose.model('Position', positionSchema);
-
-module.exports = Position;
+module.exports = mongoose.model('Position', positionSchema);

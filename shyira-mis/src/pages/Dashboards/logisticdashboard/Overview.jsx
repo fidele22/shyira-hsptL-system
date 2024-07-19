@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import logo from '../../../Component/image/land.jpg'
 import './contentCss/overview.css';
 
 const DashboardOverview = () => {
@@ -46,6 +47,7 @@ const DashboardOverview = () => {
       {/* Overview Sections */}
       <section className="overview-section">
         <h2>Logistic Overview</h2>
+        <img src={logo} alt="" style={{ width: '1500px', height: '100px' }} />
         <p>Here you can find essential logistic information relevant to hospital operations.</p>
         {/* Add relevant widgets and summaries here */}
         <div className="overview-widgets">

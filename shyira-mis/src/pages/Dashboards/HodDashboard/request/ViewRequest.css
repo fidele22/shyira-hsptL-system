@@ -1,0 +1,248 @@
+/* makeRequist.css */
+
+.requist {
+    font-family: Arial, sans-serif;
+    max-width:90%;
+    margin: 0 auto;
+    padding: 20px;
+   
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  .requist h2{
+    padding: 20px;
+  }
+  .heading-title .title{
+    display: flex;
+  }
+  .heading-title .title h3{
+  padding: 10px;
+  }
+  .heading-title .title input{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    width: 20%;
+    margin-top: 0%;
+  }
+  .done-date{
+    position: absolute;
+    top: 10%;
+    right: 10%;
+  }
+  /*styling form*/
+  .logistic-request-form {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .logistic-request-form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    width: 200px;
+  }
+  
+  table th {
+    background-color: #f2f2f2;
+  }
+  
+  table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  table tr:hover {
+    background-color: #f1f1f1;
+  }
+  .remove-btn{
+    background-color: rgb(218, 47, 47);
+  }
+  .signature-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-left: 20px;
+    
+    
+  }
+  .signature-section input[type=text]{
+    width: 30%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .signature{
+    flex: 1;
+    width:100px;
+  
+    margin-right: 20px;
+    margin-bottom: 40px;
+  }
+  
+  .logistician-sign input[type=text]{
+    width: 50%;
+  
+  }
+  form h4{
+    text-align: center;
+  }
+  hr{
+    font-weight: 900;
+    border: 3px solid black;
+    
+  }
+  img {
+    max-width: 100px;
+    height: auto;
+  }
+  
+  @media (max-width: 600px) {
+    .signature-section {
+      flex-direction: column;
+    }
+  
+    .signature,
+    .date,
+    .image-upload-section {
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  }
+  
+  
+  /******************* styling requisition receiced**/
+  /* makeRequist.css */
+  
+  /* General styling */
+  .requist {
+    padding: 20px;
+  }
+  
+  .navigation ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .navigation li {
+    margin: 10px 0;
+  }
+  
+  .request-details-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dim background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it is on top of other content */
+  }
+  
+  .request-details {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: auto; /* Scrollable if content is too large */
+    z-index: 1001; /* Ensure it is on top of the overlay */
+    position: absolute;
+    top: 12%;
+  }
+  .request-details h1{
+    text-align: center;
+    padding: 20px;
+  }
+  .request-details h2{
+    text-align: center;
+  }
+  .request-details h3{
+    padding: 10px;
+    color: #5b5959;
+  }
+  .request-details h3 span{
+    font-size: 22px;
+    padding-left: 10px;
+    color: #414040;
+  }
+
+  .signature-section {
+    margin-top: 20px;
+  }
+  
+  .signature {
+    margin-bottom: 10px;
+  }
+  
+  .edit-btn{
+    padding: 10px;
+    font-size: 16px;
+    background-color: #414040;
+  }
+  .edit-btn:hover{
+    background-color: #5b5959;
+  }
+  .cancel-btn{
+    background-color: rgb(218, 17, 17);
+    font-size: 16px;
+  }
+  .cancel-btn:hover{
+    background-color: rgb(196, 32, 32);
+  }

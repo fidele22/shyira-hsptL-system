@@ -72,17 +72,4 @@
   .button-container {
     text-align: center;
   }
-  .form-actions button[type='button']{
-    font-size: 20px;
-    padding: 10px;
-    margin-left: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #b53131;
-    color: rgb(247, 246, 244);
-  }
-  .form-actions button[type='button']:hover{
-    background-color: rgb(245, 6, 6);
-  }
-  
+ 

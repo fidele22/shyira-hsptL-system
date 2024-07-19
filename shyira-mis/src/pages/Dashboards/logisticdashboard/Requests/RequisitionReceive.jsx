@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
@@ -80,6 +82,17 @@ const LogisticRequestForm = () => {
     }
   };
 
+
+  // Function to generate and download PDF
+  const downloadPDF = async () => {
+    const input = document.getElementById('pdf-content');
+    const canvas = await html2canvas(input);
+    const data = canvas.toDataURL('image/png');
+    
+    const doc = new jsPDF();
+    doc.addImage(data, 'PNG', 0, 0);
+    doc.save('requisition-form.pdf');
+  };
   return (
     <div className={`requist ${selectedRequest ? 'dim-background' : ''}`}>
       <h2>Logistic Requests</h2>
@@ -95,7 +108,15 @@ const LogisticRequestForm = () => {
       {selectedRequest && (
         <div className="request-details-overlay">
           <div className="request-details">
-            <h3>{editFormData.district} - {editFormData.healthFacility} - {editFormData.department}</h3>
+          <div className="image-logo">
+          <img src="/image/logo.png" alt="Logo" className="logo" />
+          </div>
+            <h3>WESTERN PROVINCE</h3>
+            <h3>DISTRIC: <span>{editFormData.district}</span>  </h3>
+            <h3>HEALTH FACILITY: <span>{editFormData.healthFacility}</span> </h3>
+            <h3>DEPARTMENT: <span>{editFormData.department}</span> </h3>
+
+            <h2>REQUISITON FORM</h2>
             {isEditing ? (
               <>
                 <table>
@@ -197,8 +218,12 @@ const LogisticRequestForm = () => {
                   </div>
                 </div>
                 <hr />
-                <button onClick={handleUpdateSubmit}>Submit</button>
-                <button onClick={handleCancelEdit}>Cancel</button>
+                <div className="buttons">
+                <button className='submit-an-update' onClick={handleUpdateSubmit}>Submit</button>
+                <button className='cancel-btn' onClick={handleCancelEdit}>Cancel</button>
+                
+                </div>
+                
               </>
             ) : (
               <>
@@ -243,8 +268,11 @@ const LogisticRequestForm = () => {
                   </div>
                 </div>
                 <hr />
-                <button onClick={handleEditClick}>Edit</button>
-                <button onClick={() => setSelectedRequest(null)}>Cancel</button>
+                <div className="buttons">
+                <button className='edit-btn' onClick={handleEditClick}>Edit</button>
+                <button className='cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
+                <button className='download-pdf-btn' onClick={downloadPDF}>Download PDF</button>
+             </div>
               </>
             )}
           </div>

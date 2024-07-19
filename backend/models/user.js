@@ -1,20 +1,52 @@
-// models/user.js
+// models/User.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
-  positionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Position',required:true},
-  serviceId:{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
-  departmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phone: { type: String, required: true },
-  email:{type:String,required:true},
-  password:{type:String,required: true},
-  signature: { type: String, required: true },
-  role:{type: String,required:true}
-},
-{ timestamps: true });
+const UserSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  positionName: {
+    type: String,
+    required: true,
+  },
+  serviceName: {
+    type: String,
+    required: true,
+  },
+  departmentName: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  role:{
+    type:String,
+    required: true,
+  },
+  signature: {
+    type: String, // We'll store the path to the uploaded file
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+});
 
-module.exports = mongoose.model('User', userSchema);
 
+const User = mongoose.model('User', UserSchema);
+
+module.exports = User;

@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    z-index: 1001;
   }
   
   .navbar h2 {
@@ -30,4 +31,19 @@
   .navbar ul li:hover {
     color: brown;
   }
+  .navbar ul button{
+    font-size: 22px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: brown;
+    color: wheat;
+    position: absolute;
+    bottom: 10%;
+    cursor: pointer;
+  }
+  .navbar ul button:hover{
+    background-color: rgb(215, 30, 30);
+  }
+  
   

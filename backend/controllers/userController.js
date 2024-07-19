@@ -1,62 +1,70 @@
+const express = require('express');
+const bcrypt = require('bcrypt');
+const multer = require('multer');
+const router = express.Router();
+
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'your_jwt_secret'
 const User = require('../models/user');
 const Position = require('../models/position');
 const Service = require('../models/service');
 const Department = require('../models/department');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'your_jwt_secret';// Ensure you have a secret key
+// Ensure you have a secret key
+
+// Multer configuration for file upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Specify the destination folder for uploads
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Generate a unique filename for the uploaded file
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const registerUser = async (req, res) => {
-
   try {
+    console.log('Request body:', req.body); // Debugging output
 
-    const { position, service, department, firstName, lastName, phone, email, password, signature, role } = req.body;
+    const { positionName, serviceName, departmentName, firstName, lastName, phone, email, password, confirmPassword } = req.body;
 
-    // Find or create the related department associate it with the service
-    let departmentObj = await Department.findOne({ departmentName: department});
-    if (!departmentObj) {
-      departmentObj = new Department({ departmentName: department });
-      await departmentObj.save();
+    if (password !== confirmPassword) {
+      return res.status(400).json({ msg: 'Passwords do not match' });
     }
 
-    // Find or create the related service and associate it with the department
-    let serviceObj = await Service.findOne({ service_name: service, departmentId: departmentObj._id });
-    if (!serviceObj) {
-      serviceObj = new Service({ service_name: service, departmentId: departmentObj._id });
-      await serviceObj.save();
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ msg: 'User already exists' });
     }
 
-    // Find or create the related position and associate it with the service
-    let positionObj = await Position.findOne({ positionName: position, serviceId: serviceObj._id });
-    if (!positionObj) {
-      positionObj = new Position({ positionName: position, serviceId: serviceObj._id });
-      await positionObj.save();
-    }
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with bcrypt
 
-// Hash the password
-const hashedPassword = await bcrypt.hash(password, 10);
+    // Save the path of the uploaded signature, adjust as per your schema
+    const signature = req.file ? req.file.path : '';
 
     // Create a new user with references to the position and department
     const newUser = new User({
       firstName,
       lastName,
+      positionName,
+      serviceName,
+      departmentName,
       phone,
       email,
+      role: 'hod',
       signature,
-      password: hashedPassword, 
-      role: 'pending',
-      positionId: positionObj._id,
-      departmentId: departmentObj._id,
-      serviceId: serviceObj._id
+      password: hashedPassword,
     });
 
     await newUser.save();
-    res.status(201).send(newUser);
+    res.status(201).json({ msg: 'User registered successfully', user: newUser });
   } catch (err) {
     console.error(err);
-    res.status(400).send(err);
+    res.status(500).json({ msg: 'Server error' });
   }
 };
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -66,11 +74,12 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password); // Compare hashed passwords
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
+    // Generate JWT token upon successful login
     const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ token, role: user.role });
   } catch (err) {
@@ -93,15 +102,26 @@ const authenticate = async (req, res, next) => {
     res.status(401).json({ message: 'Unauthorized' });
   }
 };
+// Route to get the signature image
+router.get('/signature', authenticate, async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user.signature) {
+      return res.status(404).json({ message: 'Signature not found' });
+    }
+    res.sendFile(path.resolve(user.signature)); // Ensure correct path resolution
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
+module.exports = router;
 
 // Profile route
 const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
-      .populate('positionId', 'positionName')
-      .populate('serviceId', 'service_name')
-      .populate('departmentId', 'departmentName');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -114,9 +134,9 @@ const getProfile = async (req, res) => {
       email: user.email,
       signature: user.signature,
       // Check if positionId, serviceId, and departmentId are not null before accessing their properties
-      position: user.positionId ? user.positionId.positionName : null,
-      service: user.serviceId ? user.serviceId.service_name : null,
-      department: user.departmentId ? user.departmentId.departmentName : null,
+      positionName:user.positionName,
+      serviceName:user.serviceName,
+      departmentName:user.departmentName,
     });
   } catch (error) {
     console.error(error);
@@ -129,9 +149,7 @@ const getUsers = async (req, res) => {
   try {
     // Fetch users excluding those with the role of "admin"
     const users = await User.find({ role: { $ne: 'admin' } })
-      .populate('departmentId')
-      .populate('serviceId')
-      .populate('positionId');
+     
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -141,30 +159,30 @@ const getUsers = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { position, service, department, firstName, lastName, phone, email, role } = req.body;
+    const { positionName, serviceName, departmentName, firstName, lastName, phone, email, role } = req.body;
     const userId = req.params.id;
 
-    // Find or create the related department and associate it with the service
-    let departmentObj = await Department.findOne({ departmentName: department });
-    if (!departmentObj) {
-      departmentObj = new Department({ departmentName: department });
-      await departmentObj.save();
-    }
-
-    // Find or create the related service and associate it with the department
-    let serviceObj = await Service.findOne({ service_name: service, departmentId: departmentObj._id });
-    if (!serviceObj) {
-      serviceObj = new Service({ service_name: service, departmentId: departmentObj._id });
-      await serviceObj.save();
-    }
-
-    // Find or create the related position and associate it with the service
-    let positionObj = await Position.findOne({ positionName: position, serviceId: serviceObj._id });
-    if (!positionObj) {
-      positionObj = new Position({ positionName: position, serviceId: serviceObj._id });
-      await positionObj.save();
-    }
-
+   // // Find or create the related department and associate it with the service
+   // let departmentObj = await Department.findOne({ departmentName: department });
+   // if (!departmentObj) {
+   //   departmentObj = new Department({ departmentName: department });
+   //   await departmentObj.save();
+   // }
+//
+   // // Find or create the related service and associate it with the department
+   // let serviceObj = await Service.findOne({ service_name: service, departmentId: departmentObj._id });
+   // if (!serviceObj) {
+   //   serviceObj = new Service({ service_name: service, departmentId: departmentObj._id });
+   //   await serviceObj.save();
+   // }
+//
+   // // Find or create the related position and associate it with the service
+   // let positionObj = await Position.findOne({ positionName: position, serviceId: serviceObj._id });
+   // if (!positionObj) {
+   //   positionObj = new Position({ positionName: position, serviceId: serviceObj._id });
+   //   await positionObj.save();
+   // }
+//
     // Update the user with references to the position and department
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -174,9 +192,9 @@ const updateUser = async (req, res) => {
         phone,
         email,
         role,
-        positionId: positionObj._id,
-        departmentId: departmentObj._id,
-        serviceId: serviceObj._id,
+        positionName,
+        departmentName,
+        serviceName
       },
       { new: true }
     );
@@ -213,4 +231,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, getUsers,loginUser, updateUser, deleteUser,authenticate,getProfile};
+module.exports = {upload,registerUser,getUsers,loginUser, updateUser, deleteUser,authenticate,getProfile};

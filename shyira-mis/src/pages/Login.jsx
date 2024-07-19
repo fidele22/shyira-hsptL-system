@@ -28,6 +28,12 @@ const Login = () => {
       else if(role === 'accountant') {
         navigate('/accountant');
       }
+      else if(role === 'daf') {
+        navigate('/daf');
+      }
+      else if(role === 'hod') {
+        navigate('/hod');
+      }
       else {
         navigate('/login');
       }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './viewitems.css'
+import './viewitems.css';
 import AddItemForm from '../addItem/addingitem';
 
 const ViewItems = () => {
@@ -9,6 +9,9 @@ const ViewItems = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(15); // Number of items per page
+
+  const [stockDetails, setStockDetails] = useState(null);
+  const [editedStock, setEditedStock] = useState(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -45,8 +48,56 @@ const ViewItems = () => {
     setItems([...items, newItem]);
   };
 
+  const handleUpdateStock = async () => {
+    try {
+      await axios.put(`http://localhost:5000/api/stocks/${editedStock._id}`, editedStock);
+      // Update the stock details in the state
+      setStockDetails(stockDetails.map((entry) => (entry._id === editedStock._id ? editedStock : entry)));
+      setEditedStock(null); // Clear the edited stock after update
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      alert('Failed to update stock');
+    }
+  };
+
   const handleCancelEdit = () => {
     setItemToEdit(null);
+  };
+
+  const handleDetailsClick = async (itemId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/stocks/${itemId}`);
+      setStockDetails(response.data);
+    } catch (error) {
+      console.error('Error fetching stock details:', error);
+      alert('Fetching stock details failed');
+    }
+  };
+
+  const handleEditStock = (stock) => {
+    setEditedStock({ ...stock });
+  };
+
+  const handleInputChange = (e, section, field) => {
+    const { value } = e.target;
+    setEditedStock((prevStock) => {
+      const updatedStock = {
+        ...prevStock,
+        [section]: {
+          ...prevStock[section],
+          [field]: value,
+        },
+      };
+      if (section === 'entry' || section === 'exit') {
+        updatedStock.balance.quantity = updatedStock.entry.quantity - updatedStock.exit.quantity;
+        updatedStock.balance.pricePerUnit = updatedStock.entry.pricePerUnit - updatedStock.exit.pricePerUnit;
+        updatedStock.balance.totalAmount = updatedStock.entry.totalAmount - updatedStock.exit.totalAmount;
+      }
+      if (section === 'entry' || section === 'exit' || field === 'quantity' || field === 'pricePerUnit') {
+        updatedStock[section].totalAmount = updatedStock[section].quantity * updatedStock[section].pricePerUnit;
+      }
+      return updatedStock;
+    });
   };
 
   // Filter items based on search term
@@ -73,61 +124,196 @@ const ViewItems = () => {
       <h2>Items List</h2>
       <div className='items-table'>
 
-     <div className="searchbar">
-     <input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-     </div>
+        <div className="searchbar">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
      
-      <table>
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.map((item, index) => (
-            <tr key={item._id}>
-              <td>{indexOfFirstItem + index + 1}</td>
-              <td>{item.name}</td>
-              <td>{item.description}</td>
-              <td>{item.category}</td>
-              <td>{item.price}</td>
-              <td>
-                <button  className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
-                <button  className="details-btn" onClick={() => handleDeleteClick(item._id)}>Details</button>
-                <button  className="delete-btn" onClick={() => handleDeleteClick(item._id)}>Delete</button>
-               
-              </td>
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Actions</th>
             </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((item, index) => (
+              <tr key={item._id}>
+                <td>{indexOfFirstItem + index + 1}</td>
+                <td>{item.name}</td>
+                <td>{item.description}</td>
+                <td>{item.category}</td>
+                <td>{item.price}</td>
+                <td>
+                  <button className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
+                  <button className="details-btn" onClick={() => handleDetailsClick(item._id)}>Details</button>
+                  <button className="delete-btn" onClick={() => handleDeleteClick(item._id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        <ul className="pagination">
+          {pageNumbers.map(number => (
+            <li key={number}>
+              <button onClick={() => paginate(number)}>{number}</button>
+            </li>
           ))}
-        </tbody>
-      </table>
-      {/* Pagination */}
-      <ul className="pagination">
-        {pageNumbers.map(number => (
-          <li key={number}>
-            <button onClick={() => paginate(number)}>{number}</button>
-          </li>
-        ))}
-      </ul>
-      {/* Add item form if editing */}
-      {itemToEdit && (
-        <AddItemForm
-          itemToEdit={itemToEdit}
-          onUpdateItem={handleUpdateItem}
-          onAddItem={handleAddItem}
-          onCancelEdit={handleCancelEdit}
-        />
-      )}
+        </ul>
+
+        {/* Add item form if editing */}
+        {itemToEdit && (
+          <div className="editing-item-overlay">
+            <div className="edit-item">
+              <AddItemForm
+                itemToEdit={itemToEdit}
+                onUpdateItem={handleUpdateItem}
+                onAddItem={handleAddItem}
+                onCancelEdit={handleCancelEdit}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Display stock details */}
+        {stockDetails && (
+          <div className="stockDetails-overlay">
+            <div className="stock-details">
+              <h3>Stock Details for {stockDetails[0]?.itemId?.name}</h3>
+              <h2>Stock Details</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th colSpan="3">ENTRY</th>
+                    <th colSpan="3">EXIT</th>
+                    <th colSpan="3">BALANCE</th>
+                    <th>Actions</th>
+                  </tr>
+                  <tr>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Amount</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Amount</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Amount</th>
+                    <th>Edit/Update</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stockDetails.map((entry, index) => (
+                    <tr key={index}>
+                      {/* Entry */}
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <input
+                            type="number"
+                            name="quantity"
+                            value={editedStock.entry.quantity}
+                            onChange={(e) => handleInputChange(e, 'entry', 'quantity')}
+                          />
+                        ) : (
+                          entry.entry.quantity
+                        )}
+                      </td>
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <input
+                            type="number"
+                            name="pricePerUnit"
+                            value={editedStock.entry.pricePerUnit}
+                            onChange={(e) => handleInputChange(e, 'entry', 'pricePerUnit')}
+                          />
+                        ) : (
+                          entry.entry.pricePerUnit
+                        )}
+                      </td>
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <input
+                            type="number"
+                            name="totalAmount"
+                            value={editedStock.entry.totalAmount}
+                            onChange={(e) => handleInputChange(e, 'entry', 'totalAmount')}
+                          />
+                        ) : (
+                          entry.entry.totalAmount
+                        )}
+                      </td>
+
+                      {/* Exit */}
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <input
+                            type="number"
+                            name="quantity"
+                            value={editedStock.exit.quantity}
+                            onChange={(e) => handleInputChange(e, 'exit', 'quantity')}
+                          />
+                        ) : (
+                          entry.exit.quantity
+                        )}
+                      </td>
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <input
+                            type="number"
+                            name="pricePerUnit"
+                            value={editedStock.exit.pricePerUnit}
+                            onChange={(e) => handleInputChange(e, 'exit', 'pricePerUnit')}
+                          />
+                        ) : (
+                          entry.exit.pricePerUnit
+                        )}
+                      </td>
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <input
+                            type="number"
+                            name="totalAmount"
+                            value={editedStock.exit.totalAmount}
+                            onChange={(e) => handleInputChange(e, 'exit', 'totalAmount')}
+                          />
+                        ) : (
+                          entry.exit.totalAmount
+                        )}
+                      </td>
+
+                      {/* Balance */}
+                      <td>{entry.balance.quantity}</td>
+                      <td>{entry.balance.pricePerUnit}</td>
+                      <td>{entry.balance.totalAmount}</td>
+
+                      <td>
+                        {editedStock && editedStock._id === entry._id ? (
+                          <>
+                            <button onClick={handleUpdateStock}>Update</button>
+                            <button onClick={() => setEditedStock(null)}>Cancel</button>
+                          </>
+                        ) : (
+                          <button onClick={() => handleEditStock(entry)}>Edit</button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button className="close-btn" onClick={() => setStockDetails(null)}>Close</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

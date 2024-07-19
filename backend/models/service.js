@@ -1,13 +1,14 @@
 // models/service.js
-
 const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({
-  service_name: {
-    type: String,
-    required: true,
-  },
- 
+  name: { type: String, required: true, unique: true },
+  description: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Service', serviceSchema);
+
+const Service = mongoose.model('Service', serviceSchema);
+
+module.exports =Service;

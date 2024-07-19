@@ -1,16 +1,20 @@
 /* makeRequist.css */
 
-.requist {
-  font-family: Arial, sans-serif;
-  max-width:90%;
+.requistion {
+  width: 95%;
   margin: 0 auto;
   padding: 20px;
  
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
 }
-.requist h2{
+
+.log{
+ height: 20vh;
+ width: 100%;
+ position: relative;
+ text-align: center;
+}
+
+.requistion h2{
   padding: 20px;
 }
 .heading-title .title{
@@ -28,18 +32,18 @@ padding: 10px;
 }
 .done-date{
   position: absolute;
-  top: 10%;
+  top: 40%;
   right: 10%;
 }
 /*styling form*/
-.logistic-request-form {
+.hod-request-form {
   background-color: #fff;
   padding: 20px;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+
 }
 
-.logistic-request-form h2 {
+.hod-request-form h2 {
   font-size: 1.5rem;
   margin-bottom: 20px;
   text-align: center;
@@ -145,10 +149,7 @@ hr{
   border: 3px solid black;
   
 }
-img {
-  max-width: 100px;
-  height: auto;
-}
+
 
 @media (max-width: 600px) {
   .signature-section {
@@ -164,7 +165,7 @@ img {
 }
 
 
-/******************* styling requisition receiced**/
+/******************* styling requisition receiced form**/
 /* makeRequist.css */
 
 /* General styling */
@@ -206,7 +207,30 @@ img {
   position: absolute;
   top: 12%;
 }
-
+.request-details h2{
+  text-align: center;
+}
+.request-details h3{
+  padding: 10px;
+  color: #5b5959;
+}
+.request-details h3 span{
+  font-size: 22px;
+  padding-left: 10px;
+  color: #414040;
+}
+.buttons button{
+ margin-top: 20px;
+  margin-left: 10px;
+}
+.submit-an-update{
+  background-color: rgb(41, 130, 225);
+  font-size: 16px;
+  
+}
+.submit-an-update:hover{
+  background-color: blue;
+}
 .signature-section {
   margin-top: 20px;
 }

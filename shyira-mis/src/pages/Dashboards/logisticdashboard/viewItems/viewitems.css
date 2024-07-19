@@ -44,7 +44,7 @@
     font-size: 16px;
   }
   .delete-btn{
-    background-color: red;
+    background-color: rgb(227, 18, 18);
     color: white;
     margin-left: 5px;
    
@@ -94,4 +94,43 @@
       margin: 0 3px;
     }
   }
+  /******************styling edit item form*************/
+  .editing-item-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dim background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+  }
+  .edit-item{
+    width: 50%;
+    background-color: rgb(159, 157, 153);
+    border-radius: 5px;
+  }
+
+  /****************styling stock details********************/
+  .stockDetails-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dim background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+  }
+  .stock-details{
+    background-color: white;
+    width: 80%;
+    position: absolute;
+    left: 18%;
+    border-radius: 4px;
   
+  }

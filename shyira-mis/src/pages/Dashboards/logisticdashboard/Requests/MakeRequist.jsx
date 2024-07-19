@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './makeRequist.css'; // Import CSS for styling
+ // Import CSS for styling
 
 const LogisticRequestForm = () => {
   const [items, setItems] = useState([]);
@@ -72,10 +72,14 @@ const LogisticRequestForm = () => {
   };
 
   return (
-    <div className="requist">
-      <h2>Make Request for fill the following Form</h2>
-      <div className="logistic-request-form">
+    <div className="requistion">
+       
+    <h2>Requisition Form</h2>
+      <div className="hod-request-form">
         <form onSubmit={handleSubmit}>
+        <div className="imag-logo">
+          <img src="/image/logo.png" alt="Logo" className="log"  />
+          </div>
           <h3>WESTERN PROVINCE</h3>
           <div className="heading-title">
             <div className="title">

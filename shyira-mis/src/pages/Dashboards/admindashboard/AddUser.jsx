@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import axios from 'axios';
-
+import './css/addUser.css'
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -26,6 +26,7 @@ const RegisterForm = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', formData);
       console.log('User registered:', response.data);
+      alert('User added successfuly')
        // Optionally reset form fields after successful submission
        setFormData({
     firstName: '',
@@ -46,8 +47,9 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className='loginsignup'>
-      <div className='loginsignup-container'>
+
+    <div className='add-user-container'>
+      <div className='form-container'>
         <h1>Add New User</h1>
         <form onSubmit={handleSubmit}>
           <div className='loginsignup-fields'>

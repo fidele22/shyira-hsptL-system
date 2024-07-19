@@ -1,0 +1,19 @@
+*{
+    margin: 0;
+}
+.add-user-container{
+    background-color: white;
+    padding: 30px;
+    width: 80%;
+    margin-left: 5%;
+    margin-top: 2%;
+    border-radius: 5px;
+   
+}
+.form-container h1{
+ text-align: center;
+ padding: 20px;
+ font-size: 40px;
+ color: #007bff;
+ font-weight: 900;
+}
