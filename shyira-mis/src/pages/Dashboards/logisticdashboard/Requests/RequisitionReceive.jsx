@@ -86,13 +86,29 @@ const LogisticRequestForm = () => {
   // Function to generate and download PDF
   const downloadPDF = async () => {
     const input = document.getElementById('pdf-content');
-    const canvas = await html2canvas(input);
-    const data = canvas.toDataURL('image/png');
+    if (!input) {
+      console.error('Element with ID pdf-content not found');
+      return;
+    }
     
-    const doc = new jsPDF();
-    doc.addImage(data, 'PNG', 0, 0);
-    doc.save('requisition-form.pdf');
+    try {
+      const canvas = await html2canvas(input);
+      const data = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth - 20; // Subtract the margin from the width
+      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+      pdf.addImage(data, 'PNG', 10, 10, imgWidth, imgHeight); // 10 is the margin
+      pdf.save('requisition-form.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
   };
+
   return (
     <div className={`requist ${selectedRequest ? 'dim-background' : ''}`}>
       <h2>Logistic Requests</h2>
@@ -105,18 +121,13 @@ const LogisticRequestForm = () => {
           ))}
         </ul>
       </div>
+  
       {selectedRequest && (
+      
         <div className="request-details-overlay">
+           
           <div className="request-details">
-          <div className="image-logo">
-          <img src="/image/logo.png" alt="Logo" className="logo" />
-          </div>
-            <h3>WESTERN PROVINCE</h3>
-            <h3>DISTRIC: <span>{editFormData.district}</span>  </h3>
-            <h3>HEALTH FACILITY: <span>{editFormData.healthFacility}</span> </h3>
-            <h3>DEPARTMENT: <span>{editFormData.department}</span> </h3>
-
-            <h2>REQUISITON FORM</h2>
+          
             {isEditing ? (
               <>
                 <table>
@@ -225,9 +236,21 @@ const LogisticRequestForm = () => {
                 </div>
                 
               </>
+             
             ) : (
+       
               <>
-                <table>
+         <div id="pdf-content">
+          <div className="image-request-recieved">
+          <img src="/image/logo2.png" alt="Logo" className="logo" />
+          </div>
+            <h3>WESTERN PROVINCE</h3>
+            <h3>DISTRIC: <span>{editFormData.district}</span>  </h3>
+            <h3>HEALTH FACILITY: <span>{editFormData.healthFacility}</span> </h3>
+            <h3>DEPARTMENT: <span>{editFormData.department}</span> </h3>
+
+            <h2>REQUISITON FORM</h2>  
+               <table>
                   <thead>
                     <tr>
                       <th>No</th>
@@ -268,17 +291,23 @@ const LogisticRequestForm = () => {
                   </div>
                 </div>
                 <hr />
+                </div>
                 <div className="buttons">
                 <button className='edit-btn' onClick={handleEditClick}>Edit</button>
                 <button className='cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
-                <button className='download-pdf-btn' onClick={downloadPDF}>Download PDF</button>
-             </div>
+                <button onClick={downloadPDF}>Download Pdf</button>
+                </div>
+
+             
+              
               </>
+             
             )}
-          </div>
-        </div>
+         </div>
+       </div>
       )}
-    </div>
+      </div>
+    
   );
 };
 

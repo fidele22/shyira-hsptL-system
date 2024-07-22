@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
  // Import CSS for styling
 
@@ -7,12 +7,27 @@ const LogisticRequestForm = () => {
   const [district, setDistrict] = useState('');
   const [healthFacility, setHealthFacility] = useState('');
   const [department, setDepartment] = useState('');
+  const [itemOptions, setItemOptions] = useState([]);// used to fetch item name from item table
   const [signature, setSignature] = useState('');
   const [date, setDate] = useState('');
   const [hodSignature, setHodSignature] = useState(null);
   const [logisticSignature, setLogisticSignature] = useState(null);
   const [ackReceiptSignature, setAckReceiptSignature] = useState(null);
   const [dafSignature, setDafSignature] = useState(null);
+
+// fetching item names use to select when making request
+useEffect(() => {
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/items');
+      setItemOptions(response.data);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+
+  fetchItems();
+}, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -74,11 +89,11 @@ const LogisticRequestForm = () => {
   return (
     <div className="requistion">
        
-    <h2>Requisition Form</h2>
+    <h2>Make Requisition</h2>
       <div className="hod-request-form">
         <form onSubmit={handleSubmit}>
         <div className="imag-logo">
-          <img src="/image/logo.png" alt="Logo" className="log"  />
+          <img src="/image/logo2.png" alt="Logo" className="log"  />
           </div>
           <h3>WESTERN PROVINCE</h3>
           <div className="heading-title">
@@ -112,7 +127,7 @@ const LogisticRequestForm = () => {
                 required
               />
             </div>
-            <div className="done-date">
+            <div className="date-of-done">
               <label htmlFor="date">Date:</label>
               <input
                 type="date"
@@ -141,12 +156,18 @@ const LogisticRequestForm = () => {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>
-                    <input
-                      type="text"
+                  <select
                       value={item.itemName}
                       onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                       required
-                    />
+                    >
+                      <option value="">Select Item</option>
+                      {itemOptions.map((option) => (
+                        <option key={option._id} value={option.name}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td>
                     <input

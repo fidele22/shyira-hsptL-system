@@ -10,8 +10,14 @@ const ViewItems = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(15); // Number of items per page
 
+  const [stockHistory, setStockHistory] = useState(null);
   const [stockDetails, setStockDetails] = useState(null);
   const [editedStock, setEditedStock] = useState(null);
+
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [latestUpdates, setLatestUpdates] = useState([]);
+
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -78,6 +84,27 @@ const ViewItems = () => {
     setEditedStock({ ...stock });
   };
 
+   // Fetch stock history for an item with date range
+  const handleHistoryClick = async (itemId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/stocks/history/${itemId}`, {
+        params: { startDate, endDate }
+      });
+      setStockHistory(response.data); // Set the stock history
+    } catch (error) {
+      console.error('Error fetching stock history:', error);
+      alert('Fetching stock history failed');
+    }
+  };
+
+
+  
+
+  // Handle date changes
+  const handleStartDateChange = (e) => setStartDate(e.target.value);
+  const handleEndDateChange = (e) => setEndDate(e.target.value);
+
+
   const handleInputChange = (e, section, field) => {
     const { value } = e.target;
     setEditedStock((prevStock) => {
@@ -123,7 +150,7 @@ const ViewItems = () => {
     <div className="view-items">
       <h2>Items List</h2>
       <div className='items-table'>
-
+     
         <div className="searchbar">
           <input
             type="text"
@@ -154,8 +181,9 @@ const ViewItems = () => {
                 <td>{item.price}</td>
                 <td>
                   <button className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
-                  <button className="details-btn" onClick={() => handleDetailsClick(item._id)}>Details</button>
+                  <button className="details-btn" onClick={() => handleDetailsClick(item._id)}>Stock</button>
                   <button className="delete-btn" onClick={() => handleDeleteClick(item._id)}>Delete</button>
+                 
                 </td>
               </tr>
             ))}
@@ -189,17 +217,43 @@ const ViewItems = () => {
         {stockDetails && (
           <div className="stockDetails-overlay">
             <div className="stock-details">
-              <h3>Stock Details for {stockDetails[0]?.itemId?.name}</h3>
-              <h2>Stock Details</h2>
+            <div className="history-filter">
+                <label>
+                  Start Date:
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                  />
+                </label>
+                <label>
+                  End Date:
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                  />
+                </label>
+                <button onClick={() => handleHistoryClick(stockDetails[0]?.itemId?._id)}>View History</button>
+              </div>
+              <div className="stock-titles">
+              <h1>Item Stock</h1>
+              <h2>Current Stock of <span>{stockDetails[0]?.itemId?.name}</span> </h2>
+              <h3>Stock Details</h3>
+              </div>
+              
+             
               <table>
                 <thead>
                   <tr>
+                    <th>Date</th>
                     <th colSpan="3">ENTRY</th>
                     <th colSpan="3">EXIT</th>
                     <th colSpan="3">BALANCE</th>
                     <th>Actions</th>
                   </tr>
                   <tr>
+                    <th>updated on</th>
                     <th>Quantity</th>
                     <th>Price per Unit</th>
                     <th>Total Amount</th>
@@ -215,6 +269,7 @@ const ViewItems = () => {
                 <tbody>
                   {stockDetails.map((entry, index) => (
                     <tr key={index}>
+                       <td>{new Date(entry.updatedAt).toLocaleString()}</td> {/* Display updated date */}
                       {/* Entry */}
                       <td>
                         {editedStock && editedStock._id === entry._id ? (
@@ -304,6 +359,7 @@ const ViewItems = () => {
                           </>
                         ) : (
                           <button onClick={() => handleEditStock(entry)}>Edit</button>
+                        
                         )}
                       </td>
                     </tr>
@@ -314,6 +370,49 @@ const ViewItems = () => {
             </div>
           </div>
         )}
+        {/* front end of stock history , to look fiche de stock*/}
+        {stockHistory && (
+          <div className="stockHistory-overlay">
+            <div className="stock-history">
+
+              <h3>Stock History from {new Date(startDate).toLocaleDateString()} to {new Date(endDate).toLocaleDateString()}</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Entry Quantity</th>
+                    <th>Entry Price per Unit</th>
+                    <th>Entry Total Amount</th>
+                    <th>Exit Quantity</th>
+                    <th>Exit Price per Unit</th>
+                    <th>Exit Total Amount</th>
+                    <th>Balance Quantity</th>
+                    <th>Balance Price per Unit</th>
+                    <th>Balance Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stockHistory.map((history, index) => (
+                    <tr key={index}>
+                      <td>{new Date(history.updatedAt).toLocaleString()}</td>
+                      <td>{history.entry.quantity}</td>
+                      <td>{history.entry.pricePerUnit}</td>
+                      <td>{history.entry.totalAmount}</td>
+                      <td>{history.exit.quantity}</td>
+                      <td>{history.exit.pricePerUnit}</td>
+                      <td>{history.exit.totalAmount}</td>
+                      <td>{history.balance.quantity}</td>
+                      <td>{history.balance.pricePerUnit}</td>
+                      <td>{history.balance.totalAmount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button onClick={() => setStockHistory(null)}>Close</button>
+            </div>
+          </div>
+        )}
+         
       </div>
     </div>
   );

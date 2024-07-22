@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const stockSchema = new mongoose.Schema({
+const stockHistorySchema = new mongoose.Schema({
   itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
   entry: {
     quantity: { type: Number, default: 0 },
@@ -16,10 +16,10 @@ const stockSchema = new mongoose.Schema({
     quantity: { type: Number, default: 0 },
     pricePerUnit: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 }
-  }
-},{ timestamps: true });
+  },
+  updatedAt: { type: Date, default: Date.now }
+});
 
+const StockHistory = mongoose.model('StockHistory', stockHistorySchema);
 
-const Stock = mongoose.model('Stock', stockSchema);
-
-module.exports = Stock;
+module.exports = StockHistory;

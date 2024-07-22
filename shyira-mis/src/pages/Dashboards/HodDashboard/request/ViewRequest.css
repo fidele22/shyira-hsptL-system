@@ -145,11 +145,7 @@
     border: 3px solid black;
     
   }
-  img {
-    max-width: 100px;
-    height: auto;
-  }
-  
+ 
   @media (max-width: 600px) {
     .signature-section {
       flex-direction: column;

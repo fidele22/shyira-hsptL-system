@@ -46,7 +46,7 @@ const Navbar = ({ setCurrentPage }) => {
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
               <li onClick={() => setCurrentPage('make-requist')}>Make requist</li>
-              <li onClick={() => setCurrentPage('view-items')}>Requist Made</li>
+              <li onClick={() => setCurrentPage('pdf')}>Requist Made</li>
               <li onClick={() => setCurrentPage('requisition-receive')}>Requist Received</li>
             </ul>
           )}

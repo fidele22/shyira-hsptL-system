@@ -9,6 +9,7 @@ import MakeRequist from './Requests/MakeRequist'
 import LogisticProfile from './LogisticProfile'
 import OrderSupplies from './OrderSupplies';
 import RequisitionReceive from './Requests/RequisitionReceive'
+import Pdf from './Requests/pdf'
 import './contentCss/LogisticDashboard.css';
 
 const LogisticDashboard = () => {
@@ -24,6 +25,8 @@ const LogisticDashboard = () => {
         return <ViewItem />;
       case 'order-supplies':
         return <OrderSupplies />;
+        case 'pdf':
+        return <Pdf />;
       case 'make-requist':
         return <MakeRequist />;
       case 'logistic-profile':

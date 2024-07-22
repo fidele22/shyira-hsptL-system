@@ -41,13 +41,16 @@ const DashboardOverview = () => {
   }, []);
 
   return (
-    <div className="dashboard-content">
+    <div className="logistic-0verview-content">
+      <div className="welcome-nav">
       <h1>Welcome back, {userName}!</h1>
+      </div>
+     
 
       {/* Overview Sections */}
       <section className="overview-section">
         <h2>Logistic Overview</h2>
-        <img src={logo} alt="" style={{ width: '1500px', height: '100px' }} />
+        <img src={logo} alt="" />
         <p>Here you can find essential logistic information relevant to hospital operations.</p>
         {/* Add relevant widgets and summaries here */}
         <div className="overview-widgets">

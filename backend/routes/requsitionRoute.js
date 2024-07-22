@@ -99,6 +99,15 @@ router.put('/:id', async (req, res) => {
 });
 
 
+// fetching item name
+router.get('/', async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.status(200).json(items);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 module.exports = router;
 
 
