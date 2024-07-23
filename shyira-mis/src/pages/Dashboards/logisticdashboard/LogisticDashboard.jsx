@@ -7,7 +7,7 @@ import ViewItem from './viewItems/Viewitem'
 import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
 import LogisticProfile from './LogisticProfile'
-import OrderSupplies from './OrderSupplies';
+import StockReport from './viewItems/ItemReport';
 import RequisitionReceive from './Requests/RequisitionReceive'
 import Pdf from './Requests/pdf'
 import './contentCss/LogisticDashboard.css';
@@ -23,8 +23,8 @@ const LogisticDashboard = () => {
         return <AddItem />;
       case 'view-items':
         return <ViewItem />;
-      case 'order-supplies':
-        return <OrderSupplies />;
+      case 'report':
+        return <StockReport />;
         case 'pdf':
         return <Pdf />;
       case 'make-requist':

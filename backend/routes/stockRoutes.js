@@ -42,23 +42,13 @@ function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-// Fetch stock entries for an item
-router.get('/:itemId', async (req, res) => {
-  const { itemId } = req.params;
-
-  // Check if itemId is a valid ObjectId
-  if (!isValidObjectId(itemId)) {
-    return res.status(400).send('Invalid itemId');
-  }
-  console.log(`Fetching stock entries for itemId: ${itemId}`); // Log itemId
-
+// Fetch all stock entries with item names
+router.get('/', async (req, res) => {
   try {
-    const stockEntries = await Stock.find({ itemId }).populate('itemId');
-    console.log(`Stock entries found: ${stockEntries.length}`); // Log number of stock entries found
-    res.status(200).json(stockEntries);
+    const stocks = await Stock.find().populate('itemId', 'name');
+    res.json(stocks);
   } catch (error) {
-    console.error('Error fetching stock entries:', error);
-    res.status(400).json({ message: 'Error fetching stock entries', error });
+    res.status(500).json({ message: 'Error fetching stocks', error });
   }
 });
 
@@ -89,6 +79,28 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Fetch stock entries for an item
+router.get('/:itemId', async (req, res) => {
+  const { itemId } = req.params;
+
+  // Check if itemId is a valid ObjectId
+  if (!isValidObjectId(itemId)) {
+    return res.status(400).send('Invalid itemId');
+  }
+  console.log(`Fetching stock entries for itemId: ${itemId}`); // Log itemId
+
+  try {
+    const stockEntries = await Stock.find({ itemId }).populate('itemId');
+    console.log(`Stock entries found: ${stockEntries.length}`); // Log number of stock entries found
+    res.status(200).json(stockEntries);
+  } catch (error) {
+    console.error('Error fetching stock entries:', error);
+    res.status(400).json({ message: 'Error fetching stock entries', error });
+  }
+});
+
+
+
 
 // Fetch stock history for an item with date range
 router.get('/history/:itemId', async (req, res) => {
@@ -112,37 +124,22 @@ router.get('/history/:itemId', async (req, res) => {
   }
 });
 
-
-
- // Fetch latest stock entries for all items
-router.get('/latest', async (req, res) => {
-  const { startDate, endDate } = req.query;
+// Fetch stock history for a specific month
+router.get('/history/:year/:month', async (req, res) => {
+  const { year, month } = req.params;
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
 
   try {
-    const query = {};
-
-    if (startDate && endDate) {
-      query.updatedAt = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      };
-    }
-
-    const latestStocks = await Stock.aggregate([
-      { $sort: { updatedAt: -1 } },
-      { $group: { _id: "$itemId", latestStock: { $first: "$$ROOT" } } },
-      { $replaceRoot: { newRoot: "$latestStock" } }
-    ]);
-
-    const populatedStocks = await Stock.populate(latestStocks, { path: 'itemId' });
-
-    res.status(200).json(populatedStocks);
+    const stockHistory = await StockHistory.find({
+      updatedAt: {
+        $gte: startDate,
+        $lt: endDate
+      }
+    }).populate('itemId', 'name');
+    res.json(stockHistory);
   } catch (error) {
-    console.error('Error fetching latest stock entries:', error);
-    res.status(400).json({ message: 'Error fetching latest stock entries', error });
+    res.status(500).json({ message: 'Error fetching stock history', error });
   }
 });
-
-
-
 module.exports = router;

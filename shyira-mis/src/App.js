@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 //import Navbar from './Component/navbar/Navbar';
 import Login from './pages/Login';
 import Loginsignup from './pages/Loginsignup';
+import SignIn from './pages/Signup'
 //import Footer from './Component/footer/Footer';
 import AdminDashboard from './pages/Dashboards/admindashboard/AdminDashboard';
 import ProtectedRoute from './Component/ProtectedRoute';
@@ -19,7 +20,7 @@ function App() {
       
         <Routes>
         
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<SignIn />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Loginsignup />} />
           <Route path="/admin-dashboard/*" element={<ProtectedRoute component={AdminDashboard} />} />

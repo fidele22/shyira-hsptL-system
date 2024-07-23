@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import './viewitems.css';
 import AddItemForm from '../addItem/addingitem';
 
@@ -115,18 +117,31 @@ const ViewItems = () => {
           [field]: value,
         },
       };
+  
+      // Ensure pricePerUnit of exit matches entry pricePerUnit
+      if (section === 'entry') {
+        if (field === 'pricePerUnit') {
+          updatedStock.exit.pricePerUnit = updatedStock.entry.pricePerUnit;
+          updatedStock.balance.pricePerUnit = updatedStock.entry.pricePerUnit;
+        }
+      }
+  
+      // Update totalAmount for both entry and exit sections
+      if (section === 'entry' || section === 'exit' || field === 'quantity' || field === 'pricePerUnit') {
+        updatedStock.entry.totalAmount = updatedStock.entry.quantity * updatedStock.entry.pricePerUnit;
+        updatedStock.exit.totalAmount = updatedStock.exit.quantity * updatedStock.exit.pricePerUnit;
+      }
+  
+      // Update balance calculations
       if (section === 'entry' || section === 'exit') {
         updatedStock.balance.quantity = updatedStock.entry.quantity - updatedStock.exit.quantity;
-        updatedStock.balance.pricePerUnit = updatedStock.entry.pricePerUnit - updatedStock.exit.pricePerUnit;
         updatedStock.balance.totalAmount = updatedStock.entry.totalAmount - updatedStock.exit.totalAmount;
       }
-      if (section === 'entry' || section === 'exit' || field === 'quantity' || field === 'pricePerUnit') {
-        updatedStock[section].totalAmount = updatedStock[section].quantity * updatedStock[section].pricePerUnit;
-      }
+  
       return updatedStock;
     });
   };
-
+  
   // Filter items based on search term
   const filteredItems = items.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -145,6 +160,31 @@ const ViewItems = () => {
   for (let i = 1; i <= Math.ceil(filteredItems.length / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
+ // Function to generate and download PDF
+ const downloadPDF = async () => {
+  const input = document.getElementById('history-content');
+  if (!input) {
+    console.error('Element with ID pdf-content not found');
+    return;
+  }
+  
+  try {
+    const canvas = await html2canvas(input);
+    const data = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF();
+    const imgProps = pdf.getImageProperties(data);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pdfWidth - 15; // Subtract the margin from the width
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    pdf.addImage(data, 'PNG', 5, 5, imgWidth, imgHeight); // 10 is the margin
+    pdf.save('Fiche de stock.pdf');
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  }
+};
 
   return (
     <div className="view-items">
@@ -373,22 +413,42 @@ const ViewItems = () => {
         {/* front end of stock history , to look fiche de stock*/}
         {stockHistory && (
           <div className="stockHistory-overlay">
-            <div className="stock-history">
+            <div className="stock-history" >
+              <div id='history-content'>
 
-              <h3>Stock History from {new Date(startDate).toLocaleDateString()} to {new Date(endDate).toLocaleDateString()}</h3>
+           
+              <h2>Fiche De Stock</h2>
+              <h3>Article de stock <span>{stockDetails[0]?.itemId?.name}</span> </h3>
+              <h4>Code:</h4>
+              <h4>Stock History from {new Date(startDate).toLocaleDateString()} to {new Date(endDate).toLocaleDateString()}</h4>
+            
               <table>
                 <thead>
                   <tr>
+                    <th colSpan="10">Quantity Maximum:</th>
+                  </tr>
+                  <tr>
+                  <th colSpan="10">Stock d'alerte:</th>
+                  </tr>
+                <tr>
                     <th>Date</th>
-                    <th>Entry Quantity</th>
-                    <th>Entry Price per Unit</th>
-                    <th>Entry Total Amount</th>
-                    <th>Exit Quantity</th>
-                    <th>Exit Price per Unit</th>
-                    <th>Exit Total Amount</th>
-                    <th>Balance Quantity</th>
-                    <th>Balance Price per Unit</th>
-                    <th>Balance Total Amount</th>
+                    <th colSpan="3">ENTRY</th>
+                    <th colSpan="3">EXIT</th>
+                    <th colSpan="3">BALANCE</th>
+                  
+                  </tr>
+                  <tr>
+                    <th>updated on</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Amount</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Amount</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Amount</th>
+                   
                   </tr>
                 </thead>
                 <tbody>
@@ -408,7 +468,12 @@ const ViewItems = () => {
                   ))}
                 </tbody>
               </table>
-              <button onClick={() => setStockHistory(null)}>Close</button>
+              </div>
+              <div className="history-btn">
+              <button  onClick={() => setStockHistory(null)} className='close-history'>Close</button>
+              <button className='download-history' onClick={downloadPDF}>Download Pdf</button>
+              </div>
+              
             </div>
           </div>
         )}

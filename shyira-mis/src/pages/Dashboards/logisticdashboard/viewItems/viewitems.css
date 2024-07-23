@@ -169,5 +169,26 @@
     position: absolute;
     left: 18%;
     border-radius: 4px;
+    padding: 20px;
   
+  }
+  .stock-history h2,h3{
+    text-align: center;
+    padding: 10px;
+  }
+  .stock-history span{
+    text-transform: uppercase;
+    padding-left: 10px;
+    text-decoration: underline;
+  }
+  .history-btn{
+   padding: 20px;
+
+  }
+  .history-btn button{
+    margin-left: 20px;
+    font-size: 16px;
+  }
+  .history-btn button .close-history{
+background-color: rebeccapurple;
   }

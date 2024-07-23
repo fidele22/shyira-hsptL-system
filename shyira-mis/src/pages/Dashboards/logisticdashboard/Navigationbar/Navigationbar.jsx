@@ -51,7 +51,9 @@ const Navbar = ({ setCurrentPage }) => {
             </ul>
           )}
         </li>
+        <li onClick={() => setCurrentPage('report')}>Reports</li>
       </ul>
+
       <u><h2>Settings</h2></u>
       <ul>
         <li onClick={() => setCurrentPage('logistic-profile')}>Profile</li>
