@@ -1,5 +1,4 @@
 /* makeRequist.css */
-
 .requistion {
   width: 95%;
   margin: 0 auto;
@@ -12,8 +11,8 @@
 .heading-title .title{
   display: flex;
 }
-.heading-title .title h3{
-padding: 10px;
+.heading-title.title h3{
+  padding:10px; 
 }
 .heading-title .title input{
   border-top: none;
@@ -21,10 +20,16 @@ padding: 10px;
   border-right: none;
   width: 20%;
   margin-top: 0%;
+  font-size:25px;
 }
-/*.done-date{
+.image-logo img{
+  width: 100%;
+  height: 20vh;
+  margin-bottom: 100px;
+}
+.done-date{
   position: absolute;
-  top: 20%;
+  top: 30%;
   right: 10%;
 }
 /*styling form*/
@@ -64,19 +69,6 @@ textarea {
 
 textarea {
   resize: vertical;
-}
-
-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
 }
 
 table {
@@ -156,78 +148,4 @@ hr{
   }
 }
 
-
-/******************* styling requisition receiced form**/
-/* makeRequist.css */
-
-/* General styling */
-.requist {
-  padding: 20px;
-}
-
-.navigation ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.navigation li {
-  margin: 10px 0;
-}
-
-.request-details-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dim background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Ensure it is on top of other content */
-}
-
-.request-details {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 80%;
-  max-height: 80%;
-  overflow-y: auto; /* Scrollable if content is too large */
-  z-index: 1001; /* Ensure it is on top of the overlay */
-  position: absolute;
-  top: 12%;
-}
-.request-details h2{
-  text-align: center;
-}
-.request-details h3{
-  padding: 10px;
-  color: #5b5959;
-}
-.request-details h3 span{
-  font-size: 22px;
-  padding-left: 10px;
-  color: #414040;
-}
-.buttons button{
- margin-top: 20px;
-  margin-left: 10px;
-}
-.submit-an-update{
-  background-color: rgb(41, 130, 225);
-  font-size: 16px;
-  
-}
-.submit-an-update:hover{
-  background-color: blue;
-}
-.signature-section {
-  margin-top: 20px;
-}
-
-.signature {
-  margin-bottom: 10px;
-}
 

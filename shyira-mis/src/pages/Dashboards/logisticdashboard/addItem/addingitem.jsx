@@ -8,6 +8,8 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
     description: '',
     category: '',
     price: '',
+    maximum:'',
+    minimum:'',
   });
 
   useEffect(() => {
@@ -17,6 +19,8 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
         description: itemToEdit.description,
         category: itemToEdit.category,
         price: itemToEdit.price,
+        maximum: itemToEdit.maximum,
+        minimum:itemToEdit.manimum,
       });
     } else {
       setFormData({
@@ -24,6 +28,8 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
         description: '',
         category: '',
         price: '',
+        maximum:'',
+        minimum:'',
       });
     }
   }, [itemToEdit]);
@@ -51,6 +57,9 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
           description: '',
           category: '',
           price: '',
+          maximum:'',
+          minimum:'',
+
         });
     }
      catch (error) {
@@ -61,6 +70,8 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
         description: '',
         category: '',
         price: '',
+        maximum:'',
+        minimum:'',
       });
     }
   };
@@ -72,18 +83,20 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
       description: '',
       category: '',
       price: '',
+      maximum:'',
+      minimum:'',
     });
   };
 
   return (
     <div className="add-item">
- <h1>{itemToEdit ? 'Edit Item' : 'Add New Item'}</h1>
+ <h1>{itemToEdit ? 'Edit Item' : 'Add New Item In Stock'}</h1>
  
     <div className="add-form">
-      <h2>{itemToEdit ? 'Edit Item' : 'Add New Item'}</h2>
+      <h2>{itemToEdit ? 'Edit Item' : 'Add item in stock by filling its details below:'}</h2>
       <form onSubmit={handleSubmit}>
         
-      <div className='loginsignup-fields'>
+      <div className='input-fields'>
             <div className='flex-container'>
               <div className='left'>
                 <label>Item Name</label>
@@ -93,12 +106,19 @@ const AddItemForm = ({ itemToEdit, onUpdateItem, onAddItem, onCancelEdit }) => {
                 <label>Price</label>
                 <input type="number" name="price" value={formData.price} onChange={handleChange} required />
               </div>
-             
+              <div className='right'>
+                <label>Maximum Quantity</label>
+                <input type="number" name="maximum" value={formData.maximum} onChange={handleChange} required />
+              </div>
             </div>
             <div className='flex-container'>
               <div className='left'>
                 <label htmlFor="">Category</label>
               <input type="text" name="category" value={formData.category} onChange={handleChange} required />
+              </div>
+              <div className='right'>
+                <label>Stock d'alerte:</label>
+                <input  type='number'  name="minimum" value={formData.minimum} onChange={handleChange} required />
               </div>
               <div className='right'>
                 <label>Description</label>

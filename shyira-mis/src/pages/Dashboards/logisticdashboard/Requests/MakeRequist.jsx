@@ -61,6 +61,7 @@ useEffect(() => {
     setItems([
       ...items,
       {
+        itemId: '',
         itemName: '',
         quantityRequested: '',
         quantityReceived: '',
@@ -95,37 +96,21 @@ useEffect(() => {
         <div className="imag-logo">
           <img src="/image/logo2.png" alt="Logo" className="log"  />
           </div>
-          <h3>WESTERN PROVINCE</h3>
+          
           <div className="heading-title">
             <div className="title">
-              <h3>DISTRICT</h3>
-              <input
-                type="text"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                placeholder="Type here .........."
-                required
-              />
+            <h3>WESTERN PROVINCE</h3>
             </div>
             <div className="title">
-              <h3>HEALTH FACILITY</h3>
-              <input
-                type="text"
-                value={healthFacility}
-                onChange={(e) => setHealthFacility(e.target.value)}
-                placeholder="Type here .........."
-                required
-              />
+              <h3>DISTRICT NYABIHU</h3>
             </div>
             <div className="title">
-              <h3>DEPARTMENT</h3>
-              <input
-                type="text"
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                placeholder="Type here .........."
-                required
-              />
+              <h3>SHYIRA DISTRICT HOSPITAL</h3>
+            </div>
+            <div className="title">
+              <h3>LOGISTIC OFFICE</h3>
+             
+             
             </div>
             <div className="date-of-done">
               <label htmlFor="date">Date:</label>
@@ -137,8 +122,11 @@ useEffect(() => {
               />
             </div>
           </div>
-
+          <div className="requisition-title">
           <h2>REQUISITION FORM</h2>
+          <p>Supplier Name:   <input type="text" placeholder="Type names here......" /></p>
+          </div>
+         
           <button type="button" onClick={handleAddItem}>Add Item</button>
           <table>
             <thead>
@@ -146,8 +134,8 @@ useEffect(() => {
                 <th>No</th>
                 <th>Item Name</th>
                 <th>Quantity Requested</th>
-                <th>Quantity Received</th>
-                <th>Observation</th>
+                <th>Price</th>
+                <th>Total Amount</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -200,33 +188,10 @@ useEffect(() => {
           </table>
 
           <div className="signature-section">
-            <div className="signature">
-              <label htmlFor="signature">Signature and Name of the person in charge of the department:</label>
-              <input
-                type="text"
-                id="signature"
-                value={signature}
-                onChange={(e) => setSignature(e.target.value)}
-                placeholder="Type your name here....."
-              />
-              <label htmlFor="hodSignature">Upload Signature Image:</label>
-              <input
-                type="file"
-                id="hodSignature"
-                accept="image/*"
-                onChange={(e) => handleFileChange(e, setHodSignature)}
-              />
-            </div>
+            
             <div className="logistic-sign">
-              <label htmlFor="logisticSignature">Signature of Delivery:</label>
-              <p>Logistician</p>
-              Date:
-              <input
-                type="date"
-                id="logisticDate"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
+              <label htmlFor="logisticSignature">Logistic:</label>
+              
               <br />
               Names:
               <input type="text" placeholder="Type names here......" /> <br />
@@ -240,38 +205,6 @@ useEffect(() => {
             </div>
           </div>
 
-          <div className="signature-section">
-            <div className="signature">
-              <label htmlFor="ackReceiptSignature">Acknowledgement receipt:</label>
-              Date:
-              <input
-                type="date"
-                id="ackReceiptDate"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-              <br />
-              Names:
-              <input type="text" placeholder="Type names here......" /> <br />
-              Upload Signature Image:
-              <input
-                type="file"
-                id="ackReceiptSignature"
-                accept="image/*"
-                onChange={(e) => handleFileChange(e, setAckReceiptSignature)}
-              />
-            </div>
-            <div className="daf-sign">
-              <label htmlFor="dafSignature">Signature of DAF:</label>
-              Upload Signature Image:
-              <input
-                type="file"
-                id="dafSignature"
-                accept="image/*"
-                onChange={(e) => handleFileChange(e, setDafSignature)}
-              />
-            </div>
-          </div>
           <hr />
           <h4>SHYIRA DISTRICT HOSPITAL , WESTERN PROVINCE , NYABIHU DISTRICT</h4>
           <button type="submit">Submit Request</button>

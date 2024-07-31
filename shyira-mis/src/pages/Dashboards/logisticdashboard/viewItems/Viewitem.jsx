@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
+import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
 import './viewitems.css';
 import AddItemForm from '../addItem/addingitem';
@@ -18,8 +19,7 @@ const ViewItems = () => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [latestUpdates, setLatestUpdates] = useState([]);
-
+ 
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -59,9 +59,12 @@ const ViewItems = () => {
   const handleUpdateStock = async () => {
     try {
       await axios.put(`http://localhost:5000/api/stocks/${editedStock._id}`, editedStock);
-      // Update the stock details in the state
       setStockDetails(stockDetails.map((entry) => (entry._id === editedStock._id ? editedStock : entry)));
-      setEditedStock(null); // Clear the edited stock after update
+     alert('stock updated successful')
+      setEditedStock({
+        entry: { quantity: 0, pricePerUnit: 0, totalAmount: 0 },
+        exit: { quantity: 0, pricePerUnit: 0, totalAmount: 0 },
+      });
     } catch (error) {
       console.error('Error updating stock:', error);
       alert('Failed to update stock');
@@ -86,109 +89,89 @@ const ViewItems = () => {
     setEditedStock({ ...stock });
   };
 
-   // Fetch stock history for an item with date range
   const handleHistoryClick = async (itemId) => {
     try {
       const response = await axios.get(`http://localhost:5000/api/stocks/history/${itemId}`, {
         params: { startDate, endDate }
       });
-      setStockHistory(response.data); // Set the stock history
+      setStockHistory(response.data);
     } catch (error) {
       console.error('Error fetching stock history:', error);
       alert('Fetching stock history failed');
     }
   };
 
-
-  
-
-  // Handle date changes
   const handleStartDateChange = (e) => setStartDate(e.target.value);
   const handleEndDateChange = (e) => setEndDate(e.target.value);
 
-
   const handleInputChange = (e, section, field) => {
     const { value } = e.target;
-    setEditedStock((prevStock) => {
-      const updatedStock = {
-        ...prevStock,
-        [section]: {
-          ...prevStock[section],
-          [field]: value,
-        },
-      };
-  
-      // Ensure pricePerUnit of exit matches entry pricePerUnit
-      if (section === 'entry') {
-        if (field === 'pricePerUnit') {
-          updatedStock.exit.pricePerUnit = updatedStock.entry.pricePerUnit;
-          updatedStock.balance.pricePerUnit = updatedStock.entry.pricePerUnit;
-        }
-      }
-  
-      // Update totalAmount for both entry and exit sections
-      if (section === 'entry' || section === 'exit' || field === 'quantity' || field === 'pricePerUnit') {
-        updatedStock.entry.totalAmount = updatedStock.entry.quantity * updatedStock.entry.pricePerUnit;
-        updatedStock.exit.totalAmount = updatedStock.exit.quantity * updatedStock.exit.pricePerUnit;
-      }
-  
-      // Update balance calculations
-      if (section === 'entry' || section === 'exit') {
-        updatedStock.balance.quantity = updatedStock.entry.quantity - updatedStock.exit.quantity;
-        updatedStock.balance.totalAmount = updatedStock.entry.totalAmount - updatedStock.exit.totalAmount;
-      }
-  
-      return updatedStock;
-    });
+    setEditedStock((prevStock) => ({
+      ...prevStock,
+      [section]: {
+        ...prevStock[section],
+        [field]: value,
+      },
+    }));
   };
-  
-  // Filter items based on search term
+
   const filteredItems = items.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Change page
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  // Generate page numbers for pagination
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredItems.length / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
- // Function to generate and download PDF
- const downloadPDF = async () => {
-  const input = document.getElementById('history-content');
-  if (!input) {
-    console.error('Element with ID pdf-content not found');
-    return;
-  }
+
+  const downloadPDF = async () => {
+    const input = document.getElementById('history-content');
+    if (!input) {
+      console.error('Element with ID pdf-content not found');
+      return;
+    }
   
-  try {
-    const canvas = await html2canvas(input);
-    const data = canvas.toDataURL('image/png');
+    try {
+      const canvas = await html2canvas(input);
+      const data = canvas.toDataURL('image/png');
 
-    const pdf = new jsPDF();
-    const imgProps = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pdfWidth - 15; // Subtract the margin from the width
-    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth - 15;
+      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-    pdf.addImage(data, 'PNG', 5, 5, imgWidth, imgHeight); // 10 is the margin
-    pdf.save('Fiche de stock.pdf');
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-  }
-};
+      pdf.addImage(data, 'PNG', 5, 5, imgWidth, imgHeight);
+      pdf.save('Fiche de stock.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+  const downloadExcel = () => {
+    // Target the content within the history-content div by its ID
+    const table = document.getElementById("history-content").getElementsByTagName("table")[0];
+    
+    // Create a new workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(table);
+    
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Stock History");
+    
+    // Generate Excel file and trigger download
+    XLSX.writeFile(wb, `Stock_History_${stockDetails[0]?.itemId?.name}_${startDate}_to_${endDate}.xlsx`);
+  };
 
   return (
     <div className="view-items">
-      <h2>Items List</h2>
+      <h2>Items List Management</h2>
       <div className='items-table'>
      
         <div className="searchbar">
@@ -205,9 +188,10 @@ const ViewItems = () => {
             <tr>
               <th>No</th>
               <th>Name</th>
-              <th>Description</th>
               <th>Category</th>
               <th>Price</th>
+              <th>Maximum Quantity</th>
+              <th>Description</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -216,11 +200,12 @@ const ViewItems = () => {
               <tr key={item._id}>
                 <td>{indexOfFirstItem + index + 1}</td>
                 <td>{item.name}</td>
-                <td>{item.description}</td>
                 <td>{item.category}</td>
                 <td>{item.price}</td>
+                <td>{item.maximum}</td>
+                <td>{item.description}</td>
                 <td>
-                  <button className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
+                  <button className="item-edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
                   <button className="details-btn" onClick={() => handleDetailsClick(item._id)}>Stock</button>
                   <button className="delete-btn" onClick={() => handleDeleteClick(item._id)}>Delete</button>
                  
@@ -252,7 +237,6 @@ const ViewItems = () => {
             </div>
           </div>
         )}
-
         {/* Display stock details */}
         {stockDetails && (
           <div className="stockDetails-overlay">
@@ -274,7 +258,8 @@ const ViewItems = () => {
                     onChange={handleEndDateChange}
                   />
                 </label>
-                <button onClick={() => handleHistoryClick(stockDetails[0]?.itemId?._id)}>View History</button>
+                <button onClick={() => handleHistoryClick(stockDetails[0]?.itemId?._id)}
+                  className='view-history-btn'>View History</button>
               </div>
               <div className="stock-titles">
               <h1>Item Stock</h1>
@@ -394,11 +379,11 @@ const ViewItems = () => {
                       <td>
                         {editedStock && editedStock._id === entry._id ? (
                           <>
-                            <button onClick={handleUpdateStock}>Update</button>
-                            <button onClick={() => setEditedStock(null)}>Cancel</button>
+                            <button className='detail-update-btn' onClick={handleUpdateStock}>Update</button>
+                            <button className='detail-cancel-btn' onClick={() => setEditedStock(null)}>Cancel</button>
                           </>
                         ) : (
-                          <button onClick={() => handleEditStock(entry)}>Edit</button>
+                          <button className='detail-edit-btn' onClick={() => handleEditStock(entry)}>Edit</button>
                         
                         )}
                       </td>
@@ -406,7 +391,7 @@ const ViewItems = () => {
                   ))}
                 </tbody>
               </table>
-              <button className="close-btn" onClick={() => setStockDetails(null)}>Close</button>
+              <button className="detail-close-btn" onClick={() => setStockDetails(null)}>Close</button>
             </div>
           </div>
         )}
@@ -414,6 +399,7 @@ const ViewItems = () => {
         {stockHistory && (
           <div className="stockHistory-overlay">
             <div className="stock-history" >
+
               <div id='history-content'>
 
            
@@ -425,10 +411,10 @@ const ViewItems = () => {
               <table>
                 <thead>
                   <tr>
-                    <th colSpan="10">Quantity Maximum:</th>
+                    <th colSpan="10">Quantity Maximum : {stockDetails[0]?.itemId?.maximum}</th>
                   </tr>
                   <tr>
-                  <th colSpan="10">Stock d'alerte:</th>
+                  <th colSpan="10">Stock d'alerte: {stockDetails[0]?.itemId?.minimum}</th>
                   </tr>
                 <tr>
                     <th>Date</th>
@@ -470,8 +456,9 @@ const ViewItems = () => {
               </table>
               </div>
               <div className="history-btn">
-              <button  onClick={() => setStockHistory(null)} className='close-history'>Close</button>
-              <button className='download-history' onClick={downloadPDF}>Download Pdf</button>
+              <button className='detail-close-btn' onClick={() => setStockHistory(null)} >Close</button>
+              <button className='download-history-btn' onClick={downloadPDF}>Download Pdf</button>
+              <button className="download-exl-btn" onClick={downloadExcel} >Export Excel</button>
               </div>
               
             </div>
@@ -479,6 +466,18 @@ const ViewItems = () => {
         )}
          
       </div>
+      <div className="items-list-stock">
+      <h2>List of items you have in stock</h2>
+      
+      {currentItems.map((item, index) => (
+        <ul  key={item._id}>
+
+                <li>{item.name}</li>
+        </ul> 
+            ))}
+    
+      </div>
+      
     </div>
   );
 };

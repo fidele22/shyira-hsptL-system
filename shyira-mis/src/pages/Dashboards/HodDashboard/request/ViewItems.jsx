@@ -69,7 +69,7 @@ const ViewItems = () => {
   }
 
   return (
-    <div className="view-items">
+    <div className=".hod-view-items">
       <h2>Items List</h2>
       <div className='items-table'>
 

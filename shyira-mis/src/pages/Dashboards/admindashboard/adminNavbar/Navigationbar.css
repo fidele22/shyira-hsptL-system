@@ -1,4 +1,4 @@
-.navbar {
+.adminavbar {
     width: 307px;
     background-color: #2c3e50;
     position: fixed;
@@ -11,27 +11,27 @@
     z-index: 1001;
   }
   
-  .navbar h2 {
+  .adminavbar h2 {
     margin: 0 0 20px;
   }
   
-  .navbar ul {
+  .adminavbar ul {
     list-style-type: none;
     padding: 10px,0,0, 10px;
     color: aliceblue;
   }
   
-  .navbar ul li {
+  .adminavbar ul li {
     margin: 20px 0;
     cursor: pointer;
     text-decoration: none;
     font-size: 20px;
   }
   
-  .navbar ul li:hover {
+  .adminavbar ul li:hover {
     color: brown;
   }
-  .navbar ul button{
+  .adminavbar ul button{
     font-size: 22px;
     padding: 10px;
     border-radius: 5px;
@@ -42,7 +42,7 @@
     bottom: 10%;
     cursor: pointer;
   }
-  .navbar ul button:hover{
+  .adminavbar ul button:hover{
     background-color: rgb(215, 30, 30);
   }
   

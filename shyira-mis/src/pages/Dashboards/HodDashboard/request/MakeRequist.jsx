@@ -1,30 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
   const [items, setItems] = useState([]);
-  const [district, setDistrict] = useState('');
   const [healthFacility, setHealthFacility] = useState('');
   const [department, setDepartment] = useState('');
   const [signature, setSignature] = useState('');
   const [date, setDate] = useState('');
+  const [itemOptions, setItemOptions] = useState([]);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [hodSignature, setHodSignature] = useState(null);
   const [dafSignature, setDafSignature] = useState(null);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/items');
+        setItemOptions(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append('district', district);
     formData.append('healthFacility', healthFacility);
     formData.append('department', department);
     formData.append('items', JSON.stringify(items));
     formData.append('signature', signature);
     formData.append('date', date);
     formData.append('hodSignature', hodSignature);
-   
     formData.append('dafSignature', dafSignature);
 
     try {
@@ -36,6 +47,7 @@ const LogisticRequestForm = () => {
       console.log(response.data);
       alert('Requisition submitted successfully!');
     } catch (error) {
+      console.error('Error submitting requisition:', error);
       alert('Error submitting requisition');
     }
   };
@@ -44,6 +56,7 @@ const LogisticRequestForm = () => {
     setItems([
       ...items,
       {
+        itemId: '',
         itemName: '',
         quantityRequested: '',
         quantityReceived: '',
@@ -61,6 +74,11 @@ const LogisticRequestForm = () => {
   const handleItemChange = (index, key, value) => {
     const updatedItems = [...items];
     updatedItems[index][key] = value;
+    if (key === 'itemName') {
+      // Find the itemId based on the itemName
+      const selectedItem = itemOptions.find((option) => option.name === value);
+      updatedItems[index].itemId = selectedItem ? selectedItem._id : '';
+    }
     setItems(updatedItems);
   };
 
@@ -68,63 +86,53 @@ const LogisticRequestForm = () => {
     const file = event.target.files[0];
     setFile(file);
   };
+
   const handleFetchSignature = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
       return;
     }
-  
+
     try {
       const response = await axios.get('http://localhost:5000/api/users/signature', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: 'blob', // Ensure responseType is set to 'blob'
+        responseType: 'blob',
       });
-  
+
       const url = URL.createObjectURL(response.data);
       setSignatureUrl(url);
-  
-      // Log to check if URL is correctly created
+
       console.log('Signature URL:', url);
     } catch (error) {
       console.error('Error fetching signature:', error);
     }
   };
+
   return (
     <div className="requistion">
-      
-    <h2>Requisition Form</h2>
+      <h2> Make Requisition</h2>
       <div className="hod-request-form">
         <form onSubmit={handleSubmit}>
           <div className="image-logo">
-          <img src="/image/logo.png" alt="Logo" className="logo" />
+            <img src="/image/logo.png" alt="Logo" className="logo" />
           </div>
-          <h3>WESTERN PROVINCE</h3>
+
           <div className="heading-title">
             <div className="title">
-              <h3>DISTRICT</h3>
-              <input
-                type="text"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                placeholder="Type here .........."
-                required
-              />
+              <h3>WESTERN PROVINCE</h3>
             </div>
             <div className="title">
-              <h3>HEALTH FACILITY</h3>
-              <input
-                type="text"
-                value={healthFacility}
-                onChange={(e) => setHealthFacility(e.target.value)}
-                placeholder="Type here .........."
-                required
-              />
+              <h3>DISTRICT: NYABIHU</h3>
             </div>
             <div className="title">
-              <h3>DEPARTMENT</h3>
+              <h3>HEALTH FACILITY : SHYIRA DISTRICT HOSPITAL</h3>
+            
+            </div>
+            <div className="title">
+              <h3>DEPARTMENT :</h3>
               <input
                 type="text"
                 value={department}
@@ -162,12 +170,18 @@ const LogisticRequestForm = () => {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>
-                    <input
-                      type="text"
+                    <select
                       value={item.itemName}
                       onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                       required
-                    />
+                    >
+                      <option value="">Select Item</option>
+                      {itemOptions.map((option) => (
+                        <option key={option._id} value={option.name}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td>
                     <input
@@ -192,38 +206,13 @@ const LogisticRequestForm = () => {
                     />
                   </td>
                   <td>
-                    <button type="button" className='remove-btn' onClick={() => handleRemoveItem(index)}>Remove</button>
+                    <button type="button" onClick={() => handleRemoveItem(index)}>Remove</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-
-          <div className="signature-section">
-            <div className="signature">
-              <label htmlFor="signature">Signature and Name of the person in charge of the department:</label>
-              <input
-                type="text"
-                id="signature"
-               
-                onChange={(e) => setSignature(e.target.value)}
-                placeholder="Type your name here....."
-              />
-              </div>
-               <div>
-          <button type="button" onClick={handleFetchSignature}>Sign</button>
-              </div>
-              {signatureUrl && (
-                <div>
-                       <h3>User Signature</h3>
-                      <img src={signatureUrl} alt="User Signature" />
-                 </div>
-               )}
-          </div>  
-         
-          <hr />
-          <h4>SHYIRA DISTRICT HOSPITAL , WESTERN PROVINCE , NYABIHU DISTRICT</h4>
-          <button type="submit">Submit Request</button>
+          <button type="submit">Submit</button>
         </form>
       </div>
     </div>

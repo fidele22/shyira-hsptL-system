@@ -1,8 +1,8 @@
 .view-items {
-    width: 95%;
+    width: 98%;
     margin: 0 auto;
     padding: 20px;
-    
+   
   }
   
   .items-table {
@@ -26,7 +26,7 @@
     text-align: left;
   }
   
-  .edit-btn, .delete-btn {
+  .item-edit-btn, .delete-btn {
     padding: 10px;
     gap: 20px;
     margin-right: 5px;
@@ -112,6 +112,9 @@
     background-color: rgb(159, 157, 153);
     border-radius: 5px;
   }
+  .item-edit-btn{
+    background-color: black;
+  }
 
   /****************styling stock details********************/
   .stockDetails-overlay{
@@ -150,6 +153,33 @@
     float: inline-end;
     padding: 20px;
   }
+  .detail-cancel-btn{
+    background-color: red;
+    font-size: 14px;
+    margin: 5px 0px;
+  }
+  .detail-update-btn{
+    background-color: green;
+  }
+  .detail-close-btn{
+    background-color: rgb(224, 58, 58);
+  }
+  .detail-edit-btn{
+    background-color: rgb(96, 98, 98);
+    font-size: 16px;
+  }
+  .download-exl-btn{
+    background-color: rgb(206, 156, 5);
+  }
+  .view-history-btn{
+    background-color: #007bff;
+    font-size: 20px;
+    padding: 10px;
+ 
+  }
+  .download-history-btn{
+    background-color: green;
+  }
 /***********styling *stock history**********/
   .stockHistory-overlay{
     position: fixed;
@@ -170,6 +200,8 @@
     left: 18%;
     border-radius: 4px;
     padding: 20px;
+    max-height: 90vh;
+    overflow-y: scroll;
   
   }
   .stock-history h2,h3{
@@ -192,3 +224,12 @@
   .history-btn button .close-history{
 background-color: rebeccapurple;
   }
+/*************list of items styling*/
+.items-list-stock{
+  background-color: #aca3a3;
+  padding: 20px;
+  margin-top: 20px;
+}
+.items-list-stock h2{
+  text-align: center;
+}

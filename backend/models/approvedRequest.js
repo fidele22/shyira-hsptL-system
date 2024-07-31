@@ -6,6 +6,7 @@ const approvedRequestSchema = new mongoose.Schema({
   department: String,
   items: [
     {
+      
       itemName: String,
       quantityRequested: Number,
       quantityReceived: Number,

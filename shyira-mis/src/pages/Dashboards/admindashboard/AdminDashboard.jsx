@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Navbar from './Navigationbar';
+import Navbar from './adminNavbar/Navigationbar';
 import Navigation from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import AdminOverview from './AdminOverview';

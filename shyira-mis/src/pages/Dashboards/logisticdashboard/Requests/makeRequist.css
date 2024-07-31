@@ -40,6 +40,19 @@ padding: 10px;
   font-size: 18px;
   padding-left: 10px;
 }
+.requisition-title p{
+  display: flex;
+  font-size: 20px;
+  
+}
+.requisition-title input[type=text]{
+  width: 20%;
+  margin-top: -.5%;
+  font-size: 20px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
 /*styling form*/
 .hod-request-form {
   background-color: #fff;
@@ -80,7 +93,7 @@ textarea {
 }
 
 button {
-  background-color: #4CAF50;
+
   color: white;
   padding: 10px 20px;
   border: none;
@@ -88,9 +101,6 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #45a049;
-}
 
 table {
   width: 100%;
@@ -171,16 +181,65 @@ hr{
 
 
 /******************* styling requisition receiced form**/
-/* makeRequist.css */
-
 /* General styling */
 .requist {
   padding: 20px;
+}
+.search-form {
+  display: flex;
+  background-color: #e0e0e0;
+
+  padding: 10px;
+  
+ 
+}
+.search-department {
+  width: 40%;
+  display: flex;
+  
+}
+.search-department input[type='text']{
+height: 50px;
+font-size: 20px;
+}
+.search-date {
+  width: 35%;
+  display: flex;
+
+}
+.search-date input[type='date']{
+  height: 50px;
+  font-size: 20px;
+  border-radius: 5px;
+  border: none;
+  padding-left: 10px;
+  }
+.search-date label{
+  padding-top: 14px;
+  padding-left: 100px;
+}
+.search-form .search-btn{
+  font-size: 20px;
+  height: 50px;
+}
+.navigate-request p{
+  font-size: 20px;
+  cursor: pointer;
+}
+.navigate-request p span{
+  color: red;
+}
+.navigate-request p:hover{
+  color: blue;
 }
 .image-request-recieved img{
   width: 100%;
   height: 20vh;
   margin-bottom: 4rem;
+}
+.request-recieved-heading h1{
+ font-size: 22px;
+ padding: 10px;
 }
 .navigation ul {
   list-style-type: none;
@@ -220,32 +279,30 @@ hr{
 .request-details h2{
   text-align: center;
 }
-.request-details h3{
-  padding: 10px;
-  color: #5b5959;
-}
-.request-details h3 span{
-  font-size: 22px;
-  padding-left: 10px;
-  color: #414040;
-}
+
+
 .buttons button{
  margin-top: 20px;
   margin-left: 10px;
+}
+.request-edit-btn{
+  background-color: rgb(26, 25, 25);
+  font-size: 18px;
+}
+.request-cancel-btn{
+  background-color: rgb(200, 58, 58);
+  font-size: 18px;
 }
 .submit-an-update{
   background-color: rgb(41, 130, 225);
   font-size: 16px;
   
 }
+.request-dowload-btn{
+  background-color: green;
+  font-size: 18px;
+}
 .submit-an-update:hover{
   background-color: blue;
-}
-.signature-section {
-  margin-top: 20px;
-}
-
-.signature {
-  margin-bottom: 10px;
 }
 

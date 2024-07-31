@@ -6,6 +6,7 @@ import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
   const [requests, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({
@@ -20,6 +21,12 @@ const LogisticRequestForm = () => {
     dafSignature: ''
   });
 
+  // Search parameters state
+  const [searchParams, setSearchParams] = useState({
+    department: '',
+    date: ''
+  });
+
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -28,6 +35,7 @@ const LogisticRequestForm = () => {
     try {
       const response = await axios.get('http://localhost:5000/api/logisticrequests');
       setRequests(response.data);
+      setFilteredRequests(response.data); // Initialize filteredRequests with all requests
     } catch (error) {
       console.error('Error fetching requests:', error);
     }
@@ -82,7 +90,6 @@ const LogisticRequestForm = () => {
     }
   };
 
-
   // Function to generate and download PDF
   const downloadPDF = async () => {
     const input = document.getElementById('pdf-content');
@@ -109,14 +116,62 @@ const LogisticRequestForm = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchParams({
+      ...searchParams,
+      [name]: value
+    });
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const { department, date } = searchParams;
+    const filtered = requests.filter(request => {
+      return (!department || request.department.toLowerCase().includes(department.toLowerCase())) &&
+             (!date || new Date(request.date).toDateString() === new Date(date).toDateString());
+    });
+    setFilteredRequests(filtered);
+  };
+
   return (
     <div className={`requist ${selectedRequest ? 'dim-background' : ''}`}>
-      <h2>Logistic Requests</h2>
-      <div className="navigate">
+      <h2>Recieved Requests</h2>
+
+      <form onSubmit={handleSearchSubmit} className="search-form">
+       <div className='search-department'>
+        <label htmlFor="">Search by department</label>
+       <input
+          type="text"
+          name="department"
+          placeholder="Search by department"
+          value={searchParams.department}
+          onChange={handleSearchChange}
+        />
+       </div>
+      
+        <div className='search-date'>
+        <label htmlFor="">Search by date</label>
+        <input
+          type="date"
+          name="date"
+          placeholder="Search by date"
+          value={searchParams.date}
+          onChange={handleSearchChange}
+        />
+        </div>
+        
+        <button type="submit" className='search-btn'>Search</button>
+      </form>
+
+      <div className="navigate-request">
         <ul>
-          {requests.slice().reverse().map((request, index) => (
+          {filteredRequests.slice().reverse().map((request, index) => (
             <li key={index}>
-              <button onClick={() => handleRequestClick(request._id)}>Request {requests.length - index}</button>
+              <p onClick={() => handleRequestClick(request._id)}>
+                Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
+                {request.newRequest && <span className="new-request"> (New)</span>}
+              </p>
             </li>
           ))}
         </ul>
@@ -182,56 +237,12 @@ const LogisticRequestForm = () => {
                 </table>
 
                 <div className="signature-section">
-                  <div className="signature">
-                    <label>Signature and Name: </label>
-                    <input 
-                      type="text" 
-                      name="signature" 
-                      value={editFormData.signature} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  <div className="signature">
-                    <label>HOD Signature: </label>
-                    <input 
-                      type="text" 
-                      name="hodSignature" 
-                      value={editFormData.hodSignature} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  <div className="signature">
-                    <label>Logistic Signature: </label>
-                    <input 
-                      type="text" 
-                      name="logisticSignature" 
-                      value={editFormData.logisticSignature} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  <div className="signature">
-                    <label>Acknowledgement Receipt Signature: </label>
-                    <input 
-                      type="text" 
-                      name="ackReceiptSignature" 
-                      value={editFormData.ackReceiptSignature} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  <div className="signature">
-                    <label>DAF Signature: </label>
-                    <input 
-                      type="text" 
-                      name="dafSignature" 
-                      value={editFormData.dafSignature} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
+                 
                 </div>
                 <hr />
                 <div className="buttons">
                 <button className='submit-an-update' onClick={handleUpdateSubmit}>Submit</button>
-                <button className='cancel-btn' onClick={handleCancelEdit}>Cancel</button>
+                <button className='request-cancel-btn' onClick={handleCancelEdit}>Cancel</button>
                 
                 </div>
                 
@@ -244,12 +255,15 @@ const LogisticRequestForm = () => {
           <div className="image-request-recieved">
           <img src="/image/logo2.png" alt="Logo" className="logo" />
           </div>
-            <h3>WESTERN PROVINCE</h3>
-            <h3>DISTRIC: <span>{editFormData.district}</span>  </h3>
-            <h3>HEALTH FACILITY: <span>{editFormData.healthFacility}</span> </h3>
-            <h3>DEPARTMENT: <span>{editFormData.department}</span> </h3>
+          <div className="request-recieved-heading">
+            <h1>WESTERN PROVINCE</h1>
+            <h1>DISTRIC: NYABIHU</h1>
+            <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
+            <h1>DEPARTMENT: <span>{editFormData.department}</span> </h1>
 
-            <h2>REQUISITON FORM</h2>  
+          </div>
+           
+            <u><h2>REQUISITON FORM</h2></u>  
                <table>
                   <thead>
                     <tr>
@@ -274,28 +288,14 @@ const LogisticRequestForm = () => {
                 </table>
 
                 <div className="signature-section">
-                  <div className="signature">
-                    <p>Signature and Name: {selectedRequest.signature}</p>
-                  </div>
-                  <div className="signature">
-                    <p>HOD Signature: {selectedRequest.hodSignature}</p>
-                  </div>
-                  <div className="signature">
-                    <p>Logistic Signature: {selectedRequest.logisticSignature}</p>
-                  </div>
-                  <div className="signature">
-                    <p>Acknowledgement Receipt Signature: {selectedRequest.ackReceiptSignature}</p>
-                  </div>
-                  <div className="signature">
-                    <p>DAF Signature: {selectedRequest.dafSignature}</p>
-                  </div>
+                  
                 </div>
                 <hr />
                 </div>
                 <div className="buttons">
-                <button className='edit-btn' onClick={handleEditClick}>Edit</button>
-                <button className='cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
-                <button onClick={downloadPDF}>Download Pdf</button>
+                <button className='request-edit-btn' onClick={handleEditClick}>Edit</button>
+                <button className='request-cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
+                <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
                 </div>
 
              

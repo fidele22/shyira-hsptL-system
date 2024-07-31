@@ -1,9 +1,9 @@
-// routes/logisticRequests.js
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const LogisticRequest = require('../models/LogisticRequest');
 const ForwardedRequest = require('../models/requestFromLgst');
+const Item = require('../models/item'); // Fix the import here
 
 const router = express.Router();
 
@@ -19,43 +19,58 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/submit', upload.fields([
-  { name: 'hodSignature' },
-  { name: 'logisticSignature' },
-  { name: 'ackReceiptSignature' },
-  { name: 'dafSignature' },
-]), async (req, res) => {
+// Apply the multer middleware to handle form data
+router.post('/submit', upload.none(), async (req, res) => {
   try {
-    const {
-      district,
-      healthFacility,
-      department,
-      items,
-      signature,
-      date,
-    } = req.body;
+    console.log('Request Body:', req.body); // Log the request body
 
+    const { department, items, signature, date } = req.body;
+
+    // Ensure items is defined and a valid JSON string
+    if (!items) {
+      throw new Error('Items field is missing.');
+    }
+
+    // Validate items
+    const parsedItems = JSON.parse(items); // Assuming items is a JSON string
+    const validItems = await Promise.all(parsedItems.map(async item => {
+      if (!item.itemId) {
+        throw new Error('Item ID is required for each item.');
+      }
+
+      // Ensure itemId is valid
+      const validItem = await Item.findById(item.itemId);
+      if (!validItem) {
+        throw new Error('Invalid Item ID.');
+      }
+
+      return {
+        itemId: item.itemId,
+        itemName: item.itemName,
+        quantityRequested: item.quantityRequested,
+        quantityReceived: item.quantityReceived,
+        observation: item.observation
+      };
+    }));
+
+    // Create LogisticRequest
     const newRequest = new LogisticRequest({
-      district,
-      healthFacility,
       department,
-      items: JSON.parse(items),
+      items: validItems,
       signature,
-      date,
-      hodSignature: req.files['hodSignature'] ? req.files['hodSignature'][0].path : null,
-      logisticSignature: req.files['logisticSignature'] ? req.files['logisticSignature'][0].path : null,
-      ackReceiptSignature: req.files['ackReceiptSignature'] ? req.files['ackReceiptSignature'][0].path : null,
-      dafSignature: req.files['dafSignature'] ? req.files['dafSignature'][0].path : null,
+      date
     });
 
     await newRequest.save();
-    res.status(200).json({ message: 'Requisition submitted successfully!' });
+    res.status(201).json({ message: 'Requisition created successfully!' });
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error submitting requisition' });
+    res.status(400).json({ error: error.message });
   }
 });
 
+// Other routes...
 // Route to fetch all logistic requests
 router.get('/', async (req, res) => {
   try {
@@ -109,5 +124,3 @@ router.get('/', async (req, res) => {
   }
 });
 module.exports = router;
-
-

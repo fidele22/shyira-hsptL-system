@@ -18,8 +18,8 @@
   
   .add-form h2 {
     font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+    margin-bottom: 40px;
+    color: #5577ef;
     text-align: center;
   }
   
@@ -31,16 +31,14 @@
     font-size: 22px;
     margin-bottom: 5px;
   }
-  
-  .flex-container{
-    width: 90%;
-    padding: 5px;
-    font-size: 16px;
-   
-    border-radius: 4px;
-    transition: border-color 0.3s ease-in-out;
+.flex-container{
+    display: flex;
+    gap: 40px;
+    
   }
-  
+  .left, .right {
+    flex: 1;
+  }
   textarea {
     height: 80px;
     resize: vertical;
@@ -72,4 +70,19 @@
   .button-container {
     text-align: center;
   }
- 
+
+
+
+
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .flex-container {
+    flex-direction: column;
+  }
+
+  .left, .right {
+    flex: none;
+    width: 100%;
+  }
+}

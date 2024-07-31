@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './css/Navigationbar.css';
+import './Navigationbar.css';
 
 
 const Navbar = ({ setCurrentPage }) => {
@@ -18,7 +18,7 @@ const Navbar = ({ setCurrentPage }) => {
   };
 
   return (
-    <div className="navbar">
+    <div className="adminavbar">
       <h2>Admin Dashboard</h2>
       <ul>
         <li onClick={() => setCurrentPage('adminoverview')}>Overview</li>
