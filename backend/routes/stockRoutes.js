@@ -52,7 +52,7 @@ res.status(500).json({ message: 'Error fetching stocks', error });
 }
 });
 
-//// Update stock entry
+
 // Update stock entry
 router.put('/:id', async (req, res) => {
 const { id } = req.params;
@@ -65,28 +65,28 @@ return res.status(404).send('Stock entry not found');
 }
 
 // Update the stock entry and balance
-if (entry) {
-stock.entry = {
-quantity: entry.quantity || O,
-pricePerUnit: entry.pricePerUnit || stock.entry.pricePerUnit,
-totalAmount: entry.quantity * (entry.pricePerUnit || stock.entry.pricePerUnit)
-};
-
-stock.balance.quantity += stock.entry.quantity ,
-stock.balance.totalAmount += stock.entry.totalAmount,
-stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last entry
-}
-if (exit) {
-stock.exit = {
-quantity: exit.quantity || stock.exit.quantity,
-pricePerUnit: exit.pricePerUnit || stock.exit.pricePerUnit,
-totalAmount: exit.quantity * (exit.pricePerUnit || stock.exit.pricePerUnit)
-};
-
-stock.balance.quantity -= stock.exit.quantity,
-stock.balance.totalAmount -= stock.exit.totalAmount, 
-stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last exit
-}
+     if (entry) {
+     stock.entry = {
+     quantity: entry.quantity || O,
+     pricePerUnit: entry.pricePerUnit || stock.entry.pricePerUnit,
+     totalAmount: entry.quantity * (entry.pricePerUnit || stock.entry.pricePerUnit)
+     };
+     
+     stock.balance.quantity += stock.entry.quantity ,
+     stock.balance.totalAmount += stock.entry.totalAmount,
+     stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last entry
+     }
+     if (exit) {
+     stock.exit = {
+     quantity: exit.quantity || stock.exit.quantity,
+     pricePerUnit: stock.entry.pricePerUnit,
+     totalAmount: exit.quantity * (exit.pricePerUnit || stock.exit.pricePerUnit)
+     };
+     
+     stock.balance.quantity -= stock.exit.quantity,
+     stock.balance.totalAmount -= stock.exit.totalAmount, 
+     stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last exit
+     }
 
 await stock.save();
 

@@ -61,10 +61,7 @@ const ViewItems = () => {
       await axios.put(`http://localhost:5000/api/stocks/${editedStock._id}`, editedStock);
       setStockDetails(stockDetails.map((entry) => (entry._id === editedStock._id ? editedStock : entry)));
      alert('stock updated successful')
-      setEditedStock({
-        entry: { quantity: 0, pricePerUnit: 0, totalAmount: 0 },
-        exit: { quantity: 0, pricePerUnit: 0, totalAmount: 0 },
-      });
+    
     } catch (error) {
       console.error('Error updating stock:', error);
       alert('Failed to update stock');
@@ -320,18 +317,10 @@ const ViewItems = () => {
                           entry.entry.pricePerUnit
                         )}
                       </td>
-                      <td>
-                        {editedStock && editedStock._id === entry._id ? (
-                          <input
-                            type="number"
-                            name="totalAmount"
-                            value={editedStock.entry.totalAmount}
-                            onChange={(e) => handleInputChange(e, 'entry', 'totalAmount')}
-                          />
-                        ) : (
-                          entry.entry.totalAmount
-                        )}
-                      </td>
+                      
+                      
+                      <td>{entry.entry.totalAmount }</td>
+
 
                       {/* Exit */}
                       <td>
@@ -346,30 +335,10 @@ const ViewItems = () => {
                           entry.exit.quantity
                         )}
                       </td>
-                      <td>
-                        {editedStock && editedStock._id === entry._id ? (
-                          <input
-                            type="number"
-                            name="pricePerUnit"
-                            value={editedStock.exit.pricePerUnit}
-                            onChange={(e) => handleInputChange(e, 'exit', 'pricePerUnit')}
-                          />
-                        ) : (
-                          entry.exit.pricePerUnit
-                        )}
-                      </td>
-                      <td>
-                        {editedStock && editedStock._id === entry._id ? (
-                          <input
-                            type="number"
-                            name="totalAmount"
-                            value={editedStock.exit.totalAmount}
-                            onChange={(e) => handleInputChange(e, 'exit', 'totalAmount')}
-                          />
-                        ) : (
-                          entry.exit.totalAmount
-                        )}
-                      </td>
+                     
+                        
+                      <td>{entry.exit.pricePerUnit}</td>
+                      <td>{entry.exit.totalAmount} </td>
 
                       {/* Balance */}
                       <td>{entry.balance.quantity}</td>

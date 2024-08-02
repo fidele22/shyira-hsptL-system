@@ -13,6 +13,7 @@ const itemroutes = require('./routes/itemroutes');
 const logisticRequestRoutes =require('./routes/requsitionRoute');
 const forwardedRequestsRouter = require('./routes/requesttodaf');
 const stockRoutes = require('./routes/stockRoutes');
+const DataModel = require ('./models/dataschema')
 //const signatureRoute =require('./routes/signatureRoute')
 
 const app = express();
@@ -49,6 +50,30 @@ app.use('/api/stocks', stockRoutes);
 
 //app.use('/api/users', signatureRoute)
 
+//upload excel data //
+// Define a schema and model
+
+// Endpoint to handle uploaded data
+app.post('/api/uploadData', async (req, res) => {
+  try {
+    const data = req.body;
+    await DataModel.insertMany(data);
+    res.status(200).send({ success: true });
+  } catch (error) {
+    console.error(error);  // Log the error
+    res.status(500).send({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/getData', async (req, res) => {
+  try {
+    const data = await DataModel.find({});
+    res.status(200).send(data);
+  } catch (error) {
+    console.error(error);  // Log the error
+    res.status(500).send({ success: false, error: error.message });
+  }
+});
 
 
 

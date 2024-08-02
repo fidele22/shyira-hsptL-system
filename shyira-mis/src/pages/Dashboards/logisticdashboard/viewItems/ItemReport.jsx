@@ -81,7 +81,7 @@ const StockHistoryTable = () => {
         aggregatedData[itemId].exitTotalAmount += stock.exit.totalAmount || 0;
       }
       if (stock.balance) {
-        aggregatedData[itemId].balanceQuantity = [(aggregatedData[itemId].entryQuantity +aggregatedData[itemId].openingQuantity) - aggregatedData[itemId].exitQuantity] || 0;
+        aggregatedData[itemId].balanceQuantity = stock.balance.quantity || 0;
         aggregatedData[itemId].balanceTotalAmount = stock.balance.totalAmount || 0;
       }
     });
