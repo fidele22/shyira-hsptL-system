@@ -4,20 +4,20 @@ const multer = require('multer');
 const router = express.Router();
 
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'your_jwt_secret'
+const JWT_SECRET = 'your_jwt_secret';
 const User = require('../models/user');
 const Position = require('../models/position');
 const Service = require('../models/service');
 const Department = require('../models/department');
 // Ensure you have a secret key
 
-// Multer configuration for file upload
+// Multer configuration
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Specify the destination folder for uploads
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Make sure this directory exists
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Generate a unique filename for the uploaded file
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
   }
 });
 
@@ -43,7 +43,6 @@ const registerUser = async (req, res) => {
     // Save the path of the uploaded signature, adjust as per your schema
     const signature = req.file ? req.file.path : '';
 
-    // Create a new user with references to the position and department
     const newUser = new User({
       firstName,
       lastName,
@@ -54,13 +53,20 @@ const registerUser = async (req, res) => {
       email,
       role: 'hod',
       signature,
-      password: hashedPassword,
+      password: hashedPassword
     });
 
     await newUser.save();
-    res.status(201).json({ msg: 'User registered successfully', user: newUser });
+
+    // Generate a JWT token (example, you should implement your own logic)
+   // const token = jwt.sign({ userId: newUser._id, role: newUser.positionName }, process.env.JWT_SECRET, {
+   //   expiresIn: '1h',
+   // });
+
+    res.status(201).json({ msg: 'User registered successfully', newUser });
+
   } catch (err) {
-    console.error(err);
+    console.error('Error registering user:', err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
@@ -103,7 +109,7 @@ const authenticate = async (req, res, next) => {
   }
 };
 // Route to get the signature image
-router.get('/signature', authenticate, async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const user = req.user;
     if (!user.signature) {
@@ -162,26 +168,7 @@ const updateUser = async (req, res) => {
     const { positionName, serviceName, departmentName, firstName, lastName, phone, email, role } = req.body;
     const userId = req.params.id;
 
-   // // Find or create the related department and associate it with the service
-   // let departmentObj = await Department.findOne({ departmentName: department });
-   // if (!departmentObj) {
-   //   departmentObj = new Department({ departmentName: department });
-   //   await departmentObj.save();
-   // }
-//
-   // // Find or create the related service and associate it with the department
-   // let serviceObj = await Service.findOne({ service_name: service, departmentId: departmentObj._id });
-   // if (!serviceObj) {
-   //   serviceObj = new Service({ service_name: service, departmentId: departmentObj._id });
-   //   await serviceObj.save();
-   // }
-//
-   // // Find or create the related position and associate it with the service
-   // let positionObj = await Position.findOne({ positionName: position, serviceId: serviceObj._id });
-   // if (!positionObj) {
-   //   positionObj = new Position({ positionName: position, serviceId: serviceObj._id });
-   //   await positionObj.save();
-   // }
+  
 //
     // Update the user with references to the position and department
     const updatedUser = await User.findByIdAndUpdate(

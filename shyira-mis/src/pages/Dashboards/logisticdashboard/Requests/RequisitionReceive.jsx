@@ -16,9 +16,7 @@ const LogisticRequestForm = () => {
     items: [],
     signature: '',
     hodSignature: '',
-    logisticSignature: '',
-    ackReceiptSignature: '',
-    dafSignature: ''
+    
   });
 
   // Search parameters state
@@ -288,7 +286,16 @@ const LogisticRequestForm = () => {
                 </table>
 
                 <div className="signature-section">
-                  
+
+                   <label htmlFor="hodName">Name of HOD</label>
+                    {selectedRequest.hodName && <h1>{selectedRequest.hodName}</h1>}
+                    <label htmlFor="hodSignature">HOD Signature:</label>
+                    {selectedRequest.hodSignature ? (
+                      <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
+                    ) : (
+                      <p>No HOD signature available</p>
+                    )}
+
                 </div>
                 <hr />
                 </div>

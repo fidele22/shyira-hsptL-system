@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const Navbar = ({ setCurrentPage }) => {
   const [dropdownsOpen, setDropdownsOpen] = useState({
-    request: false,
+    itemAction: false,
     requisitions: false,
   });
 
@@ -17,42 +17,51 @@ const Navbar = ({ setCurrentPage }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/logout');
-      // Clear any user data from state or context
+      // Sending a POST request to the logout endpoint
+      await axios.post('http://localhost:5000/api/logout', {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      // Clear the token from localStorage
+      localStorage.removeItem('token');
+
       // Redirect to login page or home page
-      window.location.href = '/'; // Adjust as needed
+      window.location.href = '/login'; // Adjust as needed
     } catch (error) {
-      alert('error to logout')
+      alert('Error logging out');
+      console.error('Logout error:', error);
     }
   };
 
   return (
     <div className="navigation">
-      <h2>HOD Dashboard</h2>
+      <h2>Logistic Dashboard</h2>
       <ul>
         <li onClick={() => setCurrentPage('overview')}>Overview</li>
-        <li onClick={() => toggleDropdown('request')} className="dropdown">
-          Items
-          {dropdownsOpen.request && (
+        <li onClick={() => toggleDropdown('itemAction')} className="dropdown">
+          Item Action
+          {dropdownsOpen.itemAction && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('view-items')}>Available Items</li>
-             
+              <li onClick={() => setCurrentPage('add-item')}>Add new Item</li>
+              <li onClick={() => setCurrentPage('view-items')}>View Items</li>
             </ul>
           )}
         </li>
-        
+        <li onClick={() => setCurrentPage('make-requist')}>Order Supplies</li>
         <li onClick={() => toggleDropdown('requisitions')} className="dropdown">
           Requisitions
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('requisition')}>Make request</li>
-
-              <li onClick={() => setCurrentPage('view-items')}>Requist Made</li>
-              <li onClick={() => setCurrentPage('view-request')}>Requist Received</li>
+              <li onClick={() => setCurrentPage('requisition-receive')}>Requist Received</li>
+              <li onClick={() => setCurrentPage('data')}>Requist stutas</li>
             </ul>
           )}
         </li>
+        <li onClick={() => setCurrentPage('report')}>Reports</li>
       </ul>
+
       <u><h2>Settings</h2></u>
       <ul>
         <li onClick={() => setCurrentPage('logistic-profile')}>Profile</li>

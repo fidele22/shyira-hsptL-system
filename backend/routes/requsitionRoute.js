@@ -57,8 +57,9 @@ router.post('/submit', upload.none(), async (req, res) => {
     const newRequest = new LogisticRequest({
       department,
       items: validItems,
-      signature,
-      date
+      date,
+      hodName: req.body.hodName,
+      hodSignature: req.body.hodSignature,
     });
 
     await newRequest.save();

@@ -196,7 +196,7 @@ const ViewItems = () => {
               <td>{user.role}</td>
               <td>{user.signature}</td>
               <td>
-                <button className='edit-btn' onClick={() => handleEditClick(user)}>Edit</button>
+                <button className='user-edit-btn' onClick={() => handleEditClick(user)}>Edit</button>
                 <button className='delete-btn' onClick={() => handleDeleteClick(user._id)}>Delete</button>
               </td>
             </tr>
@@ -260,7 +260,7 @@ const ViewItems = () => {
         <input type="text" name="signature" value={formData.signature} onChange={handleChange} />
         <div className="buttons">
         <button type="submit">Update user</button>
-        <button type="button"  className='cancel-btn' onClick={() => setEditingUser(null)}>Cancel</button>
+        <button type="button"  className='user-cancel-btn' onClick={() => setEditingUser(null)}>Cancel</button>
         </div>
         
       </form>

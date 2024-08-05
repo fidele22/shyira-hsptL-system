@@ -6,12 +6,11 @@ const LogisticRequestForm = () => {
   const [items, setItems] = useState([]);
   const [healthFacility, setHealthFacility] = useState('');
   const [department, setDepartment] = useState('');
-  const [signature, setSignature] = useState('');
   const [date, setDate] = useState('');
   const [itemOptions, setItemOptions] = useState([]);
-  const [signatureUrl, setSignatureUrl] = useState('');
   const [hodSignature, setHodSignature] = useState(null);
   const [dafSignature, setDafSignature] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -26,6 +25,23 @@ const LogisticRequestForm = () => {
     fetchItems();
   }, []);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/profile', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -33,10 +49,10 @@ const LogisticRequestForm = () => {
     formData.append('healthFacility', healthFacility);
     formData.append('department', department);
     formData.append('items', JSON.stringify(items));
-    formData.append('signature', signature);
     formData.append('date', date);
-    formData.append('hodSignature', hodSignature);
-    formData.append('dafSignature', dafSignature);
+    formData.append('hodName', user ? `${user.firstName} ${user.lastName}` : ''); // HOD Name
+    formData.append('hodSignature', user && user.signature ? user.signature : ''); // HOD Signature URL
+    formData.append('dafSignature', dafSignature); // Ensure dafSignature is a file
 
     try {
       const response = await axios.post('http://localhost:5000/api/logisticrequests/submit', formData, {
@@ -87,33 +103,9 @@ const LogisticRequestForm = () => {
     setFile(file);
   };
 
-  const handleFetchSignature = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-
-    try {
-      const response = await axios.get('http://localhost:5000/api/users/signature', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: 'blob',
-      });
-
-      const url = URL.createObjectURL(response.data);
-      setSignatureUrl(url);
-
-      console.log('Signature URL:', url);
-    } catch (error) {
-      console.error('Error fetching signature:', error);
-    }
-  };
-
   return (
     <div className="requistion">
-      <h2> Make Requisition</h2>
+      <h2>Make Requisition</h2>
       <div className="hod-request-form">
         <form onSubmit={handleSubmit}>
           <div className="image-logo">
@@ -129,7 +121,6 @@ const LogisticRequestForm = () => {
             </div>
             <div className="title">
               <h3>HEALTH FACILITY : SHYIRA DISTRICT HOSPITAL</h3>
-            
             </div>
             <div className="title">
               <h3>DEPARTMENT :</h3>
@@ -212,6 +203,26 @@ const LogisticRequestForm = () => {
               ))}
             </tbody>
           </table>
+
+          <div>
+            <label htmlFor="hodName">Name of HOD</label>
+            {user ? (
+              <>
+                <h1>{user.firstName} {user.lastName}</h1>
+                <label htmlFor="hodSignature">HOD Signature:</label>
+                {user.signature ? (
+                  <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />
+                ) : (
+                  <p>No signature available</p>
+                )}
+              </>
+            ) : (
+              <p>Loading user profile...</p>
+            )}
+          </div>
+
+         
+
           <button type="submit">Submit</button>
         </form>
       </div>

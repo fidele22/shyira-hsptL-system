@@ -64,19 +64,26 @@
     text-align: left;
   }
   
-  .edit-btn, .delete-btn {
+  .user-edit-btn, .delete-btn {
     padding: 10px;
-    gap: 20px;
+    gap: 15px;
     margin-right: 5px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
     font-size:16px;
   }
+  .user-edit-btn{
+    background-color: black;
+  }
   .delete-btn{
     background-color: red;
     color: white;
    
+  }
+  .user-cancel-btn{
+    background-color: red;
+    font-size: 16px;
   }
   .delete-btn:hover{
     background-color: rgb(203, 18, 18);
@@ -88,9 +95,16 @@
     justify-content: center;
     align-items: center;
   }
+ 
   .pagination button{
     padding:5px;
     margin-bottom: 10px;
+    margin-left: 5px;
+    background-color: #007bff;
+    font-size: 20px;
+  }
+  .pagination button:hover{
+    background-color: blue;
   }
   .page-btn {
     padding: 8px 12px;

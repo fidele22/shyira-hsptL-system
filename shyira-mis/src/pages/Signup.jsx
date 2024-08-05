@@ -195,7 +195,7 @@ const handleSubmitRegister = async (e) => {
                 </select>
           <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder='phone number' required />
           <h5>Signature</h5>
-          <input type="file" placeholder='signature' />
+          <input type="file" name="signature" onChange={handleChange} required />
           <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder='Email address'  />
           <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder='Enter password' />
           <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder='Enter confirm password' />

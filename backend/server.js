@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
+
 const session = require('express-session');
 const connectDB = require('./config/db');
-const path = require('path')
 const departmentRoutes = require('./routes/departmentRoutes')
 const serviceRoutes = require('./routes/serviceRoutes')
 const positionRoutes =require ('./routes/positionRoutes')
@@ -29,6 +30,14 @@ app.use(session({
   cookie: { secure: false } // Set to true in production with HTTPS
 }));
 
+//
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.get('/', (req, res) => {
+  res.send('Static file serving test');
+});
+
+
 // Use auth routes
 app.use('/api/departments', departmentRoutes);
 app.use('/api/services', serviceRoutes);
@@ -38,7 +47,7 @@ app.use('/api', loginRoute);
 app.use('/api/items',itemroutes)
 
 
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 
 // Routes
 app.use('/api/logisticrequests', logisticRequestRoutes);
@@ -48,10 +57,6 @@ app.use('/api/forwardedrequests', forwardedRequestsRouter);
 
 app.use('/api/stocks', stockRoutes); 
 
-//app.use('/api/users', signatureRoute)
-
-//upload excel data //
-// Define a schema and model
 
 // Endpoint to handle uploaded data
 app.post('/api/uploadData', async (req, res) => {

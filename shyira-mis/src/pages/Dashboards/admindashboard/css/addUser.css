@@ -1,19 +1,17 @@
+
 *{
     margin: 0;
 }
-.add-user-container{
+.register-user{
     background-color: white;
-    padding: 30px;
-    width: 80%;
-    margin-left: 5%;
-    margin-top: 2%;
-    border-radius: 5px;
-   
+    padding: 20px;
+    width: 50%;
+    margin-left: 2%;
 }
-.form-container h1{
- text-align: center;
- padding: 20px;
- font-size: 40px;
- color: #007bff;
- font-weight: 900;
+.register-user h1{
+    text-align: center;
+}
+.register-user-btn{
+    background-color: rgb(58, 134, 205);
+    font-size: 20px;
 }

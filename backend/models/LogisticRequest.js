@@ -11,7 +11,8 @@ const itemSchema = new mongoose.Schema({
 const logisticRequestSchema = new mongoose.Schema({
   department: { type: String, required: true },
   items: [itemSchema],
-  signature: { type: String, required: false },
+  hodName: { type: String, required: true },
+  hodSignature: { type: String },
   date: { type: Date, required: true },
 });
 
