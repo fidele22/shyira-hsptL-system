@@ -108,7 +108,7 @@ const StockDetails = ({ item,onClose}) => {
   return (
     <div className="stockDetails-overlay">
       <div className="stock-details">
-        <button onClick={fetchStockDetails} className='view-details-btn'>View Details</button>
+        <button onClick={fetchStockDetails} className='view-details-btn'>View s</button>
         <div className="history-filter">
           <label>
             Start Date:

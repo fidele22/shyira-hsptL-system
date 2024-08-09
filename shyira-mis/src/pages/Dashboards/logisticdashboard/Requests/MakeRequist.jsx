@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import SearchableDropdown from './searchable'; // Import the custom dropdown component
 import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
   const [items, setItems] = useState([]);
-  const [itemOptions, setItemOptions] = useState([]); // used to fetch item name from item table
+  const [itemOptions, setItemOptions] = useState([]);
   const [date, setDate] = useState('');
   const [supplierName, setSupplierName] = useState('');
-  
-  // fetching item names use to select when making request
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/items');
-        setItemOptions(response.data);
+        const response = await axios.get('http://localhost:5000/api/getData');
+        setItemOptions(response.data.map(item => item.name));
       } catch (error) {
         console.error('Error fetching items:', error);
       }
@@ -24,7 +24,6 @@ const LogisticRequestForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const formData = new FormData();
     formData.append('items', JSON.stringify(items));
     formData.append('date', date);
@@ -50,8 +49,8 @@ const LogisticRequestForm = () => {
         itemId: '',
         itemName: '',
         quantityRequested: '',
-        price: '', // Add price field
-        totalAmount: '', // Add total amount field
+        price: '', 
+        totalAmount: '',
       },
     ]);
   };
@@ -73,11 +72,6 @@ const LogisticRequestForm = () => {
     }
 
     setItems(updatedItems);
-  };
-
-  const handleFileChange = (event, setFile) => {
-    const file = event.target.files[0];
-    setFile(file);
   };
 
   return (
@@ -133,18 +127,11 @@ const LogisticRequestForm = () => {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>
-                    <select
-                      value={item.itemName}
-                      onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
-                      required
-                    >
-                      <option value="">Select Item</option>
-                      {itemOptions.map((option) => (
-                        <option key={option._id} value={option.name}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </select>
+                    <SearchableDropdown
+                      options={itemOptions}
+                      selectedValue={item.itemName}
+                      onSelect={(value) => handleItemChange(index, 'itemName', value)}
+                    />
                   </td>
                   <td>
                     <input
@@ -187,3 +174,10 @@ const LogisticRequestForm = () => {
 };
 
 export default LogisticRequestForm;
+
+const handleItemSelect = (index, item) => {
+  handleItemChange(index, 'itemId', item._id); // Ensure item._id is used
+  handleItemChange(index, 'itemName', item.name);
+  setSearchQuery('');
+  setIsDropdownOpen(false);
+};

@@ -3,8 +3,8 @@ const multer = require('multer');
 const path = require('path');
 const UserRequest = require('../models/UserRequest');
 const ForwardedRequest = require('../models/requestFromLgst');
-const Item = require('../models/item'); // Fix the import here
-//const User = require('../models/user');
+const Item = require('../models/stockItems'); // Fix the import here
+
 
 const router = express.Router();
 
@@ -73,7 +73,7 @@ router.post('/submit', upload.none(), async (req, res) => {
   }
 });
 
-// Other routes...
+
 // Route to fetch all logistic requests
 router.get('/', async (req, res) => {
   try {

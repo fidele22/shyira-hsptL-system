@@ -7,6 +7,6 @@ const StockItemSchema = new mongoose.Schema({
   totalAmount: { type: Number, required: true },   // Corrected field name and changed to Number
 });
 
-const StockItem = mongoose.model('StockItem', StockItemSchema);
+const StockItem = mongoose.model('StockItems', StockItemSchema);
 
 module.exports = StockItem;

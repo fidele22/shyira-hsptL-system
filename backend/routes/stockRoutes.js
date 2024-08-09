@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const StockData = require('../models/stockData');
 const Item = require('../models/item');
+const StockItem =require('../models/stockItems')
 const StockHistory = require('../models/stockHistory');
 const ApprovedRequest = require('../models/approvedRequest');
 
@@ -89,7 +90,14 @@ return res.status(404).send('Stock entry not found');
      }
 
 await stock.save();
-
+   // Update the corresponding StockItems
+   const stockItem = await StockItem.findById(stock.itemId); // Assuming `itemId` is used to reference `StockItem`
+   if (stockItem) {
+     stockItem.quantity = stock.balance.quantity;
+     stockItem.pricePerUnit = stock.balance.pricePerUnit;
+     stockItem.totalAmount = stock.balance.totalAmount;
+     await stockItem.save();
+   }
 // Log the update to the StockHistory collection
 const stockHistory = new StockHistory({
 itemId: stock.itemId,

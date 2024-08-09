@@ -75,7 +75,7 @@ app.post('/api/uploadData', async (req, res) => {
       entry: {
         quantity: item.quantity,
         pricePerUnit: item.pricePerUnit,
-        totalAmount: item.totaAmount
+        totalAmount: item.totalAmount
       },
       exit: {
         quantity: 0,
@@ -85,7 +85,7 @@ app.post('/api/uploadData', async (req, res) => {
       balance: {
         quantity: item.quantity,
         pricePerUnit: item.pricePerUnit,
-        totalAmount: item.totaAmount
+        totalAmount: item.totalAmount
       }
     }));
 
@@ -119,28 +119,28 @@ app.get('/api/getStockHistory/:itemId', async (req, res) => {
   }
 });
 // Endpoint to update stock history entry by ID
-app.put('/api/updateStockHistory/:id', async (req, res) => {
-  try {
-    const updatedEntry = await StockData.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json(updatedEntry);
-  } catch (error) {
-    console.error('Error updating stock history:', error);
-    res.status(500).send({ success: false, error: error.message });
-  }
-});
-
-
-
-
-app.put('/api/updateStock/:id', async (req, res) => {
-  try {
-    const updatedStock = await StockItem.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedStock);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
+//app.put('/api/updateStockHistory/:id', async (req, res) => {
+//  try {
+//    const updatedEntry = await StockData.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//    res.status(200).json(updatedEntry);
+//  } catch (error) {
+//    console.error('Error updating stock history:', error);
+//    res.status(500).send({ success: false, error: error.message });
+//  }
+//});
+//
+//
+//
+//
+//app.put('/api/updateStock/:id', async (req, res) => {
+//  try {
+//    const updatedStock = await StockItem.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//    res.json(updatedStock);
+//  } catch (error) {
+//    res.status(500).send(error);
+//  }
+//});
+//
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

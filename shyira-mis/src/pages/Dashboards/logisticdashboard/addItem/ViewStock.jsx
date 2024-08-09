@@ -36,7 +36,7 @@ const DataDisplay = ({ onItemSelect }) => {
               <td>{item.name}</td>
               <td>{item.quantity}</td>
               <td>{item.pricePerUnit}</td>
-              <td>{item.totaAmount}</td>
+              <td>{item.totalAmount}</td>
               <td>
                 <button className='stock-details-btn' onClick={() => onItemSelect(item)}>View Stock Details</button>
               </td>
