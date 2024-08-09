@@ -81,7 +81,7 @@ const StockHistoryTable = () => {
         aggregatedData[itemId].exitTotalAmount += stock.exit.totalAmount || 0;
       }
       if (stock.balance) {
-        aggregatedData[itemId].balanceQuantity = stock.balance.quantity || 0;
+        aggregatedData[itemId].balanceQuantity = stock.balance.quantityn || 0;
         aggregatedData[itemId].balanceTotalAmount = stock.balance.totalAmount || 0;
       }
     });
@@ -146,15 +146,16 @@ const downloadPDF = async () => {
     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
     pdf.addImage(data, 'PNG', 5, 5, imgWidth, imgHeight);
-    pdf.save('Fiche de stock.pdf');
+    pdf.save('Report de stock.pdf');
   } catch (error) {
     console.error('Error generating PDF:', error);
   }
 };
   return (
+    <div className="report-content">
+  <h1>Get stock report</h1>
+  
     <div className="stock-history-container">
-      <div  id='report-content'>
-      <h2>Stock History Table</h2>
       <div className="stock-history-header" >
         <label>
           Year:
@@ -166,16 +167,31 @@ const downloadPDF = async () => {
         </label>
         <button onClick={fetchStockData}>Fetch</button>
       </div>
+      <div className="stock-report" id='report-content' >
+
+    
+      <div className="imag-logo">
+          <img src="/image/logo2.png" alt="Logo" className="log"  />
+          </div>
+
+      <div className="report-title">
+         <p>HOPITAL DE SHYIRA</p>                                                                           
+         <p>BP 56 MUSANZE</p>
+         <p>SERVICE LOGISTIQUE</p>
+         <h3>RAPORO YA STOCK Y'IBIKORESHO BYO MUBIRO UKWEZI KWA</h3>
+      </div>
       <table className="stock-history-table">
+      
         <thead>
           <tr>
-            <th rowSpan={2}>Item Name</th>
+            <th></th>
             <th colSpan="3">OPENING STOCK</th>
             <th colSpan="3">ENTRY</th>
             <th colSpan="3">EXIT</th>
             <th colSpan="3">BALANCE</th>
           </tr>
           <tr>
+            <th>Item Name</th>
             <th>Quantity</th>
             <th>Price Per Unit</th>
             <th>Total Amount</th>
@@ -227,8 +243,14 @@ const downloadPDF = async () => {
           </tr>
         </tfoot>
       </table>
+      <div className="report-footer">
+      <p>prepared by: </p>
+      <h4>AMINI ABEDI</h4>
+      <h4>LOGISTIC OFFICER</h4>
       </div>
+  </div>
       <button className='download-history-btn' onClick={downloadPDF}>Download Report Pdf</button>
+    </div>
     </div>
   );
 };

@@ -1,23 +1,20 @@
 const mongoose = require('mongoose');
 
 const approvedRequestSchema = new mongoose.Schema({
-  district: String,
-  healthFacility: String,
+ 
   department: String,
   items: [
     {
-      
+      itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
       itemName: String,
       quantityRequested: Number,
       quantityReceived: Number,
       observation: String,
     },
   ],
-  signature: String,
+  hodName: { type: String, required: false},
   hodSignature: String,
-  logisticSignature: String,
-  ackReceiptSignature: String,
-  dafSignature: String,
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model('ApprovedRequest', approvedRequestSchema);

@@ -36,22 +36,12 @@ const Navbar = ({ setCurrentPage }) => {
           {dropdownsOpen.request && (
             <ul className="dropdown-menu">
               <li onClick={() => setCurrentPage('view-request')}>View Request</li>
-              <li onClick={() => setCurrentPage('view-aproved')}>Aproved Request</li>
-            </ul>
-          )}
-        </li>
-        
-        <li onClick={() => toggleDropdown('requisitions')} className="dropdown">
-          Requisitions
-          {dropdownsOpen.requisitions && (
-            <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('make-requist')}>Make requist</li>
-              <li onClick={() => setCurrentPage('view-items')}>Requist Made</li>
-              <li onClick={() => setCurrentPage('requisition-receive')}>Requist Received</li>
+              <li onClick={() => setCurrentPage('view-aproved')}>Approved Request</li>
             </ul>
           )}
         </li>
       </ul>
+      
       <u><h2>Settings</h2></u>
       <ul>
         <li onClick={() => setCurrentPage('logistic-profile')}>Profile</li>

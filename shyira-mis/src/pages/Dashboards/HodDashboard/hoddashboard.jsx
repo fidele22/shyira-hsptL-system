@@ -21,7 +21,7 @@ const LogisticDashboard = () => {
         return <Overview />;
       case 'requisition':
           return <MakeRequest />;
-      case 'view-items':
+      case 'view-aproved':
           return <ViewItems />;
      case 'view-request':
           return <ViewRequest />;

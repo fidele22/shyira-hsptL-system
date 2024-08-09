@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const DataDisplay = () => {
+const DataDisplay = ({ onItemSelect }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -19,23 +19,27 @@ const DataDisplay = () => {
 
   return (
     <div>
-      <h2>Uploaded Data</h2>
+      <h2>Item list</h2>
       <table>
         <thead>
           <tr>
             <th>Name</th>
-            <th>username</th>
-            <th>Country</th>
-            <th>Phone</th>
+            <th>Quantity</th>
+            <th>Price per Unit</th>
+            <th>Total Amount</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {data.map((item, index) => (
             <tr key={index}>
               <td>{item.name}</td>
-              <td>{item.username}</td>
-              <td>{item.country}</td>
-              <td>{item.phone}</td>
+              <td>{item.quantity}</td>
+              <td>{item.pricePerUnit}</td>
+              <td>{item.totaAmount}</td>
+              <td>
+                <button className='stock-details-btn' onClick={() => onItemSelect(item)}>View Stock Details</button>
+              </td>
             </tr>
           ))}
         </tbody>

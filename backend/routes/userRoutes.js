@@ -14,6 +14,16 @@ router.delete('/:id', deleteUser);
 // Profile route
 router.get('/profile', authenticate, getProfile);
 
+// Get users with role 'logistic'
+router.get('/logistic-users', async (req, res) => {
+    try {
+      const logisticUsers = await User.find({ role: 'logistic' }).select('firstName lastName signature');
+      res.json(logisticUsers);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching logistic users', error });
+    }
+  });
+  
 // Logout route
 router.post('/logout', (req, res) => {
     // Invalidate the token by clearing it on the client-side or marking it as invalid in your system

@@ -1,8 +1,12 @@
 /* StockHistoryTable.css */
-
+.report-content h1{
+  text-align: center;
+  padding-bottom: 20px;
+}
 .stock-history-container {
     width: 95%;
     margin: 0 auto;
+    font-size: 18px;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -13,7 +17,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    background-color: #113964;
+    color: white;
+    padding: 20px;
   }
   
   .stock-history-header label {
@@ -67,4 +74,6 @@
   .stock-history-table th, .stock-history-table td {
     text-align: center;
   }
-  
+  .report-title h3{
+    
+  }

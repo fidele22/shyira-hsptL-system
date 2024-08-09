@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import './makeRequist.css'; // Import CSS for styling
+import './recievedRequest.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
+
+  
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({
-    district: '',
-    healthFacility: '',
+  
     department: '',
     items: [],
-    signature: '',
-    hodSignature: '',
+    logisticName: '',
+    logisticSignature: '',
     
   });
 
@@ -31,7 +32,7 @@ const LogisticRequestForm = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/logisticrequests');
+      const response = await axios.get('http://localhost:5000/api/UserRequest');
       setRequests(response.data);
       setFilteredRequests(response.data); // Initialize filteredRequests with all requests
     } catch (error) {
@@ -78,11 +79,14 @@ const LogisticRequestForm = () => {
   };
 
   const handleUpdateSubmit = async () => {
+  
     try {
-      await axios.put(`http://localhost:5000/api/logisticrequests/${selectedRequest._id}`, editFormData);
+      await axios.put(`http://localhost:5000/api/logisticrequests/${selectedRequest._id}`, editFormData );
       alert('Request updated successfully!');
       fetchRequests(); // Refresh the list of requests
       setSelectedRequest(null); // Close the details view
+
+      
     } catch (error) {
       console.error('Error updating request:', error);
     }
@@ -131,6 +135,29 @@ const LogisticRequestForm = () => {
     });
     setFilteredRequests(filtered);
   };
+
+
+  //fetching signature
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/profile', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  if (!user) return <p>Loading...</p>;
 
   return (
     <div className={`requist ${selectedRequest ? 'dim-background' : ''}`}>
@@ -235,14 +262,30 @@ const LogisticRequestForm = () => {
                 </table>
 
                 <div className="signature-section">
-                 
+                <label htmlFor="logisticName">Logistic Name:</label>
+                  <input
+                    type="text"
+                    name="logisticName"
+                    value={user.firstName} // Display from user profile
+                    readOnly
+                  />
+                  <label htmlFor="logisticSignature">Logistic Signature:</label>
+                  <input
+                    type="text"
+                    name="logisticSignature"
+                    value={user.signature} // Display from user profile
+                    readOnly
+                  />
                 </div>
                 <hr />
+               
                 <div className="buttons">
                 <button className='submit-an-update' onClick={handleUpdateSubmit}>Submit</button>
                 <button className='request-cancel-btn' onClick={handleCancelEdit}>Cancel</button>
                 
                 </div>
+               
+                
                 
               </>
              
@@ -286,9 +329,9 @@ const LogisticRequestForm = () => {
                 </table>
 
                 <div className="signature-section">
-
-                   <label htmlFor="hodName">Name of HOD</label>
-                    {selectedRequest.hodName && <h1>{selectedRequest.hodName}</h1>}
+                  <div className="hod">
+                  <label htmlFor="hodName">Name of HOD:</label>
+                    {selectedRequest.hodName && <h2 >{selectedRequest.hodName}</h2>}
                     <label htmlFor="hodSignature">HOD Signature:</label>
                     {selectedRequest.hodSignature ? (
                       <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
@@ -296,23 +339,36 @@ const LogisticRequestForm = () => {
                       <p>No HOD signature available</p>
                     )}
 
+                  </div>
+                  <div className="logistic-signature">
+                    <h2>Logistic office:</h2>
+                  <h3>{user.firstName} {user.lastName}</h3>
+                  {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
+                  </div>
+                  
+
                 </div>
                 <hr />
                 </div>
+               
+
+             
+                <footer className='recieved-request-footer'>
                 <div className="buttons">
                 <button className='request-edit-btn' onClick={handleEditClick}>Edit</button>
                 <button className='request-cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
                 <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
                 </div>
-
-             
-              
+                </footer>
+               
               </>
              
             )}
          </div>
+         
        </div>
       )}
+      
       </div>
     
   );

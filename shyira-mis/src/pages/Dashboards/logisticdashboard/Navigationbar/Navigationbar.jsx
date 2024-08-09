@@ -36,6 +36,7 @@ const Navbar = ({ setCurrentPage }) => {
           {dropdownsOpen.itemAction && (
             <ul className="dropdown-menu">
               <li onClick={() => setCurrentPage('add-item')}>Add new Item</li>
+              <li onClick={() => setCurrentPage('import-items')}>import Excel</li>
               <li onClick={() => setCurrentPage('view-items')}>View Items</li>
             </ul>
           )}
@@ -47,6 +48,7 @@ const Navbar = ({ setCurrentPage }) => {
             <ul className="dropdown-menu">
               
               <li onClick={() => setCurrentPage('requisition-receive')}>Requist Received</li>
+              <li onClick={() => setCurrentPage('approved-request')}>Approved Request</li>
               <li onClick={() => setCurrentPage('data')}>Requist stutas</li>
             </ul>
           )}

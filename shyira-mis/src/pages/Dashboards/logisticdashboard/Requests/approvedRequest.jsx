@@ -1,7 +1,7 @@
 // src/components/ApprovedRequests.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './approvedRequest.css'; // Import CSS for styling
+import './approvedrequest.css'; // Import CSS for styling
 
 const ApprovedRequests = () => {
   const [approvedRequests, setApprovedRequests] = useState([]);

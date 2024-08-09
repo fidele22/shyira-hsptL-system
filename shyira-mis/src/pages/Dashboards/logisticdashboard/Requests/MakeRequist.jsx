@@ -1,51 +1,37 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
- // Import CSS for styling
+import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
   const [items, setItems] = useState([]);
-  const [district, setDistrict] = useState('');
-  const [healthFacility, setHealthFacility] = useState('');
-  const [department, setDepartment] = useState('');
-  const [itemOptions, setItemOptions] = useState([]);// used to fetch item name from item table
-  const [signature, setSignature] = useState('');
+  const [itemOptions, setItemOptions] = useState([]); // used to fetch item name from item table
   const [date, setDate] = useState('');
-  const [hodSignature, setHodSignature] = useState(null);
-  const [logisticSignature, setLogisticSignature] = useState(null);
-  const [ackReceiptSignature, setAckReceiptSignature] = useState(null);
-  const [dafSignature, setDafSignature] = useState(null);
+  const [supplierName, setSupplierName] = useState('');
+  
+  // fetching item names use to select when making request
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/items');
+        setItemOptions(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
 
-// fetching item names use to select when making request
-useEffect(() => {
-  const fetchItems = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/items');
-      setItemOptions(response.data);
-    } catch (error) {
-      console.error('Error fetching items:', error);
-    }
-  };
-
-  fetchItems();
-}, []);
+    fetchItems();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append('district', district);
-    formData.append('healthFacility', healthFacility);
-    formData.append('department', department);
     formData.append('items', JSON.stringify(items));
-    formData.append('signature', signature);
     formData.append('date', date);
-    formData.append('hodSignature', hodSignature);
-    formData.append('logisticSignature', logisticSignature);
-    formData.append('ackReceiptSignature', ackReceiptSignature);
-    formData.append('dafSignature', dafSignature);
-
+    formData.append('supplierName', supplierName); 
+   
     try {
-      const response = await axios.post('http://localhost:5000/api/logisticrequests/submit', formData, {
+      const response = await axios.post('http://localhost:5000/api/LogisticRequest/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -64,8 +50,8 @@ useEffect(() => {
         itemId: '',
         itemName: '',
         quantityRequested: '',
-        quantityReceived: '',
-        observation: '',
+        price: '', // Add price field
+        totalAmount: '', // Add total amount field
       },
     ]);
   };
@@ -79,6 +65,13 @@ useEffect(() => {
   const handleItemChange = (index, key, value) => {
     const updatedItems = [...items];
     updatedItems[index][key] = value;
+
+    if (key === 'quantityRequested' || key === 'price') {
+      const quantityRequested = updatedItems[index].quantityRequested || 0;
+      const price = updatedItems[index].price || 0;
+      updatedItems[index].totalAmount = quantityRequested * price;
+    }
+
     setItems(updatedItems);
   };
 
@@ -89,17 +82,15 @@ useEffect(() => {
 
   return (
     <div className="requistion">
-       
-    <h2>Make Requisition</h2>
+      <h2>Make Requisition</h2>
       <div className="hod-request-form">
         <form onSubmit={handleSubmit}>
-        <div className="imag-logo">
-          <img src="/image/logo2.png" alt="Logo" className="log"  />
+          <div className="imag-logo">
+            <img src="/image/logo2.png" alt="Logo" className="log" />
           </div>
-          
           <div className="heading-title">
             <div className="title">
-            <h3>WESTERN PROVINCE</h3>
+              <h3>WESTERN PROVINCE</h3>
             </div>
             <div className="title">
               <h3>DISTRICT NYABIHU</h3>
@@ -109,8 +100,6 @@ useEffect(() => {
             </div>
             <div className="title">
               <h3>LOGISTIC OFFICE</h3>
-             
-             
             </div>
             <div className="date-of-done">
               <label htmlFor="date">Date:</label>
@@ -123,11 +112,11 @@ useEffect(() => {
             </div>
           </div>
           <div className="requisition-title">
-          <h2>REQUISITION FORM</h2>
-          <p>Supplier Name:   <input type="text" placeholder="Type names here......" /></p>
+            <h2>REQUISITION FORM</h2>
+            <p>Supplier Name: <input type="text" placeholder="Type names here..." 
+            value={supplierName} onChange={(e) => setSupplierName(e.target.value)} /></p>
           </div>
-         
-          <button type="button" onClick={handleAddItem}>Add Item</button>
+          <button type="button" className="Add-item-btn" onClick={handleAddItem}>Add Item</button>
           <table>
             <thead>
               <tr>
@@ -144,7 +133,7 @@ useEffect(() => {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>
-                  <select
+                    <select
                       value={item.itemName}
                       onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                       required
@@ -168,45 +157,28 @@ useEffect(() => {
                   <td>
                     <input
                       type="number"
-                      value={item.quantityReceived}
-                      onChange={(e) => handleItemChange(index, 'quantityReceived', e.target.value)}
+                      value={item.price}
+                      onChange={(e) => handleItemChange(index, 'price', e.target.value)}
+                      required
                     />
                   </td>
                   <td>
                     <input
-                      type="text"
-                      value={item.observation}
-                      onChange={(e) => handleItemChange(index, 'observation', e.target.value)}
+                      type="number"
+                      value={item.totalAmount}
+                      readOnly
                     />
                   </td>
                   <td>
-                    <button type="button" className='remove-btn' onClick={() => handleRemoveItem(index)}>Remove</button>
+                    <button type="button" className="remove-btn" onClick={() => handleRemoveItem(index)}>Remove</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-
-          <div className="signature-section">
-            
-            <div className="logistic-sign">
-              <label htmlFor="logisticSignature">Logistic:</label>
-              
-              <br />
-              Names:
-              <input type="text" placeholder="Type names here......" /> <br />
-              Upload Signature Image:
-              <input
-                type="file"
-                id="logisticSignature"
-                accept="image/*"
-                onChange={(e) => handleFileChange(e, setLogisticSignature)}
-              />
-            </div>
-          </div>
-
+          <div className="signature-section"></div>
           <hr />
-          <h4>SHYIRA DISTRICT HOSPITAL , WESTERN PROVINCE , NYABIHU DISTRICT</h4>
+          <h4>SHYIRA DISTRICT HOSPITAL, WESTERN PROVINCE, NYABIHU DISTRICT</h4>
           <button type="submit">Submit Request</button>
         </form>
       </div>

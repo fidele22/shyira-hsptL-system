@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   signature: {
-    type: String, // We'll store the path to the uploaded file
+    type: String,// We'll store the path to the uploaded file
     required:false,
   },
   password: {

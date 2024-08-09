@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-const Stock = require('../models/ficheDeStock');
+const StockData = require('../models/stockData');
 const Item = require('../models/item');
 const StockHistory = require('../models/stockHistory');
 const ApprovedRequest = require('../models/approvedRequest');
@@ -45,7 +45,7 @@ return mongoose.Types.ObjectId.isValid(id);
 // Fetch all stock entries with item names
 router.get('/', async (req, res) => {
 try {
-const stocks = await Stock.find().populate('itemId', 'name');
+const stocks = await StockData.find().populate('itemId', 'name');
 res.json(stocks);
 } catch (error) {
 res.status(500).json({ message: 'Error fetching stocks', error });
@@ -59,7 +59,7 @@ const { id } = req.params;
 const { entry, exit } = req.body;
 
 try {
-const stock = await Stock.findById(id);
+const stock = await StockData.findById(id);
 if (!stock) {
 return res.status(404).send('Stock entry not found');
 }
@@ -72,8 +72,8 @@ return res.status(404).send('Stock entry not found');
      totalAmount: entry.quantity * (entry.pricePerUnit || stock.entry.pricePerUnit)
      };
      
-     stock.balance.quantity += stock.entry.quantity ,
-     stock.balance.totalAmount += stock.entry.totalAmount,
+     stock.balance.quantity +=  stock.entry.quantity;
+     stock.balance.totalAmount += stock.entry.totalAmount;
      stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last entry
      }
      if (exit) {
@@ -83,8 +83,8 @@ return res.status(404).send('Stock entry not found');
      totalAmount: exit.quantity * (exit.pricePerUnit || stock.exit.pricePerUnit)
      };
      
-     stock.balance.quantity -= stock.exit.quantity,
-     stock.balance.totalAmount -= stock.exit.totalAmount, 
+     stock.balance.quantity -= stock.exit.quantity;
+     stock.balance.totalAmount -= stock.exit.totalAmount; 
      stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last exit
      }
 
@@ -117,7 +117,7 @@ return res.status(400).send('Invalid itemId');
 console.log(`Fetching stock entries for itemId: ${itemId}`); // Log itemId
 
 try {
-const stockEntries = await Stock.find({ itemId }).populate('itemId');
+const stockEntries = await StockData.find({ itemId }).populate('itemId');
 console.log(`Stock entries found: ${stockEntries.length}`); // Log number of stock entries found
 res.status(200).json(stockEntries);
 } catch (error) {

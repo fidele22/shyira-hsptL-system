@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const forwardedRequestSchema = new mongoose.Schema({
-  district: String,
-  healthFacility: String,
+  
   department: String,
   items: [
     {
@@ -13,11 +12,12 @@ const forwardedRequestSchema = new mongoose.Schema({
       observation: String
     }
   ],
-  signature: String,
-  hodSignature: String,
-  logisticSignature: String,
-  ackReceiptSignature: String,
-  dafSignature: String,
+  hodName: { type: String, required: false},
+  hodSignature: { type: String },
+
+  logisticName: { type: String }, // Add this field
+  logisticSignature: { type: String }, // Add this field
+  
   updatedAt: { type: Date, default: Date.now }
 });
 

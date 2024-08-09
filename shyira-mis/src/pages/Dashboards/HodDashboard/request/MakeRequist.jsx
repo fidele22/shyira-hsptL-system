@@ -4,12 +4,9 @@ import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
   const [items, setItems] = useState([]);
-  const [healthFacility, setHealthFacility] = useState('');
   const [department, setDepartment] = useState('');
   const [date, setDate] = useState('');
   const [itemOptions, setItemOptions] = useState([]);
-  const [hodSignature, setHodSignature] = useState(null);
-  const [dafSignature, setDafSignature] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -46,16 +43,15 @@ const LogisticRequestForm = () => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append('healthFacility', healthFacility);
     formData.append('department', department);
     formData.append('items', JSON.stringify(items));
     formData.append('date', date);
     formData.append('hodName', user ? `${user.firstName} ${user.lastName}` : ''); // HOD Name
     formData.append('hodSignature', user && user.signature ? user.signature : ''); // HOD Signature URL
-    formData.append('dafSignature', dafSignature); // Ensure dafSignature is a file
+   
 
     try {
-      const response = await axios.post('http://localhost:5000/api/logisticrequests/submit', formData, {
+      const response = await axios.post('http://localhost:5000/api/UserRequest/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

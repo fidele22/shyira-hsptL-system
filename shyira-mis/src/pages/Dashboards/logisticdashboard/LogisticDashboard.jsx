@@ -3,13 +3,14 @@ import Navigation from '../navbar/Navbar'
 import Navbar from './Navigationbar/Navigationbar';
 import Footer from '../footer/Footer'
 import Overview from './Overview';
-import ViewItem from './viewItems/Viewitem'
+import ViewItem from './addItem/marged'
 import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
 import LogisticProfile from './LogisticProfile'
 import StockReport from './viewItems/ItemReport';
 import RequisitionReceive from './Requests/RequisitionReceive'
-import Data from './addItem/data'
+import ApprovedRequests from './Requests/approvedRequest';
+import ImportItems from './addItem/stockItems'
 import './contentCss/LogisticDashboard.css';
 
 const LogisticDashboard = () => {
@@ -21,14 +22,17 @@ const LogisticDashboard = () => {
         return <Overview />;
       case 'add-item':
         return <AddItem />;
+      case 'import-items':
+        return <ImportItems />;  
       case 'view-items':
         return <ViewItem />;
-       case 'data':
-        return <Data />;
       case 'report':
         return <StockReport />;
       case 'make-requist':
         return <MakeRequist />;
+      
+      case 'approved-request':
+        return <ApprovedRequests />;  
       case 'logistic-profile':
         return <LogisticProfile />;
       case 'requisition-receive':

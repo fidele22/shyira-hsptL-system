@@ -1,9 +1,10 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const LogisticRequest = require('../models/LogisticRequest');
+const UserRequest = require('../models/UserRequest');
 const ForwardedRequest = require('../models/requestFromLgst');
 const Item = require('../models/item'); // Fix the import here
+//const User = require('../models/user');
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post('/submit', upload.none(), async (req, res) => {
   try {
     console.log('Request Body:', req.body); // Log the request body
 
-    const { department, items, signature, date } = req.body;
+    const { department, items, date } = req.body;
 
     // Ensure items is defined and a valid JSON string
     if (!items) {
@@ -53,13 +54,14 @@ router.post('/submit', upload.none(), async (req, res) => {
       };
     }));
 
-    // Create LogisticRequest
-    const newRequest = new LogisticRequest({
+    // Create userRequest
+    const newRequest = new UserRequest({
       department,
       items: validItems,
       date,
       hodName: req.body.hodName,
       hodSignature: req.body.hodSignature,
+      logisticName: req.body.logisticName,
     });
 
     await newRequest.save();
@@ -124,4 +126,6 @@ router.get('/', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+
 module.exports = router;
