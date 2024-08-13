@@ -1,10 +1,11 @@
 
-.dashboard-content {
+.hod-overview-content {
     padding: 20px;
     background-color:white;
     min-height:30vh;
     width:160vh;
     border-radius: 20px;
+    margin-left: 2%;
    
     
   }

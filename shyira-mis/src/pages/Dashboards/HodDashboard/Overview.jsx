@@ -40,18 +40,18 @@ const DashboardOverview = () => {
   }, []);
 
   return (
-    <div className="dashboard-content">
+    <div className="hod-overview-content">
       <h1>Welcome back, {userName}!</h1>
 
       {/* Overview Sections */}
       <section className="overview-section">
-        <h2>Logistic Overview</h2>
+        <h2>Overview</h2>
         <p>Here you can find essential logistic information relevant to hospital operations.</p>
         {/* Add relevant widgets and summaries here */}
         <div className="overview-widgets">
           <div className="widget">
-            <h3>Current Requests</h3>
-            <p>View and manage current logistic requests from hospital departments.</p>
+            <h3>Current Approved Requests</h3>
+            <p>View and manage your  requests either approved or non-approved.</p>
             {/* Example: Display a list of recent logistic requests */}
             <ul>
               <li>Request 1</li>
@@ -69,18 +69,23 @@ const DashboardOverview = () => {
             <p>Track scheduled deliveries and logistics updates.</p>
             {/* Example: Display upcoming delivery schedules */}
           </div>
+          <div className="widget">
+            <h3>Upcoming Deliveries</h3>
+            <p>Track scheduled deliveries and logistics updates.</p>
+            {/* Example: Display upcoming delivery schedules */}
+          </div>
         </div>
       </section>
 
       {/* Additional Sections */}
       <section className="additional-section">
         <h2>Additional Information</h2>
-        <p>Explore more functionalities and resources available in the logistic dashboard.</p>
+        <p>Explore more functionalities and resources available in the  Navigation bar on your dashboard.</p>
         {/* Add more informative sections or links */}
         <ul>
-          <li>View All Requests</li>
-          <li>Inventory Management</li>
-          <li>Reports and Analytics</li>
+          <li>View All items available to request</li>
+          <li>check your requesition status</li>
+          <li>Manage your account details</li>
         </ul>
       </section>
     </div>

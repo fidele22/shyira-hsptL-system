@@ -108,7 +108,7 @@ const StockDetails = ({ item,onClose}) => {
   return (
     <div className="stockDetails-overlay">
       <div className="stock-details">
-        <button onClick={fetchStockDetails} className='view-details-btn'>View s</button>
+        <button onClick={fetchStockDetails} className='view-details-btn'>View stock</button>
         <div className="history-filter">
           <label>
             Start Date:
@@ -135,14 +135,14 @@ const StockDetails = ({ item,onClose}) => {
             <table>
               <thead>
                 <tr>
-                  <th>Date</th>
+                  <th rowSpan={2}>Date</th>
                   <th colSpan="3">ENTRY</th>
                   <th colSpan="3">EXIT</th>
                   <th colSpan="3">BALANCE</th>
-                  <th>Actions</th>
+                  <th rowSpan={2}>Actions</th>
                 </tr>
                 <tr>
-                  <th>Updated on</th>
+                 
                   <th>Quantity</th>
                   <th>Price per Unit</th>
                   <th>Total Amount</th>
@@ -271,8 +271,8 @@ const StockDetails = ({ item,onClose}) => {
                   </tbody>
                 </table>
               </div>
-              <button className='pdf-export-btn' onClick={downloadPDF}>Download PDF</button>
-              <button className='excel-export-btn' onClick={downloadExcel}>Download Excel</button>
+              <button className='download-history-btn' onClick={downloadPDF}>Download PDF</button>
+              <button className='download-exl-btn' onClick={downloadExcel}>Download Excel</button>
               <button className='history-close-btn' onClick={() => setShowHistory(false)}>Close</button>
             </div>
           </div>

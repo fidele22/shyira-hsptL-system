@@ -7,7 +7,25 @@ const StockItem =require('../models/stockItems')
 const StockHistory = require('../models/stockHistory');
 const ApprovedRequest = require('../models/approvedRequest');
 
-// Add stock entry for an item
+// POST request to add a new stock item
+router.post('/add', async (req, res) => {
+  const { name, quantity, pricePerUnit, totalAmount } = req.body;
+
+  try {
+    const newItem = new StockItem({
+      name,
+      quantity,
+      pricePerUnit,
+      totalAmount,
+    });
+
+    await newItem.save();
+    res.status(201).json(newItem);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+})
+// Add stock entry for an item created
 router.post('/', async (req, res) => {
 const { itemId, entry = {}, exit = {}, balance = {} } = req.body;
 
@@ -42,6 +60,18 @@ res.status(400).json({ message: 'Error adding stock entry', error });
 function isValidObjectId(id) {
 return mongoose.Types.ObjectId.isValid(id);
 }
+
+// fetching item name
+// GET request to fetch all stock items
+router.get('/', async (req, res) => {
+  try {
+    const items = await StockItem.find();
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Fetch all stock entries with item names
 router.get('/', async (req, res) => {
@@ -120,17 +150,18 @@ const { itemId } = req.params;
 
 // Check if itemId is a valid ObjectId
 if (!isValidObjectId(itemId)) {
-return res.status(400).send('Invalid itemId');
-}
-console.log(`Fetching stock entries for itemId: ${itemId}`); // Log itemId
-
-try {
-const stockEntries = await StockData.find({ itemId }).populate('itemId');
-console.log(`Stock entries found: ${stockEntries.length}`); // Log number of stock entries found
-res.status(200).json(stockEntries);
-} catch (error) {
-console.error('Error fetching stock entries:', error);
-res.status(400).json({ message: 'Error fetching stock entries', error });
+  return res.status(400).send('Invalid itemId');
+  }
+  
+  console.log(`Fetching stock entries for itemId: ${itemId}`); // Log itemId
+  
+  try {
+  const stockEntries = await StockData.find({ itemId }).populate('itemId');
+  console.log(`Stock entries found: ${stockEntries.length}`); // Log number of stock entries found
+  res.status(200).json(stockEntries);
+  } catch (error) {
+  console.error('Error fetching stock entries:', error);
+  res.status(400).json({ message: 'Error fetching stock entries', error });
 }
 });
 
@@ -160,22 +191,22 @@ res.status(400).json({ message: 'Error fetching stock history', error });
 
 // Fetch stock history for a specific month
 router.get('/history/:year/:month', async (req, res) => {
-const { year, month } = req.params;
-const startDate = new Date(year, month - 1, 1);
-const endDate = new Date(year, month, 1);
-
-try {
-const stockHistory = await StockHistory.find({
-updatedAt: {
-$gte: startDate,
-$lt: endDate
-}
-}).populate('itemId', 'name');
-res.json(stockHistory);
-} catch (error) {
-res.status(500).json({ message: 'Error fetching stock history', error });
-}
-});
+  const { year, month } = req.params;
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 1);
+  
+    try {
+    const stockHistory = await StockHistory.find({
+    updatedAt: {
+    $gte: startDate,
+    $lt: endDate
+    }
+  }).populate('itemId', 'name');
+  res.json(stockHistory);
+  } catch (error) {
+  res.status(500).json({ message: 'Error fetching stock history', error });
+  }
+  });
 
 module.exports = router;
 

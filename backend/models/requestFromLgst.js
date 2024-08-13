@@ -5,7 +5,7 @@ const forwardedRequestSchema = new mongoose.Schema({
   department: String,
   items: [
     {
-      itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
+      itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'StockItems', required: true },
       itemName: String,
       quantityRequested: Number,
       quantityReceived: Number,

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import SearchableDropdown from '../../logisticdashboard/Requests/searchable'
 import './makeRequist.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
@@ -12,16 +13,16 @@ const LogisticRequestForm = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/items');
+        const response = await axios.get('http://localhost:5000/api/stocks');
         setItemOptions(response.data);
       } catch (error) {
         console.error('Error fetching items:', error);
       }
     };
-
+  
     fetchItems();
   }, []);
-
+  
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -85,15 +86,28 @@ const LogisticRequestForm = () => {
 
   const handleItemChange = (index, key, value) => {
     const updatedItems = [...items];
-    updatedItems[index][key] = value;
+    
     if (key === 'itemName') {
-      // Find the itemId based on the itemName
-      const selectedItem = itemOptions.find((option) => option.name === value);
-      updatedItems[index].itemId = selectedItem ? selectedItem._id : '';
+      // Find the selected item from the options
+      const selectedItem = itemOptions.find(item => item.name === value);
+      
+      if (selectedItem) {
+        updatedItems[index]['itemName'] = selectedItem.name;
+        updatedItems[index]['itemId'] = selectedItem._id; // Store the itemId
+      }
+    } else {
+      updatedItems[index][key] = value;
     }
+  
+    if (key === 'quantityRequested' || key === 'price') {
+      const quantityRequested = updatedItems[index].quantityRequested || 0;
+      const price = updatedItems[index].price || 0;
+      updatedItems[index].totalAmount = quantityRequested * price;
+    }
+  
     setItems(updatedItems);
   };
-
+  
   const handleFileChange = (event, setFile) => {
     const file = event.target.files[0];
     setFile(file);
@@ -140,7 +154,7 @@ const LogisticRequestForm = () => {
           </div>
 
           <h2>REQUISITION FORM</h2>
-          <button type="button" onClick={handleAddItem}>Add Item</button>
+          <button className='additem-btn' type="button" onClick={handleAddItem}>Add Item</button>
           <table>
             <thead>
               <tr>
@@ -156,19 +170,12 @@ const LogisticRequestForm = () => {
               {items.map((item, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>
-                    <select
-                      value={item.itemName}
-                      onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
-                      required
-                    >
-                      <option value="">Select Item</option>
-                      {itemOptions.map((option) => (
-                        <option key={option._id} value={option.name}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </select>
+                  <td className='itemname-td'>
+                    <SearchableDropdown
+                      options={itemOptions}
+                      selectedValue={item.itemName}
+                      onSelect={(value) => handleItemChange(index, 'itemName', value)}
+                    />
                   </td>
                   <td>
                     <input
@@ -193,7 +200,7 @@ const LogisticRequestForm = () => {
                     />
                   </td>
                   <td>
-                    <button type="button" onClick={() => handleRemoveItem(index)}>Remove</button>
+                    <button className='remove-btn' type="button" onClick={() => handleRemoveItem(index)}>Remove</button>
                   </td>
                 </tr>
               ))}
@@ -219,7 +226,7 @@ const LogisticRequestForm = () => {
 
          
 
-          <button type="submit">Submit</button>
+          <button type="submit">Send Request</button>
         </form>
       </div>
     </div>

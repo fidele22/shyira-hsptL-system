@@ -5,6 +5,7 @@
 .item-stock{
    background-color: white;
    margin-left: 3%; 
+   padding: 20px;
 }
 /****************styling stock details********************/
 .stockDetails-overlay{
@@ -39,7 +40,7 @@
     .detail-update-btn{
       background-color: green;
     }
-    .detail-close-btn{
+    .detail-close-btn,.history-close-btn{
       position: absolute;
       right: 0;
       top: 0;
@@ -52,6 +53,9 @@
     }
     .download-exl-btn{
       background-color: rgb(206, 156, 5);
+      font-size: 20px;
+      margin-left: 2%;
+      margin-top:2% ;
     }
     .view-details-btn{
       background-color: rgb(117, 69, 7);
@@ -65,4 +69,38 @@
     }
     .download-history-btn{
       background-color: green;
+      font-size: 20px;
+    }
+/***********styling *stock history**********/
+    .stockHistory-overlay{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5); /* Dim background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; 
+    }
+    .stock-history{
+      background-color: white;
+      width: 80%;
+      position: absolute;
+      left: 18%;
+      border-radius: 4px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: scroll;
+    
+    }
+    .stock-history h2,h3{
+      text-align: center;
+      padding: 10px;
+    }
+    .stock-history span{
+      text-transform: uppercase;
+      padding-left: 10px;
+      text-decoration: underline;
     }

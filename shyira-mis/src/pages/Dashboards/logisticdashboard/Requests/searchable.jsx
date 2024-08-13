@@ -15,8 +15,9 @@ const SearchableDropdown = ({ options, selectedValue, onSelect }) => {
     setIsOpen(false);
   };
 
+  // Assuming options are objects with a `name` property
   const filteredOptions = options.filter(option =>
-    option.toLowerCase().includes(searchQuery)
+    option.name.toLowerCase().includes(searchQuery)
   );
 
   return (
@@ -28,7 +29,7 @@ const SearchableDropdown = ({ options, selectedValue, onSelect }) => {
         {selectedValue || 'Select an option'}
       </div>
       {isOpen && (
-        <div className="dropdown-menu">
+        <div className="search-dropdown-menu">
           <input
             type="text"
             placeholder="Search..."
@@ -36,20 +37,21 @@ const SearchableDropdown = ({ options, selectedValue, onSelect }) => {
             onChange={handleSearchChange}
             className="search-input"
           />
-          <ul>
+          <ol>
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
                 <li
                   key={index}
-                  onClick={() => handleOptionClick(option)}
+                  className='dropdown-list'
+                  onClick={() => handleOptionClick(option.name)} // Pass name as the option
                 >
-                  {option}
+                  {option.name} {/* Display the name */}
                 </li>
               ))
             ) : (
               <li>No options found</li>
             )}
-          </ul>
+          </ol>
         </div>
       )}
     </div>

@@ -5,9 +5,8 @@ import Navbar from './Navigationbar/Hodnavigationbar';
 import Overview from './Overview';
 import ViewRequest from './request/ViewRequest'
 import MakeRequest from './request/MakeRequist'
-//import AddItem from './AddItem';
-import HodProfile from './HodProfile'
-//import OrderSupplies from './OrderSupplies';
+import Items from './items/viewItems'
+import HodProfile from './Profile/HodProfile'
 import './hodDashboard.css';
 import ViewItems from './request/ViewItems';
 
@@ -19,6 +18,8 @@ const LogisticDashboard = () => {
     switch (currentPage) {
       case 'overview':
         return <Overview />;
+      case 'view-items':
+        return<Items/>  
       case 'requisition':
           return <MakeRequest />;
       case 'view-aproved':

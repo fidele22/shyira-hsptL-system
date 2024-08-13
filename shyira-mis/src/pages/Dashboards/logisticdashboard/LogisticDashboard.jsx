@@ -3,14 +3,14 @@ import Navigation from '../navbar/Navbar'
 import Navbar from './Navigationbar/Navigationbar';
 import Footer from '../footer/Footer'
 import Overview from './Overview';
-import ViewItem from './addItem/marged'
+import ViewItem from './addItem/parentStock'
 import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
 import LogisticProfile from './LogisticProfile'
-import StockReport from './viewItems/ItemReport';
+import StockReport from './StockReport/ItemReport';
 import RequisitionReceive from './Requests/RequisitionReceive'
 import ApprovedRequests from './Requests/approvedRequest';
-import ImportItems from './addItem/stockItems'
+import ImportItems from './addItem/uploadItems'
 import './contentCss/LogisticDashboard.css';
 
 const LogisticDashboard = () => {

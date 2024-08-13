@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
- // itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
+  itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'StockItems', required: true },
   itemName: { type: String },
   quantityRequested: { type: Number, default: 0 },
   quantityReceived: { type: Number },
@@ -13,7 +13,7 @@ const UserRequestSchema = new mongoose.Schema({
   items: [itemSchema],
   hodName: { type: String, required: true },
   hodSignature: { type: String },
-
+  clicked: { type: Boolean, default: false },
   logisticName: { type: String }, // Add this field
   logisticSignature: { type: String }, // Add this field
 

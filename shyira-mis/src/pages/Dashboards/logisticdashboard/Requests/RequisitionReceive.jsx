@@ -40,16 +40,25 @@ const LogisticRequestForm = () => {
     }
   };
 
+
+  
   const handleRequestClick = async (requestId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/logisticrequests/${requestId}`);
+      const response = await axios.get(`http://localhost:5000/api/UserRequest/${requestId}`);
       setSelectedRequest(response.data);
-      setEditFormData(response.data); // Populate edit form data with selected request
-      setIsEditing(false); // Ensure we start in view mode
+      setEditFormData(response.data);
+      setIsEditing(false);
+
+      // Update the clicked status to true
+      await axios.put(`http://localhost:5000/api/UserRequest/${requestId}`, { clicked: true });
+
+      // Refresh the requests list
+      fetchRequests();
     } catch (error) {
       console.error('Error fetching request details:', error);
     }
   };
+
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -81,7 +90,7 @@ const LogisticRequestForm = () => {
   const handleUpdateSubmit = async () => {
   
     try {
-      await axios.put(`http://localhost:5000/api/logisticrequests/${selectedRequest._id}`, editFormData );
+      await axios.put(`http://localhost:5000/api/UserRequest/${selectedRequest._id}`, editFormData );
       alert('Request updated successfully!');
       fetchRequests(); // Refresh the list of requests
       setSelectedRequest(null); // Close the details view
@@ -194,9 +203,9 @@ const LogisticRequestForm = () => {
           {filteredRequests.slice().reverse().map((request, index) => (
             <li key={index}>
               <p onClick={() => handleRequestClick(request._id)}>
-                Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
-                {request.newRequest && <span className="new-request"> (New)</span>}
-              </p>
+              Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
+              <span>{request.clicked ? '' : 'New Request: '}</span>
+            </p>
             </li>
           ))}
         </ul>

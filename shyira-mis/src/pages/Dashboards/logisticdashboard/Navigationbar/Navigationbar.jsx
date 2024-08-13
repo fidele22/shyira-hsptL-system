@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Navigationbar.css';
 import axios from 'axios';
+import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck, FaClipboardList, FaChartBar, FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = ({ setCurrentPage }) => {
   const [dropdownsOpen, setDropdownsOpen] = useState({
@@ -17,12 +18,16 @@ const Navbar = ({ setCurrentPage }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/logout');
-      // Clear any user data from state or context
-      // Redirect to login page or home page
-      window.location.href = '/'; // Adjust as needed
+      await axios.post('http://localhost:5000/api/logout'); // Notify the server of the logout
+  
+      // Remove token from local storage or cookies
+      localStorage.removeItem('authToken'); // Adjust based on how you store tokens
+  
+      // Optionally, redirect to login page
+      window.location.href = '/'; // Adjust the URL as needed
     } catch (error) {
-      alert('error to logout')
+      console.error('Logout failed:', error);
+      // Handle errors (e.g., show a message to the user)
     }
   };
 
@@ -30,36 +35,57 @@ const Navbar = ({ setCurrentPage }) => {
     <div className="navigation">
       <h2>Logistic Dashboard</h2>
       <ul>
-        <li onClick={() => setCurrentPage('overview')}>Overview</li>
+        <li onClick={() => setCurrentPage('overview')}>
+          <FaHome /> Overview
+        </li>
         <li onClick={() => toggleDropdown('itemAction')} className="dropdown">
-          Item Action
+          <FaBoxOpen /> Item Action
           {dropdownsOpen.itemAction && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('add-item')}>Add new Item</li>
-              <li onClick={() => setCurrentPage('import-items')}>import Excel</li>
-              <li onClick={() => setCurrentPage('view-items')}>View Items</li>
+              <li onClick={() => setCurrentPage('add-item')}>
+                <FaPlus /> Add new Item
+              </li>
+              <li onClick={() => setCurrentPage('import-items')}>
+                <FaFileExcel /> Import Excel
+              </li>
+              <li onClick={() => setCurrentPage('view-items')}>
+                <FaList /> View Items
+              </li>
             </ul>
           )}
         </li>
-        <li onClick={() => setCurrentPage('make-requist')}>Order Supplies</li>
+        <li onClick={() => setCurrentPage('make-requist')}>
+          <FaBoxOpen /> Order Supplies
+        </li>
         <li onClick={() => toggleDropdown('requisitions')} className="dropdown">
-          Requisitions
+          <FaClipboardList /> Requisitions
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
-              
-              <li onClick={() => setCurrentPage('requisition-receive')}>Requist Received</li>
-              <li onClick={() => setCurrentPage('approved-request')}>Approved Request</li>
-              <li onClick={() => setCurrentPage('data')}>Requist stutas</li>
+              <li onClick={() => setCurrentPage('requisition-receive')}>
+                <FaClipboardCheck /> Requist Received
+              </li>
+              <li onClick={() => setCurrentPage('approved-request')}>
+                <FaClipboardCheck /> Approved Request
+              </li>
+              <li onClick={() => setCurrentPage('data')}>
+                <FaClipboardList /> Requist Status
+              </li>
             </ul>
           )}
         </li>
-        <li onClick={() => setCurrentPage('report')}>Reports</li>
+        <li onClick={() => setCurrentPage('report')}>
+          <FaChartBar /> Reports
+        </li>
       </ul>
 
       <u><h2>Settings</h2></u>
       <ul>
-        <li onClick={() => setCurrentPage('logistic-profile')}>Profile</li>
-        <button onClick={handleLogout}>Logout</button>
+        <li onClick={() => setCurrentPage('logistic-profile')}>
+          <FaUser /> Profile
+        </li>
+        <li onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </li>
       </ul>
     </div>
   );

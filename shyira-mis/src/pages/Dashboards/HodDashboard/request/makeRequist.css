@@ -83,7 +83,9 @@ table th, table td {
   text-align: left;
   width: 200px;
 }
-
+.itemname-td{
+  width: 300px;
+}
 table th {
   background-color: #f2f2f2;
 }
@@ -94,6 +96,10 @@ table tr:nth-child(even) {
 
 table tr:hover {
   background-color: #f1f1f1;
+}
+.additem-btn{
+  background-color: blue;
+  font-size: 20px;
 }
 .remove-btn{
   background-color: rgb(218, 47, 47);

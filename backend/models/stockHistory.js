@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const stockHistorySchema = new mongoose.Schema({
-  itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
+  itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'StockItems', required: true },
   entry: {
     quantity: { type: Number, default: 0 },
     pricePerUnit: { type: Number, default: 0 },

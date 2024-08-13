@@ -13,15 +13,15 @@ const LogisticRequestForm = () => {
     const fetchItems = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/getData');
-        setItemOptions(response.data.map(item => item.name));
+        setItemOptions(response.data);
       } catch (error) {
         console.error('Error fetching items:', error);
       }
     };
-
+  
     fetchItems();
   }, []);
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -63,16 +63,28 @@ const LogisticRequestForm = () => {
 
   const handleItemChange = (index, key, value) => {
     const updatedItems = [...items];
-    updatedItems[index][key] = value;
-
+    
+    if (key === 'itemName') {
+      // Find the selected item from the options
+      const selectedItem = itemOptions.find(item => item.name === value);
+      
+      if (selectedItem) {
+        updatedItems[index]['itemName'] = selectedItem.name;
+        updatedItems[index]['itemId'] = selectedItem._id; // Store the itemId
+      }
+    } else {
+      updatedItems[index][key] = value;
+    }
+  
     if (key === 'quantityRequested' || key === 'price') {
       const quantityRequested = updatedItems[index].quantityRequested || 0;
       const price = updatedItems[index].price || 0;
       updatedItems[index].totalAmount = quantityRequested * price;
     }
-
+  
     setItems(updatedItems);
   };
+  
 
   return (
     <div className="requistion">
@@ -175,9 +187,3 @@ const LogisticRequestForm = () => {
 
 export default LogisticRequestForm;
 
-const handleItemSelect = (index, item) => {
-  handleItemChange(index, 'itemId', item._id); // Ensure item._id is used
-  handleItemChange(index, 'itemName', item.name);
-  setSearchQuery('');
-  setIsDropdownOpen(false);
-};

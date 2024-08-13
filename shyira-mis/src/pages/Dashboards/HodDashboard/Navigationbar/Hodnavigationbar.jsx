@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import './Hodnavigationbar.css';
 import axios from 'axios';
+import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck, FaClipboardList, FaChartBar, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import './Hodnavigationbar.css';
+
+
 
 const Navbar = ({ setCurrentPage }) => {
   const [dropdownsOpen, setDropdownsOpen] = useState({
@@ -30,14 +33,15 @@ const Navbar = ({ setCurrentPage }) => {
     <div className="navigation">
       <h2>HOD Dashboard</h2>
       <ul>
-        <li onClick={() => setCurrentPage('overview')}>Overview</li>
+        <li onClick={() => setCurrentPage('overview')}>  <FaHome /> Overview</li>
+        <li onClick={() => setCurrentPage('view-items')}> <FaList /> Available Items</li>
         
         <li onClick={() => toggleDropdown('requisitions')} className="dropdown">
-          Requisitions
+        <FaClipboardList /> Requisitions
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('requisition')}>Make requist</li>
-              <li onClick={() => setCurrentPage('view-aproved')}>Aproved Request</li>
+              <li onClick={() => setCurrentPage('requisition')}><FaBoxOpen /> Make requist</li>
+              <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardList /> Aproved Request</li>
             </ul>
           )}
         </li>
@@ -45,6 +49,7 @@ const Navbar = ({ setCurrentPage }) => {
       <u><h2>Settings</h2></u>
       <ul>
         <li onClick={() => setCurrentPage('logistic-profile')}>Profile</li>
+        <li onClick={() => setCurrentPage('logistic-profil')}>Help Center</li>
         <button onClick={handleLogout}>Logout</button>
       </ul>
     </div>

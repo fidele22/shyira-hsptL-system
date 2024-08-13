@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import DataDisplay from './ViewStock';
-import StockDetails from './stockD';
+import DataDisplay from './ViewItems';
+import StockDetails from './stockDetails';
 import './stock.css'
 
 const ItemStockManager = () => {
@@ -10,6 +10,7 @@ const ItemStockManager = () => {
     setSelectedItem(item);
   };
 
+
   return (
     <div className='item-stock'>
       <DataDisplay onItemSelect={handleItemSelect} />
@@ -17,6 +18,7 @@ const ItemStockManager = () => {
         <StockDetails item={selectedItem} onClose={() => setSelectedItem(null)} />
       )}
     </div>
+    
   );
 };
 

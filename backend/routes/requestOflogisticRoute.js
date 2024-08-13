@@ -2,29 +2,21 @@ const express = require('express');
 const multer = require('multer');
 
 const LogisticRequest = require('../models/requestOfLogistic');
-const Item = require('../models/item');
+const Item = require('../models/stockItems');
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-//router.post('/submit', upload.none(), async (req, res) => {
-//  try {
-//    const { items, date } = req.body;
-//    const logisticSignature = req.file ? req.file.path : '';
-//
-//    const newRequest = new LogisticRequest({
-//      date,
-//      supplierName, // Add supplierName
-//      items: JSON.parse(items),
-//      logisticSignature
-//    });
-//
-//    await newRequest.save();
-//    res.status(201).json({ message: 'Requisition submitted successfully!' });
-//  } catch (error) {
-//    res.status(500).json({ error: 'Error submitting requisition' });
-//  }
-//});
-//
+
+// fetching item name
+router.get('/api/getData', async (req, res) => {
+  try {
+    const data = await Item.find({});
+    res.status(200).send(data);
+  } catch (error) {
+    console.error(error);  // Log the error
+    res.status(500).send({ success: false, error: error.message });
+  }
+});
 
 // Apply the multer middleware to handle form data
 router.post('/submit', upload.none(), async (req, res) => {
