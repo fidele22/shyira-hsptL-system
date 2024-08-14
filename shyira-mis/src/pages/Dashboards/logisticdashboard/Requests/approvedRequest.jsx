@@ -1,77 +1,230 @@
 // src/components/ApprovedRequests.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import './approvedrequest.css'; // Import CSS for styling
 
 const ApprovedRequests = () => {
+  const [requests, setRequests] = useState([]);
   const [approvedRequests, setApprovedRequests] = useState([]);
+
+  const [filteredRequests, setFilteredRequests] = useState([]);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  // Search parameters state
+  const [searchParams, setSearchParams] = useState({
+    department: '',
+    date: ''
+  });
+
+  const [logisticUsers, setLogisticUsers] = useState([]);
 
   useEffect(() => {
     fetchApprovedRequests();
+    fetchLogisticUsers(); // Fetch logistic users name and signature on component mount
+    fetchDafUsers();   // Fetch Daf users name and signature on component mount
   }, []);
 
+  const fetchLogisticUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/logistic-users');
+      setLogisticUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching logistic users:', error);
+    }
+  };
+  //fetching approved request from approved collection
   const fetchApprovedRequests = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/approve');
-      setApprovedRequests(response.data);
+     
+      setRequests(response.data);
+      setFilteredRequests(response.data); 
     } catch (error) {
       console.error('Error fetching approved requests:', error);
     }
   };
+  //fetch with clicking 
+  const handleRequestClick = async (requestId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/approve/${requestId}`);
+      setSelectedRequest(response.data);
+      setApprovedRequests(response.data);
+   
+
+      // Update the clicked status to true
+      await axios.put(`http://localhost:5000/api/approve/${requestId}`, { clicked: true });
+
+      // Refresh the requests list
+      fetchApprovedRequests();
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+    }
+  };
+  //Handle search function
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchParams({
+      ...searchParams,
+      [name]: value
+    });
+  };
+
+  const handleSearchRequest = (e) => {
+    e.preventDefault();
+    const { department, date } = searchParams;
+    const filtered = requests.filter(request => {
+      return (!department || request.department.toLowerCase().includes(department.toLowerCase())) &&
+             (!date || new Date(request.date).toDateString() === new Date(date).toDateString());
+    });
+    setFilteredRequests(filtered);
+  };
+
+ // Function to generate and download PDF
+ const downloadPDF = async () => {
+  const input = document.getElementById('pdf-content');
+  if (!input) {
+    console.error('Element with ID pdf-content not found');
+    return;
+  }
+  
+  try {
+    const canvas = await html2canvas(input);
+    const data = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF();
+    const imgProps = pdf.getImageProperties(data);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pdfWidth - 20; // Subtract the margin from the width
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    pdf.addImage(data, 'PNG', 10, 10, imgWidth, imgHeight); // 10 is the margin
+    pdf.save('requisition-form.pdf');
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  }
+};
+
 
   return (
     <div className="approved-requests">
       <h2>Approved Requests</h2>
-      {approvedRequests.length === 0 ? (
-        <p>No approved requests found.</p>
-      ) : (
-        approvedRequests.map((request, index) => (
-          <div key={index} className="approved-request">
-            <h3>Request {index + 1}</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Item Name</th>
-                  <th>Quantity Requested</th>
-                  <th>Quantity Received</th>
-                  <th>Observation</th>
-                </tr>
-              </thead>
-              <tbody>
-                {request.items.map((item, idx) => (
-                  <tr key={idx}>
-                    <td>{idx + 1}</td>
-                    <td>{item.itemName}</td>
-                    <td>{item.quantityRequested}</td>
-                    <td>{item.quantityReceived}</td>
-                    <td>{item.observation}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="signature-section">
-              <div className="hod">
-                <p><strong>HOD Name:</strong> {request.hodName}</p>
-                {request.hodSignature ? (
-                  <img src={`http://localhost:5000/${request.hodSignature}`} alt="HOD Signature" />
-                ) : (
-                  <p>No HOD signature available</p>
-                )}
-              </div>
-              <div className="logistic">
-                <p><strong>Logistic Name:</strong> {request.logisticName}</p>
-                {request.logisticSignature ? (
-                  <img src={`http://localhost:5000/${request.logisticSignature}`} alt="Logistic Signature" />
-                ) : (
-                  <p>No logistic signature available</p>
-                )}
-              </div>
-            </div>
+      <form onSubmit={handleSearchRequest} className="search-form">
+       <div className='search-department'>
+        <label htmlFor="">Search by department</label>
+       <input
+          type="text"
+          name="department"
+          placeholder="Search by department"
+          value={searchParams.department}
+          onChange={handleSearchChange}
+        />
+       </div>
+      
+        <div className='search-date'>
+        <label htmlFor="">Search by date</label>
+        <input
+          type="date"
+          name="date"
+          placeholder="Search by date"
+          value={searchParams.date}
+          onChange={handleSearchChange}
+        />
+        </div>
+        
+        <button type="submit" className='search-btn'>Search</button>
+      </form>
+
+      <div className="navigate-request">
+        <ul>
+          {filteredRequests.slice().reverse().map((request, index) => (
+            <li key={index}>
+              <p onClick={() => handleRequestClick(request._id)}>
+              Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
+              <span>{request.clicked ? '' : 'New Request: '}</span>
+            </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {selectedRequest && (
+
+        <div className="approved-request-overlay">
+          
+          <div className="approved-request" >
+          <div id='pdf-content'>
+          <div className="image-request-recieved">
+          <img src="/image/logo2.png" alt="Logo" className="logo" />
           </div>
-        ))
-      )}
-    </div>
+          <div className="request-recieved-heading">
+            <h1>WESTERN PROVINCE</h1>
+            <h1>DISTRIC: NYABIHU</h1>
+            <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
+            <h1>DEPARTMENT: <span></span> </h1>
+
+          </div>
+         <table>
+           <thead>
+             <tr>
+               <th>No</th>
+               <th>Item Name</th>
+               <th>Quantity Requested</th>
+               <th>Quantity Received</th>
+               <th>Observation</th>
+             </tr>
+           </thead>
+           <tbody>
+             {selectedRequest.items.map((item, idx) => (
+               <tr key={idx}>
+                 <td>{idx + 1}</td>
+                 <td>{item.itemName}</td>
+                 <td>{item.quantityRequested}</td>
+                 <td>{item.quantityReceived}</td>
+                 <td>{item.observation}</td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
+         <div className="signature-section">
+           <div className="hod">
+             <p><strong>HOD Name:</strong> {selectedRequest.hodName}</p>
+             {selectedRequest.hodSignature ? (
+               <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
+             ) : (
+               <p>No HOD signature available</p>
+             )}
+           </div>
+           <div className='logistic-signature'>
+                  <h3>Logistic Office:</h3>
+                    {logisticUsers.map(user => (
+                      <div key={user._id} className="logistic-user">
+                        <p>{user.firstName} {user.lastName}</p>
+                        {user.signature ? (
+                          <img src={`http://localhost:5000/${user.signature}`} alt={`${user.firstName} ${user.lastName} Signature`} />
+                        ) : (
+                          <p>No signature available</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+         </div>
+         </div>
+         <footer className='recieved-request-footer'>
+                <div className="buttons">
+                
+                <button className='request-cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
+                <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
+                </div>
+                </footer>
+               
+       </div>
+       </div>
+   )}
+
+        </div>
+          
   );
 };
 

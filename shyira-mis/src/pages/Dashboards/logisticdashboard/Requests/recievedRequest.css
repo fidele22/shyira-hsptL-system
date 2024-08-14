@@ -47,6 +47,7 @@
   }
   .navigate-request p span{
     color: red;
+    padding: 10PX;
   }
   .navigate-request p:hover{
     color: blue;

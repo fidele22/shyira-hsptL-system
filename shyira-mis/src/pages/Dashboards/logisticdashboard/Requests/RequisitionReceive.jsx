@@ -6,16 +6,18 @@ import './recievedRequest.css'; // Import CSS for styling
 
 const LogisticRequestForm = () => {
 
-  
+  const [users, setUsers] = useState(null);
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  
   const [editFormData, setEditFormData] = useState({
+    
   
     department: '',
     items: [],
-    logisticName: '',
+    logisticName: users ? `${user.firstName} ${user.lastName}`:'',
     logisticSignature: '',
     
   });
@@ -91,7 +93,7 @@ const LogisticRequestForm = () => {
   
     try {
       await axios.put(`http://localhost:5000/api/UserRequest/${selectedRequest._id}`, editFormData );
-      alert('Request updated successfully!');
+      alert('Request Sent To DAF!');
       fetchRequests(); // Refresh the list of requests
       setSelectedRequest(null); // Close the details view
 

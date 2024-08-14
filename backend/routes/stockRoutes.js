@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const StockData = require('../models/stockData');
-const Item = require('../models/item');
 const StockItem =require('../models/stockItems')
 const StockHistory = require('../models/stockHistory');
 const ApprovedRequest = require('../models/approvedRequest');

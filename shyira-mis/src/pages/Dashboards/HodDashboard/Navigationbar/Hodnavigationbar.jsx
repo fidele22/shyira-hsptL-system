@@ -48,7 +48,7 @@ const Navbar = ({ setCurrentPage }) => {
       </ul>
       <u><h2>Settings</h2></u>
       <ul>
-        <li onClick={() => setCurrentPage('logistic-profile')}>Profile</li>
+        <li onClick={() => setCurrentPage('logistic-profile')}><FaUser /> Profile</li>
         <li onClick={() => setCurrentPage('logistic-profil')}>Help Center</li>
         <button onClick={handleLogout}>Logout</button>
       </ul>

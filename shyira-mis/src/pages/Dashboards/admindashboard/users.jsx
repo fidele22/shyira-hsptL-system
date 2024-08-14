@@ -154,7 +154,7 @@ const ViewItems = () => {
 
   return (
     <div className="view-items">
-      <h2>Users List</h2>
+      <h2>Users Managment</h2>
       <div className='items-table'>
 
      <div className="searchbar">
@@ -207,7 +207,7 @@ const ViewItems = () => {
       <ul className="pagination">
         {pageNumbers.map(number => (
           <li key={number}>
-            <button onClick={() => paginate(number)}>{number}</button>
+            <button className='pagination-number' onClick={() => paginate(number)}>{number}</button>
           </li>
         ))}
       </ul>

@@ -13,9 +13,8 @@ const UserRequestSchema = new mongoose.Schema({
   items: [itemSchema],
   hodName: { type: String, required: true },
   hodSignature: { type: String },
-  clicked: { type: Boolean, default: false },
-  logisticName: { type: String }, // Add this field
-  logisticSignature: { type: String }, // Add this field
+  clicked: { type: Boolean, default: false },  //display new request word before click
+    // Add this field
 
   date: { type: Date, required: true },
 });
