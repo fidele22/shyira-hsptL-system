@@ -62,32 +62,17 @@ const ApprovedRequests = () => {
 
   const fetchApprovedRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/LogisticRequest/approved-order');
+      const response = await axios.get('http://localhost:5000/api/LogisticRequest/received-order');
       setRequests(response.data);
       setFilteredRequests(response.data); 
     } catch (error) {
       console.error('Error fetching approved requests:', error);
     }
   };
-//marking and send requisition into recieved collection
 
-const handleReceivedClick = async (requestId) => {
-    try {
-      const response = await axios.post(`http://localhost:5000/api/LogisticRequest/received/${requestId}`);
-      setModalMessage('Request marked as received successfully');
-      setIsSuccess(true); // Set the success state
-      setShowModal(true); // Show the modal
-      fetchApprovedRequests(); // Refresh the list after posting
-    } catch (error) {
-      console.error('Error marking request as received:', error);
-      setModalMessage('Failed to mark request as received');
-      setIsSuccess(false); // Set the error state
-      setShowModal(true); // Show the modal
-    }
-  };
   const handleRequestClick = async (requestId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/LogisticRequest/approved/${requestId}`);
+      const response = await axios.get(`http://localhost:5000/api/LogisticRequest/received/${requestId}`);
       setSelectedRequest(response.data);
       setApprovedRequests(response.data);
 
@@ -112,9 +97,9 @@ const handleReceivedClick = async (requestId) => {
 
   const handleSearchRequest = (e) => {
     e.preventDefault();
-    const { department, date } = searchParams;
+    const { supplierName, date } = searchParams;
     const filtered = requests.filter(request => {
-      return (!department || request.department.toLowerCase().includes(department.toLowerCase())) &&
+      return (!supplierName || request.supplierName.toLowerCase().includes(supplierName.toLowerCase())) &&
              (!date || new Date(request.date).toDateString() === new Date(date).toDateString());
     });
     setFilteredRequests(filtered);
@@ -169,15 +154,15 @@ const handleReceivedClick = async (requestId) => {
 
   return (
     <div className="approved-requests-page">
-      <h2>Approved Order</h2>
+      <h2>Order marked as Received</h2>
       <form onSubmit={handleSearchRequest} className="search-form">
-        <div className='search-department'>
-          <label htmlFor="">Search by department</label>
+        <div className='search-supplier Name'>
+          <label htmlFor="">Search by supplier Name</label>
           <input
             type="text"
-            name="department"
-            placeholder="Search by department"
-            value={searchParams.department}
+            name="supplierName"
+            placeholder="Search by Supplier Name"
+            value={searchParams.supplierName}
             onChange={handleSearchChange}
           />
         </div>
@@ -201,34 +186,14 @@ const handleReceivedClick = async (requestId) => {
           {filteredRequests.slice().reverse().map((request, index) => (
             <li key={index}>
               <p onClick={() => handleRequestClick(request._id)}>
-                Requisition Form of logistic <b>{request.department}</b> done on {new Date(request.createdAt).toDateString()}
-                <span>{request.clicked ? '' : 'New Request: '}</span> <label htmlFor=""><FaCheckCircle/> Approved</label>
+                Requisition Form of logistic from <b>{request.supplierName}</b> done on {new Date(request.date).toDateString()}
+                <span>{request.clicked ? '' : 'New Request: '}</span> <label htmlFor=""><FaCheckCircle/>Received</label>
               </p>
-              <button onClick={() => handleReceivedClick(request._id)}>Mark as Received</button> 
             </li>
           ))}
         </ul>
       </div>
-      {/* Modal pop message on success or error message */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            {isSuccess ? (
-              <div className="modal-success">
-                <FaCheckCircle size={54} color="green" />
-                <p>{modalMessage}</p>
-              </div>
-            ) : (
-              <div className="modal-error">
-                <FaTimesCircle size={54} color="red" />
-                <p>{modalMessage}</p>
-              </div>
-            )}
-            <button onClick={() => setShowModal(false)}>Close</button>
-          </div>
-        </div>
-      )}
-
+      
       {selectedRequest && (
         <div className="approved-request-overlay">
           <div className="form-navigation">
@@ -313,7 +278,20 @@ const handleReceivedClick = async (requestId) => {
                     </div>
                   ))}
                 </div>
-
+                <div className='logistic-signature'>
+                  <h3>Logistic Office:</h3>
+                  <label htmlFor="">Received By:</label>
+                  {logisticUsers.map(user => (
+                    <div key={user._id} className="logistic-user">
+                      <p>{user.firstName} {user.lastName}</p>
+                      {user.signature ? (
+                        <img src={`http://localhost:5000/${user.signature}`} alt={`${user.firstName} ${user.lastName} Signature`} />
+                      ) : (
+                        <p>No signature available</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
                 {/* File Attachment Section */}
                 <div className="file-attachments">
                   <h3>File Attachments:</h3>

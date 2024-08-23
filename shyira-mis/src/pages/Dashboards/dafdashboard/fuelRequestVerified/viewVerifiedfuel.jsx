@@ -194,6 +194,14 @@ const FuelRequisitionForm = () => {
                   <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
               
               </div>
+              <div className="logistic">
+                <p>Verified By:</p>
+              
+                  <span>{user?.firstName || ''} {user?.lastName || ''}</span>
+                   <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />
+
+             
+              </div>
             </div>
             {isEditing ? (
               <div className="form-buttons">

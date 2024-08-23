@@ -56,7 +56,7 @@ const RequisitionForm = () => {
     console.log("Modify Option:", reasonOption);
 
     // Check if all required fields are filled
-    if (!requesterName || !carPlaque || !kilometers || !quantityRequested || !destination) {
+    if (!requesterName || !carPlaque || !kilometers || !quantityRequested) {
         alert("Please fill in all required fields.");
         return;
     }
@@ -212,20 +212,8 @@ useEffect(() => {
     
         <div className="form-group">
         <div className="right">
-        <label htmlFor="destination">Destination:</label>
-          <select
-            id="destination"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            required
-          >
-            <option value="">Select Destination</option>
-            {destinationOptions.map((destination) => (
-              <option key={destination._id} value={destination.name}>
-                {destination.destinationname}
-              </option>
-            ))}
-          </select>
+        <label htmlFor="destination">Previous Destination Report:</label>
+        <input type="file" />
         </div>
         
         <div className="left">

@@ -67,6 +67,9 @@ const Navbar = ({ setCurrentPage }) => {
               <li onClick={() => setCurrentPage('approved-order')}>
                 <FaClipboardCheck /> Approved Order
               </li>
+              <li onClick={() => setCurrentPage('received-order')}>
+                <FaClipboardCheck /> Received Order
+              </li>
             </ul>
           )}
         </li>
@@ -75,7 +78,7 @@ const Navbar = ({ setCurrentPage }) => {
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
               <li onClick={() => setCurrentPage('view-requisition')}>
-                <FaClipboardCheck /> Requist Received
+                <FaClipboardCheck /> View Requisition
               </li>
               <li onClick={() => setCurrentPage('approved-request')}>
                 <FaClipboardCheck /> Approved Request

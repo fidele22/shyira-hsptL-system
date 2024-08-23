@@ -7,6 +7,8 @@ import ViewItem from './addItem/parentStock'
 import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
 import ApprovedOrder from './OrderSupply/approvedOrder'
+import ReceivedOrder from './OrderSupply/RecievedOrder'
+
 import LogisticProfile from './LogisticProfile'
 import StockReport from './StockReport/ItemReport';
 import ViewRequisition from './Requests/RequisitionReceive';
@@ -38,6 +40,9 @@ const LogisticDashboard = () => {
       case 'approved-order':
           return <ApprovedOrder />;
 
+       case 'received-order':
+        return <ReceivedOrder />; 
+     
       case 'fuel-requisition':
         return <ViewFuelRequest />;
       case 'carplaque':
@@ -45,6 +50,7 @@ const LogisticDashboard = () => {
            
       case 'approved-request':
         return <ApprovedRequests />;  
+     
       case 'logistic-profile':
         return <LogisticProfile />;
       case 'view-requisition':

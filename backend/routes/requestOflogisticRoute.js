@@ -104,6 +104,16 @@ router.get('/approved-order', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+//router to fetch received logistic request from recievedlogistci request collection
+router.get('/received-order', async (req, res) => {
+  try {
+    const receivedlogisticrequests = await RecievedLogisticRequest.find();
+    res.json(receivedlogisticrequests);
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 // Example route to fetch a single logistic request by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -133,7 +143,21 @@ router.get('/approved/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
+// router to fetch logistic requisition recieved 
+//  route to fetch a single logistic order by ID
+router.get('/received/:id', async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const request = await RecievedLogisticRequest.findById(requestId); // Assuming Mongoose model
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+    res.json(request);
+  } catch (error) {
+    console.error('Error fetching request:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 router.put('/:id', async (req, res) => {
   try {
@@ -228,7 +252,7 @@ router.post('/approved/:id', async (req, res) => {
 });
 
 // Forward a request to the approved collection
-router.post('/recieved/:id', async (req, res) => {
+router.post('/received/:id', async (req, res) => {
   try {
     const forwardedRequest = await ApprovedLogisticRequest.findById(req.params.id);
     
@@ -237,7 +261,7 @@ router.post('/recieved/:id', async (req, res) => {
     }
     
     // Create a new approved request and include the userId
-    const approvedRequest = new RecievedLogisticRequest({
+    const receivedLogisticRequest = new RecievedLogisticRequest({
      // userId: forwardedRequest.userId, // Include userId from forwarded request
       supplierName: forwardedRequest.supplierName,
       items: forwardedRequest.items,
@@ -245,8 +269,8 @@ router.post('/recieved/:id', async (req, res) => {
      // clicked: req.body.clicked || false // Use the clicked status if provided, else default to false
     });
 
-    await approvedRequest.save();
-    res.status(201).json(approvedRequest);
+    await receivedLogisticRequest.save();
+    res.status(201).json(receivedLogisticRequest);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

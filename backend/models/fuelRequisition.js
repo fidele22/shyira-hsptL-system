@@ -24,7 +24,7 @@ const fuelRequisitionSchema = new Schema({
   },
   destination: {
     type: String,
-    required: true
+    required: false,
   },
   remainingliters: {
     type: String,
@@ -36,8 +36,7 @@ const fuelRequisitionSchema = new Schema({
   },
   reason: {
     type: String,
-    enum: ['Yes', 'No'],
-    default: 'No'
+    
   },
   createdAt: {
     type: Date,

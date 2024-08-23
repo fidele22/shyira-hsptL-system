@@ -48,7 +48,7 @@ const Navbar = ({ setCurrentPage }) => {
         <FaGasPump />  Fuel Requisition
           {dropdownsOpen.fuelrequest && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('view-fuel-request')}><FaList /> View Request</li>
+              <li onClick={() => setCurrentPage('view-fuel-request')}><FaList /> View verified Request</li>
               <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardCheck/> Approved Request</li>
             </ul>
           )}

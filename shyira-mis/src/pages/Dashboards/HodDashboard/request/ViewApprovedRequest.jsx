@@ -100,6 +100,7 @@ const ApprovedRequests = () => {
       const response = await axios.post(`http://localhost:5000/api/approve/receive/${requestId}`);
       alert(response.data.message);
       fetchApprovedRequests(); // Refresh the list after reposting
+      alert('Marking as recieved successful')
     } catch (error) {
       console.error('Error marking request as received:', error);
       alert('Failed to mark request as received');

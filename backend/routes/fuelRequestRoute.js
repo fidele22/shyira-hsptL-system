@@ -38,7 +38,6 @@ router.post('/submit', async (req, res) => {
       quantityRequested,
       quantityReceived,
       remainingliters,
-      destination,
       reason,
       average,
       hodName,
@@ -110,15 +109,6 @@ router.put('/:id', async (req, res) => {
 // router to proced on daf dashboard
 
 // GET route to fetch all fuel requisitions
-router.get('/verified', async (req, res) => {
-  try {
-    const fuelrequisitions = await ForwardedFuelRequest.find();
-    res.status(200).json(fuelrequisitions);
-  } catch (error) {
-    console.error('Error fetching requisitions:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 
 module.exports = router;

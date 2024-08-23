@@ -60,7 +60,7 @@ const AddForm = () => {
             id="destination"
             value={destinationname}
             onChange={(e) => setDestination(e.target.value)}
-            required
+         
           />
         </div>
 
