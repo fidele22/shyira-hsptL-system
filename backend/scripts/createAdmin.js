@@ -12,30 +12,19 @@ const createAdmin = async () => {
   });
 
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash('admin', salt);
+  const hashedPassword = await bcrypt.hash('admin1', salt);
 
   // Fetch the desired position data
-  let position;
-  try {
-    position = await Position.findOne({ name: 'position111' }); // Adjust query as per your Position model
-    if (!position) {
-      throw new Error('Admin Position not found');
-    }
-  } catch (err) {
-    console.error('Error fetching position:', err);
-    mongoose.connection.close();
-    return;
-  }
-
+ 
   const admin = new User({
     firstName: 'Admin',
     lastName: 'User',
     phone: '123456789',
-    email: 'admin@.com',
+    email: 'admin@gmail.com',
     signature: 'AdminSignature',
     password: hashedPassword,
     role: 'admin',
-    positionName: position.name, // Assign positionName from fetched position
+    positionName: 'adminposition', // Assign positionName from fetched position
     // serviceName and departmentName can be similarly fetched and assigned
     serviceName: 'admin', // Example, replace with actual fetched data
     departmentName: 'admin', // Example, replace with actual fetched data

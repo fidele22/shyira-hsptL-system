@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { FaQuestionCircle, FaEdit, FaTimes, FaTrash,FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 import './ViewRequest.css'; // Import CSS for styling
+
 
 const ForwardedRequests = () => {
   const [forwardedRequests, setForwardedRequests] = useState([]);
@@ -24,7 +26,7 @@ const ForwardedRequests = () => {
 
   const fetchForwardedRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/forwardedrequests');
+      const response = await axios.get('http://localhost:5000/api/forwardedrequests/items');
       setForwardedRequests(response.data);
     } catch (error) {
       console.error('Error fetching forwarded requests:', error);
@@ -78,8 +80,8 @@ const ForwardedRequests = () => {
       );
 
       // Forward the updated request to the approved collection
-      await axios.post(`http://localhost:5000/api/forwardedrequests/${selectedRequest._id}/approve`);
-      alert('submit requestion form successfully')
+      await axios.post(`http://localhost:5000/api/forwardedrequests/approved/${selectedRequest._id}`);
+      alert('requestion Approved successfully')
     } catch (error) {
       console.error('Error updating request:', error);
     }
@@ -109,13 +111,16 @@ const ForwardedRequests = () => {
   if (!user) return <p>Loading...</p>;
 
   return (
-    <div className={`requist ${selectedRequest ? 'dim-background' : ''}`}>
-      <h2>Forwarded Requests</h2>
-      <div className="navigatio">
+    <div className={`verified-requist ${selectedRequest ? 'dim-background' : ''}`}>
+      <h2>Item Requisition Verified</h2>
+      <div className="verified-request-navigation">
         <ul>
           {forwardedRequests.slice().reverse().map((request, index) => (
             <li key={index}>
-              <button onClick={() => handleRequestClick(request._id)}>Request {forwardedRequests.length - index}</button>
+              <p onClick={() => handleRequestClick(request._id)}>
+          Requisition Form from department of <u><b>{request.department}</b> </u>done on {new Date(request.date).toDateString()}
+          <span>{!request.clicked ? 'New Request' : ''}</span> <label htmlFor=""><FaCheck /> Verified</label>
+        </p>
             </li>
           ))}
         </ul>
@@ -124,7 +129,7 @@ const ForwardedRequests = () => {
         <div className="request-details-overlay">
           <div className="request-details">
             {isEditing ? (
-              <form onSubmit={handleUpdateSubmit}>
+              <form >
                 <h1>Edit Request</h1>
                 <div className="request-recieved-heading">
             <h1>WESTERN PROVINCE</h1>
@@ -184,11 +189,15 @@ const ForwardedRequests = () => {
                   </tbody>
                 </table>
                 
-                <button type="submit" className='submit-an-update' >Update Request</button>
+               
                 <button type="button" className='cancel-btn' onClick={handleCancelClick}>Cancel</button>
               </form>
             ) : (
               <>
+               <div className="form-navigation">
+               <button className='approve-request-btn' onClick={handleUpdateSubmit}>Approve Request</button>
+             <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
+          </div>
               <div className="image-request-recieved">
           <img src="/image/logo2.png" alt="Logo" className="logo" />
           </div>
@@ -225,11 +234,12 @@ const ForwardedRequests = () => {
                   </tbody>
                 </table>
 
-                <div className="signature-section">
-                <div className="hod">
-                  <label htmlFor="hodName">Name of HOD:</label>
-                    {selectedRequest.hodName && <h2 >{selectedRequest.hodName}</h2>}
-                    <label htmlFor="hodSignature">HOD Signature:</label>
+                <div className="daf-signature-section">
+                <div className="hod-signature">
+                  <h3 htmlFor="hodName">Name of HOD:</h3>
+                  <label htmlFor="">Prepared By:</label>
+                     <p >{selectedRequest.hodName}</p>
+              
                     {selectedRequest.hodSignature ? (
                       <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
                     ) : (
@@ -239,6 +249,7 @@ const ForwardedRequests = () => {
                   </div>
                   <div className='logistic-signature'>
                   <h3>Logistic Office:</h3>
+                  <label htmlFor="">verified By:</label>
                     {logisticUsers.map(user => (
                       <div key={user._id} className="logistic-user">
                         <p>{user.firstName} {user.lastName}</p>
@@ -250,14 +261,17 @@ const ForwardedRequests = () => {
                       </div>
                     ))}
                   </div>
-                  <div className="daf-signature">
-                    <h2>Daf signature:</h2>
-                  <h3>{user.firstName} {user.lastName}</h3>
+                 {/*<div className="daf-signature">
+                    <h3>Daf signature:</h3>
+                  <p>{us er.firstName} {user.lastName}</p>
                   {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
-                  </div>
+                  </div>*/}
+                  
                 </div>
-                <button className='edit-btn' onClick={handleEditClick}>Edit Form</button>
-                <button className='cancel-btn'  onClick={() => setSelectedRequest(null)}>Cancel</button>
+                <button className='edit-btn' onClick={handleEditClick}>Edit</button>
+                
+
+
               </>
             )}
           </div>

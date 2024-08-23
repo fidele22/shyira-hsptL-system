@@ -52,11 +52,19 @@ const LogisticRequestForm = () => {
    
 
     try {
-      const response = await axios.post('http://localhost:5000/api/UserRequest/submit', formData, {
+      const response = await axios.post('http://localhost:5000/api/UserRequest/submit', {
+        department,
+        items: JSON.stringify(items),
+        date,
+        hodName: user ? `${user.firstName} ${user.lastName}` : '',
+        hodSignature: user && user.signature ? user.signature : ''
+      }, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json' // Ensure content type is JSON
         },
       });
+  
       console.log(response.data);
       alert('Requisition submitted successfully!');
     } catch (error) {
@@ -116,6 +124,7 @@ const LogisticRequestForm = () => {
   return (
     <div className="requistion">
       <h2>Make Requisition</h2>
+      <label htmlFor="">You have to make various requisitions for staff and accommodation</label>
       <div className="hod-request-form">
         <form onSubmit={handleSubmit}>
           <div className="image-logo">
@@ -226,7 +235,7 @@ const LogisticRequestForm = () => {
 
          
 
-          <button type="submit">Send Request</button>
+          <button className='hod-submit-btn' type="submit">Send Request</button>
         </form>
       </div>
     </div>

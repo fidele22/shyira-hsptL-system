@@ -1,4 +1,5 @@
 import React, { useState,useEffect} from 'react'
+import { FaUser } from 'react-icons/fa';
 import './Navbar.css'
 
 function Navbar() {
@@ -42,11 +43,9 @@ function Navbar() {
 
   return (
     <div className='Navbar'>
-        <div className='Navbar-logo'>
-        
-        </div>
+  
         <ul className='navbar-menu'>
-        <h1>{userName}</h1>    
+        <h1> <FaUser /> {userName}</h1>    
             
         </ul>
        

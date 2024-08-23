@@ -14,22 +14,34 @@ router.delete('/:id', deleteUser);
 // Profile route
 router.get('/profile', authenticate, getProfile);
 
-// Get users with role 'logistic'
+// Get users with role 'logistic' with 
 router.get('/logistic-users', async (req, res) => {
     try {
-      const logisticUsers = await User.find({ role: 'logistic' }).select('firstName lastName signature');
+      const logisticUsers = await User.find({ role: 'LOGISTIC' }).select('firstName lastName signature');
       res.json(logisticUsers);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching logistic users', error });
     }
   });
-  
-// Logout route
-router.post('/logout', (req, res) => {
-    // Invalidate the token by clearing it on the client-side or marking it as invalid in your system
-    res.status(200).json({ message: 'Logged out successfully' });
+  // Get users with role 'daf'
+router.get('/daf-users', async (req, res) => {
+  try {
+    const dafUsers = await User.find({ role: 'DAF' }).select('firstName lastName signature');
+    res.json(dafUsers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching logistic users', error });
+  }
 });
-
-
+  // Get users with role 'daf'
+  router.get('/DG-users', async (req, res) => {
+    try {
+      const dgUsers = await User.find({ role: 'DG' }).select('firstName lastName signature');
+      res.json(dgUsers);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching logistic users', error });
+    }
+  });
+  
+  
 
 module.exports = router;

@@ -96,27 +96,31 @@ return res.status(404).send('Stock entry not found');
 
 // Update the stock entry and balance
      if (entry) {
+
      stock.entry = {
      quantity: entry.quantity || O,
      pricePerUnit: entry.pricePerUnit || stock.entry.pricePerUnit,
      totalAmount: entry.quantity * (entry.pricePerUnit || stock.entry.pricePerUnit)
      };
-     
+     //make exit quantity and amount equal to zero while enrty updated
+     stock.exit.quantity = 0;
+     stock.exit.totalAmount = 0;
+
      stock.balance.quantity +=  stock.entry.quantity;
      stock.balance.totalAmount += stock.entry.totalAmount;
      stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last entry
      }
-     if (exit) {
-     stock.exit = {
-     quantity: exit.quantity || stock.exit.quantity,
-     pricePerUnit: stock.entry.pricePerUnit,
-     totalAmount: exit.quantity * (exit.pricePerUnit || stock.exit.pricePerUnit)
-     };
-     
-     stock.balance.quantity -= stock.exit.quantity;
-     stock.balance.totalAmount -= stock.exit.totalAmount; 
-     stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last exit
-     }
+    // if (exit) {
+    // stock.exit = {
+    // quantity: exit.quantity || stock.exit.quantity,
+    // pricePerUnit: stock.entry.pricePerUnit,
+    // totalAmount: exit.quantity * (exit.pricePerUnit || stock.exit.pricePerUnit)
+    // };
+    // 
+    // stock.balance.quantity -= stock.exit.quantity;
+    // stock.balance.totalAmount -= stock.exit.totalAmount; 
+    // stock.balance.pricePerUnit = stock.entry.pricePerUnit; // Update price per unit based on the last exit
+    // }
 
 await stock.save();
    // Update the corresponding StockItems

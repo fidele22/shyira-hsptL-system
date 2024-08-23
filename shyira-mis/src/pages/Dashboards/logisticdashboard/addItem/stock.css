@@ -29,6 +29,11 @@
       padding: 20px;
     
     }
+   .detail-history{
+     display: flex;
+     gap: 20rem;
+    
+   }
     .stock-details-btn{
       background-color: blue;
     }
@@ -44,9 +49,15 @@
       position: absolute;
       right: 0;
       top: 0;
-      font-size: 16px;
-      background-color: rgb(224, 58, 58);
+  
+      text-decoration: none;
+      color: rgb(191, 61, 61);;
+      font-size: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      text-align: center;
     }
+  
     .detail-edit-btn{
       background-color: rgb(96, 98, 98);
       font-size: 16px;
@@ -59,7 +70,7 @@
     }
     .view-details-btn{
       background-color: rgb(117, 69, 7);
-      font-size: 16px;
+      font-size: 20px;
     }
     .view-history-btn{
       background-color: #007bff;

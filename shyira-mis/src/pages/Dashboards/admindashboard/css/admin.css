@@ -64,29 +64,16 @@
     text-align: left;
   }
   
-  .user-edit-btn, .delete-btn {
-    padding: 10px;
-    gap: 15px;
-    margin-right: 5px;
+
+  .edit-delete label{
+    float: left;
     cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    font-size:16px;
-  }
-  .user-edit-btn{
-    background-color: black;
-  }
-  .delete-btn{
-    background-color: red;
-    color: white;
-   
+    margin-left: 20px;
+    
   }
   .user-cancel-btn{
     background-color: red;
     font-size: 16px;
-  }
-  .delete-btn:hover{
-    background-color: rgb(203, 18, 18);
   }
   .pagination {
     margin-top: 20px;

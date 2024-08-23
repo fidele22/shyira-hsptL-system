@@ -40,7 +40,7 @@ const ServiceForm = () => {
               </div>
               <div className='right'>
                 <label>Description</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} required />
+                <textarea name="description" value={formData.description} onChange={handleChange}  />
               </div>
              </div>
             </div>

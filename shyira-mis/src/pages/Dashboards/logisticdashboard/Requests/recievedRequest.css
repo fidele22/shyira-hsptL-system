@@ -52,9 +52,13 @@
   .navigate-request p:hover{
     color: blue;
   }
+  .image-request-recieved{
+    margin-top: 3rem;
+  }
   .image-request-recieved img{
     width: 100%;
     height: 20vh;
+ 
     margin-bottom: 4rem;
   }
   .request-recieved-heading h1{
@@ -100,7 +104,21 @@
     text-align: center;
   }
   
+  .form-navigation{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: white;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    height: 4.5rem;
+    position: fixed;
+    width: 75%;
+    top: 5%;
+    left: 20%;
+    z-index: 1000; /* Ensure the navbar stays above other content */
   
+  }
   .buttons button{
     margin-top: 20px;
     margin-left: 10px;
@@ -115,9 +133,16 @@
     font-size: 18px;
     color: white;
   }
+
   .request-cancel-btn{
-    background-color: rgb(200, 58, 58);
-    font-size: 18px;
+    position: absolute;
+    right: 0;
+    padding: 10px;
+    color: rgb(162, 19, 19);
+    font-size: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    text-align: center;
   }
   .submit-an-update{
     background-color: rgb(41, 130, 225);
@@ -136,8 +161,7 @@
     margin-top: 2rem;
    
   }
-  .recieved-request-footer{
-    background-color: yellowgreen;
-  
-    
+  .hod p{
+    font-size: 25px;
+    font-weight: 600;
   }

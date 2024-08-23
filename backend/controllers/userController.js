@@ -83,7 +83,7 @@ const loginUser = async (req, res) => {
     }
 
     // Generate JWT token upon successful login
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
+    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '8h' });
     res.json({ token, role: user.role });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
@@ -91,7 +91,7 @@ const loginUser = async (req, res) => {
 };
 
 // Middleware to authenticate user
-const authenticate = async (req, res, next) => {
+const authenticate = async (req, res, next) => {7
   const token = req.headers['authorization'];
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -147,6 +147,7 @@ const getProfile = async (req, res) => {
   }
 };
 
+
 //fetching user data and display to admin dashboard
 const getUsers = async (req, res) => {
   try {
@@ -197,16 +198,6 @@ const deleteUser = async (req, res) => {
 
     // Delete user
     await User.findByIdAndDelete(userId);
-
-    // Example of cascading deletion (adjust as per your schema and requirements)
-    // Remove service if not referenced by any other user
-    await Service.deleteMany({ _id: { $nin: await User.distinct('serviceId', { _id: { $ne: userId } }) } });
-
-    // Remove position if not referenced by any other user
-    await Position.deleteMany({ _id: { $nin: await User.distinct('positionId', { _id: { $ne: userId } }) } });
-
-    // Remove department if not referenced by any other user
-    await Department.deleteMany({ _id: { $nin: await User.distinct('departmentId', { _id: { $ne: userId } }) } });
 
     res.status(200).json({ message: 'User and associated data deleted successfully' });
   } catch (error) {

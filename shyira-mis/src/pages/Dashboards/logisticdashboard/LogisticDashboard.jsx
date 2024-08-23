@@ -6,10 +6,14 @@ import Overview from './Overview';
 import ViewItem from './addItem/parentStock'
 import AddItem from './addItem/addingitem';
 import MakeRequist from './Requests/MakeRequist'
+import ApprovedOrder from './OrderSupply/approvedOrder'
 import LogisticProfile from './LogisticProfile'
 import StockReport from './StockReport/ItemReport';
-import RequisitionReceive from './Requests/RequisitionReceive'
+import ViewRequisition from './Requests/RequisitionReceive';
+import ViewFuelRequest from './fuelRequisition/viewfuelRequest'
+import AddCarplaque from './fuelRequisition/addcarplaque'
 import ApprovedRequests from './Requests/approvedRequest';
+import RequisitionReceive from './receivedRequisitions/itemRequestReceived';
 import ImportItems from './addItem/uploadItems'
 import './contentCss/LogisticDashboard.css';
 
@@ -28,15 +32,27 @@ const LogisticDashboard = () => {
         return <ViewItem />;
       case 'report':
         return <StockReport />;
-      case 'make-requist':
+
+      case 'make-order':
         return <MakeRequist />;
-      
+      case 'approved-order':
+          return <ApprovedOrder />;
+
+      case 'fuel-requisition':
+        return <ViewFuelRequest />;
+      case 'carplaque':
+        return <AddCarplaque />
+           
       case 'approved-request':
         return <ApprovedRequests />;  
       case 'logistic-profile':
         return <LogisticProfile />;
+      case 'view-requisition':
+        return <ViewRequisition />;
+
       case 'requisition-receive':
         return <RequisitionReceive />;
+        
       default:
         return <Overview />;
     }

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import './Navigationbar.css';
 import axios from 'axios';
-import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck, FaClipboardList, FaChartBar, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck,
+   FaClipboardList, FaChartBar, FaUser, FaSignOutAlt,FaGasPump,FaLifeRing } from 'react-icons/fa';
 
 const Navbar = ({ setCurrentPage }) => {
   const [dropdownsOpen, setDropdownsOpen] = useState({
     itemAction: false,
+    supplyOrder:false,
     requisitions: false,
+    fuelrequisitions:false,
   });
 
   const toggleDropdown = (dropdownName) => {
@@ -32,7 +35,7 @@ const Navbar = ({ setCurrentPage }) => {
   };
 
   return (
-    <div className="navigation">
+    <div className="logistic-navigation">
       <h2>Logistic Dashboard</h2>
       <ul>
         <li onClick={() => setCurrentPage('overview')}>
@@ -54,25 +57,53 @@ const Navbar = ({ setCurrentPage }) => {
             </ul>
           )}
         </li>
-        <li onClick={() => setCurrentPage('make-requist')}>
-          <FaBoxOpen /> Order Supplies
+        <li onClick={() => toggleDropdown('supplyOrder')} className="dropdown">
+         <FaBoxOpen /> Order Supplies
+          {dropdownsOpen.supplyOrder && (
+            <ul className="dropdown-menu">
+              <li onClick={() => setCurrentPage('make-order')}>
+                <FaClipboardCheck /> Make Order
+              </li>
+              <li onClick={() => setCurrentPage('approved-order')}>
+                <FaClipboardCheck /> Approved Order
+              </li>
+            </ul>
+          )}
         </li>
         <li onClick={() => toggleDropdown('requisitions')} className="dropdown">
-          <FaClipboardList /> Requisitions
+          <FaClipboardList /> Item Requisitions
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('requisition-receive')}>
+              <li onClick={() => setCurrentPage('view-requisition')}>
                 <FaClipboardCheck /> Requist Received
               </li>
               <li onClick={() => setCurrentPage('approved-request')}>
                 <FaClipboardCheck /> Approved Request
               </li>
-              <li onClick={() => setCurrentPage('data')}>
-                <FaClipboardList /> Requist Status
+              <li onClick={() => setCurrentPage('requisition-receive')}>
+                <FaClipboardList /> Requisition Status
               </li>
             </ul>
           )}
         </li>
+
+        <li onClick={() => toggleDropdown('fuelrequisitions')} className="dropdown">
+        <FaGasPump size={24} /> Fuel Requisitions
+          {dropdownsOpen.fuelrequisitions && (
+            <ul className="dropdown-menu">
+              <li onClick={() => setCurrentPage('fuel-requisition')}>
+                <FaClipboardCheck /> View Requisition
+              </li>
+              <li onClick={() => setCurrentPage('approved-request')}>
+                <FaClipboardCheck /> Approved Fuel Request
+              </li>
+              <li onClick={() => setCurrentPage('carplaque')}>
+          <FaChartBar /> Form Data
+        </li>
+            </ul>
+          )}
+        </li>
+      
         <li onClick={() => setCurrentPage('report')}>
           <FaChartBar /> Reports
         </li>
@@ -83,6 +114,7 @@ const Navbar = ({ setCurrentPage }) => {
         <li onClick={() => setCurrentPage('logistic-profile')}>
           <FaUser /> Profile
         </li>
+        <li onClick={() => setCurrentPage('logistic-profil')}> <FaLifeRing />Help Center</li>
         <li onClick={handleLogout}>
           <FaSignOutAlt /> Logout
         </li>

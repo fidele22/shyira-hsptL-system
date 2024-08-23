@@ -5,6 +5,7 @@ import Footer from '../footer/Footer';
 import AdminOverview from './AdminOverview';
 import ViewUser from './users'
 import AddUser from './AddUser';
+import UserRole from './AddRole'
 import Service from './addService'
 import ViewS from './ViewServices'
 import Position from './AddPosition'
@@ -27,6 +28,10 @@ const LogisticDashboard = () => {
         return <AddUser />;
       case 'view-Users':
         return <ViewUser />;
+      case 'user-roles':
+        return <UserRole />
+
+
       case 'add-service':
         return <Service />;
       case 'view-service':

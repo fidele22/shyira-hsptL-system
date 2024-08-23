@@ -28,4 +28,33 @@ router.get('/', async (req, res) => {
     
   }
 });
+
+// Update position
+router.put('/positions/:id', async (req, res) => {
+  try {
+    const position = await Position.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!position) {
+      return res.status(404).json({ message: 'Position not found' });
+    }
+    res.json(position);
+  } catch (error) {
+    console.error('Error updating position:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete position
+router.delete('/positions/:id', async (req, res) => {
+  try {
+    const position = await Position.findByIdAndDelete(req.params.id);
+    if (!position) {
+      return res.status(404).json({ message: 'Position not found' });
+    }
+    res.json({ message: 'Position deleted' });
+  } catch (error) {
+    console.error('Error deleting position:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

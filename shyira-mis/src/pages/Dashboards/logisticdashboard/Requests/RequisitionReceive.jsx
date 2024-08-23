@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaQuestionCircle, FaEdit, FaTimes, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -50,17 +51,18 @@ const LogisticRequestForm = () => {
       setSelectedRequest(response.data);
       setEditFormData(response.data);
       setIsEditing(false);
-
-      // Update the clicked status to true
-      await axios.put(`http://localhost:5000/api/UserRequest/${requestId}`, { clicked: true });
-
-      // Refresh the requests list
-      fetchRequests();
+  
+      
+  
+      // Update the filtered requests to reflect the clicked status
+      setFilteredRequests((prevRequests) =>
+        prevRequests.map((req) => req._id === requestId ? { ...req, clicked: true } : req)
+      );
     } catch (error) {
       console.error('Error fetching request details:', error);
     }
   };
-
+  
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -92,16 +94,29 @@ const LogisticRequestForm = () => {
   const handleUpdateSubmit = async () => {
   
     try {
-      await axios.put(`http://localhost:5000/api/UserRequest/${selectedRequest._id}`, editFormData );
-      alert('Request Sent To DAF!');
+      await axios.put(`http://localhost:5000/api/UserRequest/${selectedRequest._id}`, editFormData, { clicked: true });
+      alert('Request Updated successfull!');
       fetchRequests(); // Refresh the list of requests
       setSelectedRequest(null); // Close the details view
 
-      
+     
     } catch (error) {
       console.error('Error updating request:', error);
     }
   };
+//send verified
+const handleVerifySubmit = async () => {
+  
+  try {
+    await axios.put(`http://localhost:5000/api/UserRequest/verified/${selectedRequest._id}`, { clicked: true });
+    alert('Request Verified successfull!');
+    fetchRequests(); // Refresh the list of requests
+    setSelectedRequest(null); // Close the details view
+
+  } catch (error) {
+    console.error('Error updating request:', error);
+  }
+};
 
   // Function to generate and download PDF
   const downloadPDF = async () => {
@@ -201,22 +216,23 @@ const LogisticRequestForm = () => {
       </form>
 
       <div className="navigate-request">
-        <ul>
-          {filteredRequests.slice().reverse().map((request, index) => (
-            <li key={index}>
-              <p onClick={() => handleRequestClick(request._id)}>
-              Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
-              <span>{request.clicked ? '' : 'New Request: '}</span>
-            </p>
-            </li>
-          ))}
-        </ul>
+      <ul>
+    {filteredRequests.slice().reverse().map((request, index) => (
+      <li key={index}>
+        <p onClick={() => handleRequestClick(request._id)}>
+          Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
+          <span>{!request.clicked ? 'New Request' : ''}</span>
+        </p>
+      </li>
+    ))}
+  </ul>
       </div>
   
       {selectedRequest && (
       
+      
         <div className="request-details-overlay">
-           
+         
           <div className="request-details">
           
             {isEditing ? (
@@ -272,26 +288,11 @@ const LogisticRequestForm = () => {
                   </tbody>
                 </table>
 
-                <div className="signature-section">
-                <label htmlFor="logisticName">Logistic Name:</label>
-                  <input
-                    type="text"
-                    name="logisticName"
-                    value={user.firstName} // Display from user profile
-                    readOnly
-                  />
-                  <label htmlFor="logisticSignature">Logistic Signature:</label>
-                  <input
-                    type="text"
-                    name="logisticSignature"
-                    value={user.signature} // Display from user profile
-                    readOnly
-                  />
-                </div>
+               
                 <hr />
                
                 <div className="buttons">
-                <button className='submit-an-update' onClick={handleUpdateSubmit}>Submit</button>
+                <button className='submit-an-update' onClick={handleUpdateSubmit}>update</button>
                 <button className='request-cancel-btn' onClick={handleCancelEdit}>Cancel</button>
                 
                 </div>
@@ -303,6 +304,12 @@ const LogisticRequestForm = () => {
             ) : (
        
               <>
+          <div className="form-navigation">
+         
+          <button className='submit-an-update' onClick={ handleVerifySubmit}>Verify Request</button>
+         
+             <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
+          </div>
          <div id="pdf-content">
           <div className="image-request-recieved">
           <img src="/image/logo2.png" alt="Logo" className="logo" />
@@ -342,7 +349,7 @@ const LogisticRequestForm = () => {
                 <div className="signature-section">
                   <div className="hod">
                   <label htmlFor="hodName">Name of HOD:</label>
-                    {selectedRequest.hodName && <h2 >{selectedRequest.hodName}</h2>}
+                    {selectedRequest.hodName && <p>{selectedRequest.hodName}</p>}
                     <label htmlFor="hodSignature">HOD Signature:</label>
                     {selectedRequest.hodSignature ? (
                       <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
@@ -351,11 +358,12 @@ const LogisticRequestForm = () => {
                     )}
 
                   </div>
-                  <div className="logistic-signature">
-                    <h2>Logistic office:</h2>
+                  {/*<div className="logistic-signature">
+                    <label>Logistic office:</label>
                   <h3>{user.firstName} {user.lastName}</h3>
                   {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
-                  </div>
+                  </div>*/}
+                  
                   
 
                 </div>
@@ -364,13 +372,13 @@ const LogisticRequestForm = () => {
                
 
              
-                <footer className='recieved-request-footer'>
                 <div className="buttons">
-                <button className='request-edit-btn' onClick={handleEditClick}>Edit</button>
-                <button className='request-cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
                 <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
+                <button className='request-edit-btn' onClick={handleEditClick}>Edit</button>
+
+               
                 </div>
-                </footer>
+               
                
               </>
              

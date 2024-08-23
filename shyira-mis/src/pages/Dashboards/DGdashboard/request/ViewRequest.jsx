@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { FaQuestionCircle, FaEdit, FaTimes, FaTrash,FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 import './ViewRequest.css'; // Import CSS for styling
+
 
 const ForwardedRequests = () => {
   const [forwardedRequests, setForwardedRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [logisticUsers, setLogisticUsers] = useState([]);
 
   useEffect(() => {
     fetchForwardedRequests();
+    fetchLogisticUsers(); // Fetch logistic users on component mount
   }, []);
+  const fetchLogisticUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/logistic-users');
+      setLogisticUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching logistic users:', error);
+    }
+  };
 
   const fetchForwardedRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/forwardedrequests');
+      const response = await axios.get('http://localhost:5000/api/forwardedrequests/items');
       setForwardedRequests(response.data);
     } catch (error) {
       console.error('Error fetching forwarded requests:', error);
@@ -68,30 +80,47 @@ const ForwardedRequests = () => {
       );
 
       // Forward the updated request to the approved collection
-      await axios.post(`http://localhost:5000/api/forwardedrequests/${selectedRequest._id}/approve`);
-      alert('submit requestion form successfully')
+      await axios.post(`http://localhost:5000/api/forwardedrequests/approved/${selectedRequest._id}`);
+      alert('requestion Approved successfully')
     } catch (error) {
       console.error('Error updating request:', error);
     }
   };
 
-  //const handleApproveClick = async () => {
-  //  try {
-  //    const response = await axios.post(`http://localhost:5000/api/forwardedrequests/${selectedRequest._id}/approve`);
-  //    console.log('Approved request:', response.data);
-  //  } catch (error) {
-  //    console.error('Error forwarding request:', error);
-  //  }
-  //};
+ //
+  //fetching signature
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/profile', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  if (!user) return <p>Loading...</p>;
 
   return (
-    <div className={`requist ${selectedRequest ? 'dim-background' : ''}`}>
-      <h2>Forwarded Requests</h2>
-      <div className="navigatio">
+    <div className={`verified-requist ${selectedRequest ? 'dim-background' : ''}`}>
+      <h2>Item Requisition Verified</h2>
+      <div className="verified-request-navigation">
         <ul>
           {forwardedRequests.slice().reverse().map((request, index) => (
             <li key={index}>
-              <button onClick={() => handleRequestClick(request._id)}>Request {forwardedRequests.length - index}</button>
+              <p onClick={() => handleRequestClick(request._id)}>
+          Requisition Form from department of <u><b>{request.department}</b> </u>done on {new Date(request.date).toDateString()}
+          <span>{!request.clicked ? 'New Request' : ''}</span> <label htmlFor=""><FaCheck /> Verified</label>
+        </p>
             </li>
           ))}
         </ul>
@@ -100,29 +129,15 @@ const ForwardedRequests = () => {
         <div className="request-details-overlay">
           <div className="request-details">
             {isEditing ? (
-              <form onSubmit={handleUpdateSubmit}>
+              <form >
                 <h1>Edit Request</h1>
-                <label>District</label>
-                <input
-                  type="text"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                />
-                <label>Health Facility</label>
-                <input
-                  type="text"
-                  name="healthFacility"
-                  value={formData.healthFacility}
-                  onChange={handleInputChange}
-                />
-                <label>Department</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleInputChange}
-                />
+                <div className="request-recieved-heading">
+            <h1>WESTERN PROVINCE</h1>
+            <h1>DISTRIC: NYABIHU</h1>
+            <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
+            <h1>DEPARTMENT:  </h1>
+
+          </div>
                 <table>
                   <thead>
                     <tr>
@@ -173,50 +188,26 @@ const ForwardedRequests = () => {
                     ))}
                   </tbody>
                 </table>
-                <label>Signature</label>
-                <input
-                  type="text"
-                  name="signature"
-                  value={formData.signature}
-                  onChange={handleInputChange}
-                />
-                <label>HOD Signature</label>
-                <input
-                  type="text"
-                  name="hodSignature"
-                  value={formData.hodSignature}
-                  onChange={handleInputChange}
-                />
-                <label>Logistic Signature</label>
-                <input
-                  type="text"
-                  name="logisticSignature"
-                  value={formData.logisticSignature}
-                  onChange={handleInputChange}
-                />
-                <label>Acknowledgement Receipt Signature</label>
-                <input
-                  type="text"
-                  name="ackReceiptSignature"
-                  value={formData.ackReceiptSignature}
-                  onChange={handleInputChange}
-                />
-                <label>DAF Signature</label>
-                <input
-                  type="text"
-                  name="dafSignature"
-                  value={formData.dafSignature}
-                  onChange={handleInputChange}
-                />
-                <button type="submit" className='submit-an-update' >Update Request</button>
+                
+               
                 <button type="button" className='cancel-btn' onClick={handleCancelClick}>Cancel</button>
               </form>
             ) : (
               <>
-              <h3>WESTERN PROVINCE</h3>
-            <h3>DISTRIC: <span>{selectedRequest.district}</span>  </h3>
-            <h3>HEALTH FACILITY: <span>{selectedRequest.healthFacility}</span> </h3>
-            <h3>DEPARTMENT: <span>{selectedRequest.department}</span> </h3>
+               <div className="form-navigation">
+               <button className='approve-request-btn' onClick={handleUpdateSubmit}>Approve Request</button>
+             <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
+          </div>
+              <div className="image-request-recieved">
+          <img src="/image/logo2.png" alt="Logo" className="logo" />
+          </div>
+          <div className="request-recieved-heading">
+            <h1>WESTERN PROVINCE</h1>
+            <h1>DISTRIC: NYABIHU</h1>
+            <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
+            <h1>DEPARTMENT:  </h1>
+
+          </div>
 
             <h2>REQUISITON FORM</h2>
               
@@ -243,25 +234,44 @@ const ForwardedRequests = () => {
                   </tbody>
                 </table>
 
-                <div className="signature-section">
-                  <div className="signature">
-                    <p>Signature and Name: {selectedRequest.signature}</p>
+                <div className="daf-signature-section">
+                <div className="hod-signature">
+                  <h3 htmlFor="hodName">Name of HOD:</h3>
+                  <label htmlFor="">Prepared By:</label>
+                     <p >{selectedRequest.hodName}</p>
+              
+                    {selectedRequest.hodSignature ? (
+                      <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
+                    ) : (
+                      <p>No HOD signature available</p>
+                    )}
+
                   </div>
-                  <div className="signature">
-                    <p>HOD Signature: {selectedRequest.hodSignature}</p>
+                  <div className='logistic-signature'>
+                  <h3>Logistic Office:</h3>
+                  <label htmlFor="">verified By:</label>
+                    {logisticUsers.map(user => (
+                      <div key={user._id} className="logistic-user">
+                        <p>{user.firstName} {user.lastName}</p>
+                        {user.signature ? (
+                          <img src={`http://localhost:5000/${user.signature}`} alt={`${user.firstName} ${user.lastName} Signature`} />
+                        ) : (
+                          <p>No signature available</p>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  <div className="signature">
-                    <p>Logistic Signature: {selectedRequest.logisticSignature}</p>
-                  </div>
-                  <div className="signature">
-                    <p>Acknowledgement Receipt Signature: {selectedRequest.ackReceiptSignature}</p>
-                  </div>
-                  <div className="signature">
-                    <p>DAF Signature: {selectedRequest.dafSignature}</p>
-                  </div>
+                 {/*<div className="daf-signature">
+                    <h3>Daf signature:</h3>
+                  <p>{us er.firstName} {user.lastName}</p>
+                  {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
+                  </div>*/}
+                  
                 </div>
-                <button className='edit-btn' onClick={handleEditClick}>Edit Form</button>
-                <button className='cancel-btn'  onClick={() => setSelectedRequest(null)}>Cancel</button>
+                <button className='edit-btn' onClick={handleEditClick}>Edit</button>
+                
+
+
               </>
             )}
           </div>

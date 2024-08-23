@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaQuestionCircle, FaEdit, FaTimes, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
@@ -108,6 +109,7 @@ const StockDetails = ({ item,onClose}) => {
   return (
     <div className="stockDetails-overlay">
       <div className="stock-details">
+        <div className="detail-history">
         <button onClick={fetchStockDetails} className='view-details-btn'>View stock</button>
         <div className="history-filter">
           <label>
@@ -128,7 +130,9 @@ const StockDetails = ({ item,onClose}) => {
           </label>
           <button onClick={fetchStockHistory} className='view-history-btn'>View History</button>
         </div>
-        <button className="detail-close-btn" onClick={handleClose}>Close</button>
+        <p className="detail-close-btn" onClick={handleClose}><FaTimes /></p>
+        </div>
+        
         {showDetails && (
           <>
             <h2>Stock Details for {item.name}</h2>
@@ -214,7 +218,7 @@ const StockDetails = ({ item,onClose}) => {
                 ))}
               </tbody>
             </table>
-            <button className="detail-close-btn" onClick={() => setShowDetails(false)}>Close</button>
+            <p className="detail-close-btn" onClick={() => setShowDetails(false)}><FaTimes /></p>
           </>
         )}
 
@@ -273,7 +277,7 @@ const StockDetails = ({ item,onClose}) => {
               </div>
               <button className='download-history-btn' onClick={downloadPDF}>Download PDF</button>
               <button className='download-exl-btn' onClick={downloadExcel}>Download Excel</button>
-              <button className='history-close-btn' onClick={() => setShowHistory(false)}>Close</button>
+              <p className='history-close-btn' onClick={() => setShowHistory(false)}><FaTimes /></p>
             </div>
           </div>
         )}

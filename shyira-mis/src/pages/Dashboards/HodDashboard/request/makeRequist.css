@@ -2,7 +2,7 @@
 .requistion {
   width: 95%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
  
 }
 .requistion h2{
@@ -100,9 +100,14 @@ table tr:hover {
 .additem-btn{
   background-color: blue;
   font-size: 20px;
+  width: 150px;
 }
 .remove-btn{
   background-color: rgb(218, 47, 47);
+}
+.hod-submit-btn{
+  font-size: 20px;
+  width: 150px;
 }
 .signature-section {
   display: flex;

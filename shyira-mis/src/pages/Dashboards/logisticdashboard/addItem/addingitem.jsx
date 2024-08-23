@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import './additem.css'
 const AddItem = () => {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -29,7 +29,7 @@ const AddItem = () => {
   };
 
   return (
-    <div>
+    <div className='additem'>
       <h2>Add New Item</h2>
       <form onSubmit={handleSubmit}>
         <div>

@@ -3,8 +3,10 @@ import Navigation from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import Navbar from './Navigationbar/Hodnavigationbar';
 import Overview from './Overview';
-import ViewRequest from './request/ViewRequest'
+import ViewRequestStatus from './request/ViewApprovedRequest'
 import MakeRequest from './request/MakeRequist'
+import FuelRequest from './fuelRequest/fuelrequest'
+//import ViewFuelRequest from './fuelRequest/viewfuelRequest'
 import Items from './items/viewItems'
 import HodProfile from './Profile/HodProfile'
 import './hodDashboard.css';
@@ -19,13 +21,18 @@ const LogisticDashboard = () => {
       case 'overview':
         return <Overview />;
       case 'view-items':
-        return<Items/>  
+        return<Items/> 
+      case 'fuel-request':
+        return<FuelRequest/> 
+        
+      
       case 'requisition':
           return <MakeRequest />;
       case 'view-aproved':
-          return <ViewItems />;
-     case 'view-request':
-          return <ViewRequest />;
+        return <ViewRequestStatus />;
+          case 'logistic-profile':
+  
+          
       case 'logistic-profile':
           return <HodProfile />;
 

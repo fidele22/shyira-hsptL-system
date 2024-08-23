@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaQuestionCircle, FaEdit, FaTimes, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import './css/admin.css'
 //import AddItemForm from '../addItem/addingitem';
@@ -39,6 +40,7 @@ const ViewItems = () => {
   const [departments, setDepartments] = useState([]);
   const [services, setServices] = useState([]);
   const [positions, setPositions] = useState([]);
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -77,6 +79,19 @@ const ViewItems = () => {
     };
 
     fetchPositions();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserRoles = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/roles');
+        setRoles(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchUserRoles();
   }, []);
 
 
@@ -195,9 +210,9 @@ const ViewItems = () => {
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>{user.signature}</td>
-              <td>
-                <button className='user-edit-btn' onClick={() => handleEditClick(user)}>Edit</button>
-                <button className='delete-btn' onClick={() => handleDeleteClick(user._id)}>Delete</button>
+              <td className='edit-delete'>
+                <label className='user-edit-btn' onClick={() => handleEditClick(user)}> <FaEdit size={24} color="green" /></label>
+                <label className='delete-btn' onClick={() => handleDeleteClick(user._id)}> <FaTrash size={24} color="darkred" /></label>
               </td>
             </tr>
           ))}
@@ -222,7 +237,7 @@ const ViewItems = () => {
         <label>Last Name</label>
         <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
         <label>Position</label>
-        <select name="positionName" value={formData.positionName} onChange={handleChange} required>
+        <select name="positionName" value={formData.position} onChange={handleChange} required>
                   <option value="">Select Position</option>
                   {positions.map((position) => (
                     <option key={position._id} value={position.name}>{position.name}</option>
@@ -230,14 +245,14 @@ const ViewItems = () => {
                 </select>
         
         <label>Service</label>
-        <select name="serviceName" value={formData.serviceName} onChange={handleChange}>
+        <select name="serviceName" value={formData.service} onChange={handleChange}>
                   <option value="">Select Service</option>
                   {services.map((service) => (
                     <option key={service._id} value={service.name}>{service.name}</option>
                   ))}
                 </select>
         <label>Department</label>
-        <select name="departmentName" value={formData.departmentName} onChange={handleChange}>
+        <select name="departmentName" value={formData.department} onChange={handleChange}>
                   <option value="">Select Department</option>
                   {departments.map((department) => (
                     <option key={department._id} value={department.name}>{department.name}</option>
@@ -249,13 +264,12 @@ const ViewItems = () => {
         <input type="email" name="email" value={formData.email} onChange={handleChange} />
         <label>Role</label>
         <select name="role" value={formData.role} onChange={handleChange}>
-                <option value="">Select Role</option>
-                <option value="logistic">LOGISTIC</option>
-                <option value="accountant">ACCOUNTANT</option>
-                <option value="hod">HOD</option>
-                <option value="daf">DAF</option>
-                <option value="dg">DG</option>
-              </select>
+                  <option value="">Select role</option>
+                  {roles.map((role) => (
+                    <option key={role._id} value={role.name}>{role.name}</option>
+                  ))}
+                </select>
+
         <label>Signature</label>
         <input type="text" name="signature" value={formData.signature} onChange={handleChange} />
         <div className="buttons">

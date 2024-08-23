@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const approvedRequestSchema = new mongoose.Schema({
- 
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   department: String,
   items: [
     {
@@ -14,8 +14,10 @@ const approvedRequestSchema = new mongoose.Schema({
   ],
   hodName: { type: String, required: false},
   hodSignature: String,
+  date: { type: Date, required: true },
   clicked: { type: Boolean, default: false },
   
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('ApprovedRequest', approvedRequestSchema);

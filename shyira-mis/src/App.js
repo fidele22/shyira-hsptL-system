@@ -8,6 +8,7 @@ import LogisticDashboard from './pages/Dashboards/logisticdashboard/LogisticDash
 import AccountantDashboard from './pages/Dashboards/accountantdashboard/AccountantDashboard'
 import DafDashboard from './pages/Dashboards/dafdashboard/dafdashboard'
 import HodDashboard from './pages/Dashboards/HodDashboard/hoddashboard'
+import DGDashboard from './pages/Dashboards/DGdashboard/DGdashboard'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/accountant/*" element={<ProtectedRoute component={AccountantDashboard} />} />
           <Route path="/hod/*" element={<ProtectedRoute component={HodDashboard} />} />
           <Route path="/daf/*" element={<ProtectedRoute component={DafDashboard} />} />
+          <Route path="/DG/*" element={<ProtectedRoute component={DGDashboard} />} />
           
         </Routes>
       </div>

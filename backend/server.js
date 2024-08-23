@@ -2,21 +2,29 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config(); // Load environment variables from .env file
 
 const session = require('express-session');
 const connectDB = require('./config/db');
 const departmentRoutes = require('./routes/departmentRoutes')
 const serviceRoutes = require('./routes/serviceRoutes')
 const positionRoutes =require ('./routes/positionRoutes')
+const userRoleRoutes = require ('./routes/userRolesRoute')
 const userRoutes = require('./routes/userRoutes');
 const loginRoute = require('./routes/loginRoutes');
 const userRequest =require('./routes/requsitionRoute');
+const userProfileRoutes = require('./routes/userProfileroute')
 const forwardedRequestsRouter = require('./routes/requesttodaf');
 const stockRoutes = require('./routes/stockRoutes');
 const stockItem = require ('./models/stockItems')
+const StockHistory = require('./models/stockHistory');
 const approvedRoutes= require ('./routes/requestApproved')
 const logisticRequestsRoutes = require('./routes/requestOflogisticRoute')
+const fuelRequisitionRoute = require('./routes/fuelRequestRoute');
+const addCarReasonRoute = require ('./routes/carplaque')
 const StockData = require('./models/stockData')
+
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -43,11 +51,14 @@ app.get('/', (req, res) => {
 app.use('/api/departments', departmentRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/positions', positionRoutes);
+app.use('/api/roles', userRoleRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/profile/update',userProfileRoutes)
 app.use('/api', loginRoute);
 app.use('/api/approve', approvedRoutes);
 app.use('/api/LogisticRequest', logisticRequestsRoutes);
-
+app.use('/api/fuel-requisition', fuelRequisitionRoute);
+app.use('/api/forms-data',addCarReasonRoute );
 
 
 // Routes
@@ -59,15 +70,17 @@ app.use('/api/forwardedrequests', forwardedRequestsRouter);
 app.use('/api/stocks', stockRoutes); 
 
 
+
+
 // Endpoint to handle uploaded data
 app.post('/api/uploadData', async (req, res) => {
   try {
     const data = req.body;
 
     // Insert items in bulk
-    const savedItems = await DataModel.insertMany(data);
+    const savedItems = await stockItem.insertMany(data);
 
-    // Automatically create corresponding stock history for each item
+    // Automatically create corresponding stock data for each item
     const stockDatas = savedItems.map(item => ({
       itemId: item._id,
       entry: {
@@ -88,6 +101,27 @@ app.post('/api/uploadData', async (req, res) => {
     }));
 
     await StockData.insertMany(stockDatas);
+ // Automatically create corresponding initial stock history for each item
+ const stockHistory = savedItems.map(item => ({
+  itemId: item._id,
+  entry: {
+    quantity: item.quantity,
+    pricePerUnit: item.pricePerUnit,
+    totalAmount: item.totalAmount
+  },
+  exit: {
+    quantity: 0,
+    pricePerUnit: 0,
+    totalAmount: 0
+  },
+  balance: {
+    quantity: item.quantity,
+    pricePerUnit: item.pricePerUnit,
+    totalAmount: item.totalAmount
+  }
+}));
+
+await StockHistory.insertMany(stockHistory);
 
     res.status(200).send({ success: true });
   } catch (error) {
@@ -115,6 +149,12 @@ app.post('/api/logout', (req, res) => {
   // For JWT, the server does not handle token invalidation; it relies on the client-side to delete tokens.
   res.status(200).json({ message: 'Logged out successfully. Please delete your token on the client side.' });
 });
+
+
+
+
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

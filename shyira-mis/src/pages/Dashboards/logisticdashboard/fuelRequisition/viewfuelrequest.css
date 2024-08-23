@@ -1,0 +1,53 @@
+/* viewfuelrequest.css */
+
+.fuel-requisition-form {
+    padding: 20px;
+    background-color: #f7f7f7;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .navigate-request ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .navigate-request li {
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .navigate-request li p {
+    background-color: #ddd;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .navigate-request li p:hover {
+    background-color: #ccc;
+  }
+  
+  .view-form-group {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 25rem;
+    
+  }
+  
+  .fuel-request-details {
+    margin-top: 10px;
+    background-color: #ffffff;
+    padding: 5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .signatures {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .hod, .logistic {
+    width: 48%;
+  }
+  

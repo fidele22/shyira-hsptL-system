@@ -12,7 +12,7 @@ const LogisticRequestForm = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/getData');
+        const response = await axios.get('http://localhost:5000/api/stocks');
         setItemOptions(response.data);
       } catch (error) {
         console.error('Error fetching items:', error);
@@ -118,7 +118,7 @@ const LogisticRequestForm = () => {
             </div>
           </div>
           <div className="requisition-title">
-            <h2>REQUISITION FORM</h2>
+            <h2>REQUISITION FORM FORM LOGISTIC DEPARTMENT</h2>
             <p>Supplier Name: <input type="text" placeholder="Type names here..." 
             value={supplierName} onChange={(e) => setSupplierName(e.target.value)} /></p>
           </div>
@@ -178,7 +178,7 @@ const LogisticRequestForm = () => {
           <div className="signature-section"></div>
           <hr />
           <h4>SHYIRA DISTRICT HOSPITAL, WESTERN PROVINCE, NYABIHU DISTRICT</h4>
-          <button type="submit">Submit Request</button>
+          <button className='Log-submit-btn' type="submit">Submit Request</button>
         </form>
       </div>
     </div>

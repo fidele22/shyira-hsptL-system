@@ -1,5 +1,6 @@
 // src/components/ApprovedRequests.js
 import React, { useState, useEffect } from 'react';
+import { FaQuestionCircle, FaEdit, FaTimes, FaCheck, FaCheckCircle, FaCheckDouble, FaCheckSquare,  } from 'react-icons/fa';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -18,6 +19,7 @@ const ApprovedRequests = () => {
   });
 
   const [logisticUsers, setLogisticUsers] = useState([]);
+  const [dafUsers, setDafUsers] = useState([]);
 
   useEffect(() => {
     fetchApprovedRequests();
@@ -31,6 +33,15 @@ const ApprovedRequests = () => {
       setLogisticUsers(response.data);
     } catch (error) {
       console.error('Error fetching logistic users:', error);
+    }
+  };
+  //fetch daf username and signature
+  const fetchDafUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/daf-users');
+      setDafUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching daf users:', error);
     }
   };
   //fetching approved request from approved collection
@@ -108,7 +119,7 @@ const ApprovedRequests = () => {
 
 
   return (
-    <div className="approved-requests">
+    <div className="approved-requests-page">
       <h2>Approved Requests</h2>
       <form onSubmit={handleSearchRequest} className="search-form">
        <div className='search-department'>
@@ -136,13 +147,13 @@ const ApprovedRequests = () => {
         <button type="submit" className='search-btn'>Search</button>
       </form>
 
-      <div className="navigate-request">
+      <div className="approved-navigate-request">
         <ul>
           {filteredRequests.slice().reverse().map((request, index) => (
             <li key={index}>
               <p onClick={() => handleRequestClick(request._id)}>
-              Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
-              <span>{request.clicked ? '' : 'New Request: '}</span>
+              Requisition Form from department of <b>{request.department}</b> done on {new Date(request.createdAt).toDateString()}
+              <span>{request.clicked ? '' : 'New Request: '}</span> <label htmlFor=""><FaCheckCircle/> Approved</label>
             </p>
             </li>
           ))}
@@ -152,7 +163,12 @@ const ApprovedRequests = () => {
       {selectedRequest && (
 
         <div className="approved-request-overlay">
-          
+         <div className="approved-form-navigation">
+         
+       
+         <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
+          <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
+         </div>  
           <div className="approved-request" >
           <div id='pdf-content'>
           <div className="image-request-recieved">
@@ -187,9 +203,11 @@ const ApprovedRequests = () => {
              ))}
            </tbody>
          </table>
-         <div className="signature-section">
-           <div className="hod">
-             <p><strong>HOD Name:</strong> {selectedRequest.hodName}</p>
+         <div className="approved-signature-section">
+           <div >
+             <h3>HOD Name:</h3>
+             <label>prepared By:</label> 
+            <p>{selectedRequest.hodName}</p>
              {selectedRequest.hodSignature ? (
                <img src={`http://localhost:5000/${selectedRequest.hodSignature}`} alt="HOD Signature" />
              ) : (
@@ -198,6 +216,7 @@ const ApprovedRequests = () => {
            </div>
            <div className='logistic-signature'>
                   <h3>Logistic Office:</h3>
+                  <label htmlFor="">Verified By:</label>
                     {logisticUsers.map(user => (
                       <div key={user._id} className="logistic-user">
                         <p>{user.firstName} {user.lastName}</p>
@@ -209,16 +228,24 @@ const ApprovedRequests = () => {
                       </div>
                     ))}
                   </div>
+         <div className="daf-signature">
+         <h3>DAF:</h3>
+         <label htmlFor="">Approved By:</label>
+         {dafUsers.map(user => (
+                      <div key={user._id} className="logistic-user">
+                        <p>{user.firstName} {user.lastName}</p>
+                        {user.signature ? (
+                          <img src={`http://localhost:5000/${user.signature}`} alt={`${user.firstName} ${user.lastName} Signature`} />
+                        ) : (
+                          <p>No signature available</p>
+                        )}
+                      </div>
+                    ))}
+          </div>         
          </div>
          </div>
-         <footer className='recieved-request-footer'>
-                <div className="buttons">
-                
-                <button className='request-cancel-btn' onClick={() => setSelectedRequest(null)}>Cancel</button>
-                <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
-                </div>
-                </footer>
-               
+        
+        
        </div>
        </div>
    )}

@@ -1,14 +1,17 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const jwt = require('jsonwebtoken'); 
+const JWT_SECRET = 'your_jwt_secret';// Ensure this is included
 const UserRequest = require('../models/UserRequest');
+const stockItem = require('../models/stockItems');
 const ForwardedRequest = require('../models/requestFromLgst');
-const stockItem = require('../models/stockItems'); // Fix the import here
-
+//const ApprovedRequest = require('../models/approvedRequest')
+const RecievedRequest = require('../models/itemRequestRecieved')
 
 const router = express.Router();
 
-// Set up multer for file uploads
+// Set up multer for file uploads if needed
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -20,44 +23,68 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Apply the multer middleware to handle form data
-router.post('/submit', upload.none(), async (req, res) => {
-  try {
-    console.log('Request Body:', req.body); // Log the request body
+const authMiddleware = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Bearer scheme
 
-    const { department, hodName,hodSignature, items, date } = req.body;
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
-    // Ensure items is defined and a valid JSON string
-    if (!items) {
-      throw new Error('Items field is missing.');
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Invalid token' });
     }
 
-    // Validate items
-    const parsedItems = JSON.parse(items); // Assuming items is a JSON string
+    req.userId = decoded.userId;
+    req.userRole = decoded.role; // Optional: store role if needed
+    next();
+  });
+};
 
-    console.log('Parsed Items:', parsedItems); // Log parsed items
+router.post('/submit', authMiddleware, async (req, res) => {
+  try {
+    const { department, hodName, hodSignature, items, date } = req.body;
 
-    const validItems = await Promise.all(parsedItems.map(async item => {
+    if (!items) {
+      return res.status(400).json({ error: 'Items field is missing.' });
+    }
+
+    let parsedItems;
+    try {
+      parsedItems = JSON.parse(items);
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid items JSON format.' });
+    }
+
+    const userId = req.userId; // Extracted from token
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required.' });
+    }
+
+    const validItems = [];
+    for (const item of parsedItems) {
       if (!item.itemId) {
-        throw new Error('Item ID is required for each item.');
+        return res.status(400).json({ error: 'Item ID is required for each item.' });
       }
-    
-      const validItem = await stockItem.findById(item.itemId); // Assuming you have the correct itemId from frontend
+
+      const validItem = await stockItem.findById(item.itemId);
       if (!validItem) {
-        throw new Error('Invalid Item ID.');
+        return res.status(400).json({ error: 'Invalid Item ID.' });
       }
-    
-      return {
+
+      validItems.push({
+        
         itemId: item.itemId,
         itemName: validItem.name,
         quantityRequested: item.quantityRequested,
         price: item.price,
         totalAmount: item.totalAmount
-      };
-    }));
-    
-    // Create userRequest
+      });
+    }
+
     const newRequest = new UserRequest({
+      userId: userId,
       department,
       hodName,
       hodSignature,
@@ -69,8 +96,8 @@ router.post('/submit', upload.none(), async (req, res) => {
     res.status(201).json({ message: 'Requisition created successfully!' });
 
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: error.message });
+    console.error('Error processing request:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -81,10 +108,27 @@ router.get('/', async (req, res) => {
     const requests = await UserRequest.find();
     res.json(requests);
   } catch (err) {
-    console.error(err);
+    console.error('Error:', err);
     res.status(500).json({ message: 'Server Error' });
   }
 });
+// Get all received requests for a specific user
+router.get('/recieved-request', async (req, res) => {
+  try {
+  
+    const receivedRequests = await RecievedRequest.find();
+
+    if (receivedRequests.length === 0) {
+      return res.status(404).json({ message: 'No received requests found for this user' });
+    }
+
+    res.json(receivedRequests);
+  } catch (error) {
+    console.error('Error fetching received requests by userId:', error);
+    res.status(500).json({ message: 'Error fetching received requests', error });
+  }
+});
+
 // Example route to fetch a single logistic request by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -100,16 +144,75 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update a logistic request by ID
+router.get('/recieved-request/:id', async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const request = await RecievedRequest.findById(requestId); // Assuming Mongoose model
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+    res.json(request);
+  } catch (error) {
+    console.error('Error fetching request:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 router.put('/:id', async (req, res) => {
   try {
-    const updatedRequest = await UserRequest.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updateData = { ...req.body };
+    
+    // Ensure clicked field is updated
+    if (req.body.clicked !== undefined) {
+      updateData.clicked = req.body.clicked;
+    }
+
+    const updatedRequest = await UserRequest.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedRequest) {
       return res.status(404).json({ message: 'Request not found' });
     }
+
     
+    res.json(updatedRequest);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put('/verified/:id', async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    
+    // Ensure clicked field is updated
+    if (req.body.clicked !== undefined) {
+      updateData.clicked = req.body.clicked;
+    }
+
+    const updatedRequest = await UserRequest.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!updatedRequest) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
     // Forward the updated request to another collection
-    const forwardedRequest = new ForwardedRequest(req.body);
+    const forwardData = {
+      userId: updatedRequest.userId,
+      department: updatedRequest.department,
+      items: updatedRequest.items.map(item => ({
+        itemId: item.itemId,
+        itemName: item.itemName,
+        quantityRequested: item.quantityRequested,
+        quantityReceived: item.quantityReceived,
+        observation: item.observation
+      })),
+      hodName: updatedRequest.hodName,
+      hodSignature: updatedRequest.hodSignature,
+      logisticName: updatedRequest.logisticName,
+      logisticSignature: updatedRequest.logisticSignature,
+      date: updatedRequest.date,
+      updatedAt: updatedRequest.updatedAt
+    };
+
+    const forwardedRequest = new ForwardedRequest(forwardData);
     await forwardedRequest.save();
     
     res.json(updatedRequest);
@@ -118,6 +221,22 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Get all received requests for a specific user
+router.get('/', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const receivedRequests = await RecievedRequest.find({ userId: userId });
+
+    if (receivedRequests.length === 0) {
+      return res.status(404).json({ message: 'No received requests found for this user' });
+    }
+
+    res.json(receivedRequests);
+  } catch (error) {
+    console.error('Error fetching received requests by userId:', error);
+    res.status(500).json({ message: 'Error fetching received requests', error });
+  }
+});
 
 // fetching item name
 router.get('/api/getData', async (req, res) => {
@@ -129,5 +248,8 @@ router.get('/api/getData', async (req, res) => {
     res.status(500).send({ success: false, error: error.message });
   }
 });
+
+
+
 
 module.exports = router;

@@ -20,6 +20,7 @@ const DataDisplay = ({ onItemSelect }) => {
   return (
     <div>
       <h2>Item list</h2>
+      <h3> Here are Items in stored in stock with its updated balance</h3>
       <table>
         <thead>
           <tr>

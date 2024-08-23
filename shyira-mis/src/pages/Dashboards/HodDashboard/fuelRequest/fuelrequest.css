@@ -1,0 +1,46 @@
+/* RequisitionForm.css */
+
+.requisition-form {
+    width: 80%;
+    margin: auto;
+    padding: 3rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: rgb(0, 123, 255);
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 20rem;
+    
+  }
+  .right{
+    padding-left: 20px;
+    width: 50%px;
+
+  } 
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-group input[type=number]{
+    width:20rem; 
+  }
+  select{
+    width:20rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+
+  

@@ -1,16 +1,30 @@
-.approved-requests {
-    padding: 20px;
-    background-color: white;
-  }
-  
-  .approved-request {
+
+ .approved-requests-page{
+  background-color: white;
+ } 
+.approved-request {
     background-color: white;
     border: 1px solid #ddd;
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 5px;
+    height: 90vh;
+    overflow-y: scroll;
   }
+ .approved-form-navigation{
+  background-color: blue;
+  display: flex;
+  top: 4%;
+  justify-content: space-between;
+  padding: 10px 20px;
   
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  height: 4.5rem;
+  position: fixed;
+  width: 55%;
+  z-index: 1000; /* Ensure the navbar stays above other content */
+
+ } 
   .approved-request table {
     width: 100%;
     border-collapse: collapse;
@@ -22,13 +36,29 @@
     text-align: left;
     padding: 8px;
   }
-  
-  .signature-section {
+  .approved-navigate-request p{
+    font-size: 22px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .approved-navigate-request label{
+    color: green;
+    padding: 10px;
+  }
+  .approved-navigate-request p span{
+    color: red;
+    padding: 10PX;
+  }
+  .approved-navigate-request p:hover{
+    color: blue;
+  }
+  .approved-signature-section{
     display: flex;
-    justify-content: space-between;
+    gap: 10rem;
+  
   }
   
-  .signature-section img {
+  .approved-signature-section img {
     max-width: 100px;
     height: auto;
   }

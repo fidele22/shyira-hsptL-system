@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck, FaClipboardList, FaChartBar, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck, 
+  FaClipboardList, FaChartBar, FaUser, FaSignOutAlt,FaLifeRing ,FaGasPump } from 'react-icons/fa';
 import './Hodnavigationbar.css';
 
 
@@ -9,6 +10,7 @@ const Navbar = ({ setCurrentPage }) => {
   const [dropdownsOpen, setDropdownsOpen] = useState({
     request: false,
     requisitions: false,
+    fuelrequisitions:false,
   });
 
   const toggleDropdown = (dropdownName) => {
@@ -37,20 +39,32 @@ const Navbar = ({ setCurrentPage }) => {
         <li onClick={() => setCurrentPage('view-items')}> <FaList /> Available Items</li>
         
         <li onClick={() => toggleDropdown('requisitions')} className="dropdown">
-        <FaClipboardList /> Requisitions
+        <FaClipboardList /> Request Item
           {dropdownsOpen.requisitions && (
             <ul className="dropdown-menu">
-              <li onClick={() => setCurrentPage('requisition')}><FaBoxOpen /> Make requist</li>
-              <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardList /> Aproved Request</li>
+              <li onClick={() => setCurrentPage('requisition')}><FaBoxOpen /> Make requisition</li>
+            
             </ul>
           )}
         </li>
+        <li onClick={() => toggleDropdown('fuelrequisitions')} className="dropdown">
+        <FaGasPump /> Request Fuel
+          {dropdownsOpen.fuelrequisitions && (
+            <ul className="dropdown-menu">
+             <li onClick={() => setCurrentPage('fuel-request')}><FaBoxOpen size={24} /> Make Request Fuel</li>
+             <li onClick={() => setCurrentPage('veiw-fuel-request')}><FaGasPump size={24} />View Request Fuel</li>
+            </ul>
+          )}
+        </li>
+        <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardList /> Aproved Request</li>  
       </ul>
       <u><h2>Settings</h2></u>
       <ul>
         <li onClick={() => setCurrentPage('logistic-profile')}><FaUser /> Profile</li>
-        <li onClick={() => setCurrentPage('logistic-profil')}>Help Center</li>
-        <button onClick={handleLogout}>Logout</button>
+        <li onClick={() => setCurrentPage('logistic-profil')}> <FaLifeRing />Help Center</li>
+        <li onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </li>
       </ul>
     </div>
   );

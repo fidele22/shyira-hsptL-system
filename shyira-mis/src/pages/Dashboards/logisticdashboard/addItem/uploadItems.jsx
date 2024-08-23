@@ -32,7 +32,7 @@ const ExcelUpload = () => {
   };
 
   return (
-    <div>
+    <div className="import-container">
       <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
     </div>
