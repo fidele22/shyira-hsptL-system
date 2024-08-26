@@ -28,7 +28,10 @@ const StockData = require('./models/stockData')
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://shyira-mis-frontend.onrender.com'
+}));
 
 connectDB();
 
