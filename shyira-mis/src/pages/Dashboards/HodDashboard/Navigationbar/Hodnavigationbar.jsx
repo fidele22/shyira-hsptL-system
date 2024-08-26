@@ -11,6 +11,7 @@ const Navbar = ({ setCurrentPage }) => {
     request: false,
     requisitions: false,
     fuelrequisitions:false,
+    requisitionsstatus:false
   });
 
   const toggleDropdown = (dropdownName) => {
@@ -56,7 +57,16 @@ const Navbar = ({ setCurrentPage }) => {
             </ul>
           )}
         </li>
-        <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardList /> Aproved Request</li>  
+        <li onClick={() => toggleDropdown('requisitionsstatus')} className="dropdown">
+        <FaGasPump /> Request Status
+          {dropdownsOpen.requisitionsstatus && (
+            <ul className="dropdown-menu">
+          <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardList /> Aproved Request</li> 
+             <li onClick={() => setCurrentPage('view-request-jected')}><FaGasPump size={24} />Rejected Request</li>
+            </ul>
+          )}
+        </li>
+ 
       </ul>
       <u><h2>Settings</h2></u>
       <ul>

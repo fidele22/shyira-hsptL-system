@@ -74,7 +74,7 @@ const ApprovedRequests = () => {
 const handleReceivedClick = async (requestId) => {
     try {
       const response = await axios.post(`http://localhost:5000/api/LogisticRequest/received/${requestId}`);
-      setModalMessage('Request marked as received successfully');
+      setModalMessage('Reception sign and update stock successfully');
       setIsSuccess(true); // Set the success state
       setShowModal(true); // Show the modal
       fetchApprovedRequests(); // Refresh the list after posting
@@ -204,7 +204,7 @@ const handleReceivedClick = async (requestId) => {
                 Requisition Form of logistic <b>{request.department}</b> done on {new Date(request.createdAt).toDateString()}
                 <span>{request.clicked ? '' : 'New Request: '}</span> <label htmlFor=""><FaCheckCircle/> Approved</label>
               </p>
-              <button onClick={() => handleReceivedClick(request._id)}>Mark as Received</button> 
+              <button className='mark-received-btn' onClick={() => handleReceivedClick(request._id)}>Mark as Received</button> 
             </li>
           ))}
         </ul>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaHome, FaPlus, FaFileExcel, FaList, FaBoxOpen, FaClipboardCheck, 
   FaClipboardList, FaChartBar, FaUser, FaSignOutAlt,FaLifeRing ,FaGasPump } from 'react-icons/fa';
-import './Dafnavigationbar.css';
+import '../../logisticdashboard/Navigationbar/Navigationbar.css';
 import axios from 'axios';
 
 const Navbar = ({ setCurrentPage }) => {
@@ -34,6 +34,7 @@ const Navbar = ({ setCurrentPage }) => {
       <h2>Direct General</h2>
       <ul>
         <li onClick={() => setCurrentPage('overview')}><FaHome /> Overview</li>
+        <li onClick={() => setCurrentPage('view-stock-items')}> <FaList /> Available Items</li>
         <li onClick={() => toggleDropdown('request')} className="dropdown">
         <FaBoxOpen />  Item Requisition
           {dropdownsOpen.request && (
@@ -49,7 +50,7 @@ const Navbar = ({ setCurrentPage }) => {
           {dropdownsOpen.fuelrequest && (
             <ul className="dropdown-menu">
               <li onClick={() => setCurrentPage('view-fuel-request')}><FaList /> View Request</li>
-              <li onClick={() => setCurrentPage('view-aproved')}><FaClipboardCheck/> Approved Request</li>
+              <li onClick={() => setCurrentPage('viewfuel-aproved')}><FaClipboardCheck/> Approved Request</li>
             </ul>
           )}
         </li>

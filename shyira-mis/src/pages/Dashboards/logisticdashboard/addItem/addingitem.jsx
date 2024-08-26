@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FaQuestionCircle, FaEdit,FaTimes, FaTimesCircle, FaCheck,
+  FaCheckCircle, FaCheckDouble, FaCheckSquare } from 'react-icons/fa';
 import axios from 'axios';
 import './additem.css'
 const AddItem = () => {
@@ -7,17 +9,25 @@ const AddItem = () => {
   const [pricePerUnit, setPricePerUnit] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
 
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/api/stocks/add', {
+      const response = await axios.post('http://localhost:5000/api/stocs/add', {
         name,
         quantity,
         pricePerUnit,
         totalAmount,
       });
       console.log('Item added:', response.data);
+    
+      setModalMessage('Add new item in stock successful');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
       // Clear form
       setName('');
       setQuantity('');
@@ -25,6 +35,9 @@ const AddItem = () => {
       setTotalAmount('');
     } catch (error) {
       console.error('Error adding item:', error);
+      setModalMessage('Failed to Add new item in stock ');
+      setIsSuccess(false); // Set the error state
+      setShowModal(true); // Show the modal
     }
   };
 
@@ -70,6 +83,26 @@ const AddItem = () => {
         </div>
         <button type="submit">Add Item</button>
       </form>
+            {/* Modal pop message on success or error message */}
+            {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

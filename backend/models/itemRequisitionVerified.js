@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const forwardedRequestSchema = new mongoose.Schema({
+const itemRequisitionVerifiedSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   department: String,
   items: [
@@ -17,8 +17,7 @@ const forwardedRequestSchema = new mongoose.Schema({
 
   logisticName: { type: String }, // Add this field
   logisticSignature: { type: String }, // Add this field
-  date: { type: Date, required: true },
   updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('ForwardedRequest', forwardedRequestSchema);
+module.exports = mongoose.model('ItemRequisitionVerified', itemRequisitionVerifiedSchema);

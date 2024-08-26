@@ -41,7 +41,7 @@ const UserProfile = () => {
 
       <label htmlFor="">Department</label>
       <p>{user.departmentName}</p>
-
+   
       <label htmlFor="">Your Signature</label>
       {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
 

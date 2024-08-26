@@ -112,7 +112,7 @@ const ForwardedRequests = () => {
 
   return (
     <div className={`verified-requist ${selectedRequest ? 'dim-background' : ''}`}>
-      <h2>Item Requisition Verified</h2>
+      <h2>list Users Item Requisition Verified</h2>
       <div className="verified-request-navigation">
         <ul>
           {forwardedRequests.slice().reverse().map((request, index) => (
@@ -195,7 +195,7 @@ const ForwardedRequests = () => {
             ) : (
               <>
                <div className="form-navigation">
-               <button className='approve-request-btn' onClick={handleUpdateSubmit}>Approve Request</button>
+               
              <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
           </div>
               <div className="image-request-recieved">
@@ -261,14 +261,10 @@ const ForwardedRequests = () => {
                       </div>
                     ))}
                   </div>
-                 {/*<div className="daf-signature">
-                    <h3>Daf signature:</h3>
-                  <p>{us er.firstName} {user.lastName}</p>
-                  {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
-                  </div>*/}
+                 
                   
                 </div>
-                <button className='edit-btn' onClick={handleEditClick}>Edit</button>
+               
                 
 
 

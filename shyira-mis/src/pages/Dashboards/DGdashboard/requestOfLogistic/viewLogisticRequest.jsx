@@ -122,7 +122,7 @@ const ForwardedRequests = () => {
 
   return (
     <div className={`verified-requist ${selectedRequest ? 'dim-background' : ''}`}>
-      <h2>Item Requisition Verified</h2>
+      <h2>List of logistic Requisition Verified</h2>
       <div className="verified-request-navigation">
         <ul>
           {forwardedRequests.slice().reverse().map((request, index) => (

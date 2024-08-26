@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaQuestionCircle, FaEdit, FaTimes, FaTrash,FaCheck } from 'react-icons/fa';
+import { FaQuestionCircle, FaEdit, FaTimes,FaCheckCircle, FaTimesCircle,FaTrash,FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 //import './ViewRequest.css'; // Import CSS for styling
 
@@ -10,6 +10,11 @@ const ForwardedRequests = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [logisticUsers, setLogisticUsers] = useState([]);
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
 
   useEffect(() => {
     fetchForwardedRequests();
@@ -93,9 +98,15 @@ const ForwardedRequests = () => {
        // Forward the updated request to the approved collection
        const response = await axios.post(`http://localhost:5000/api/LogisticRequest/verified/${selectedRequest._id}`);
        setSelectedRequest(response.data);
-       alert('requestion verified successfully')
+    
+       setModalMessage('logistic requestion verified successfully');
+       setIsSuccess(true); // Set the success state
+       setShowModal(true); // Show the modal
   } catch (error) {
     console.error('Error for approving request:', error);  
+    setModalMessage('Failed to verify requisition');
+    setIsSuccess(false); // Set the success state
+    setShowModal(true); // Show the modal
   }
 } 
   //fetching signature
@@ -206,7 +217,7 @@ const ForwardedRequests = () => {
             ) : (
               <>
                <div className="form-navigation">
-               <button className='verify-request-btn' onClick={handleVerifySubmit}>Verify Request</button>
+               <button className='verify-requisition' onClick={handleVerifySubmit}>Verify Request</button>
              <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
           </div>
               <div className="image-request-recieved">
@@ -276,6 +287,26 @@ const ForwardedRequests = () => {
           </div>
         </div>
       )}
+       {/* Modal pop message on success or error message */}
+       {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

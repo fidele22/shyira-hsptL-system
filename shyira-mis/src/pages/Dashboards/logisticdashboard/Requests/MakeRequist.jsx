@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaQuestionCircle, FaEdit,FaTimes, FaTimesCircle, FaCheck,
+  FaCheckCircle, FaCheckDouble, FaCheckSquare } from 'react-icons/fa';
+  
 import SearchableDropdown from './searchable'; // Import the custom dropdown component
 import './makeRequist.css'; // Import CSS for styling
 
@@ -8,6 +11,14 @@ const LogisticRequestForm = () => {
   const [itemOptions, setItemOptions] = useState([]);
   const [date, setDate] = useState('');
   const [supplierName, setSupplierName] = useState('');
+
+
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
+
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -36,9 +47,15 @@ const LogisticRequestForm = () => {
         },
       });
       console.log(response.data);
-      alert('Requisition submitted successfully!');
+     
+      setModalMessage('Requisition submitted successfully!');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
     } catch (error) {
-      alert('Error submitting requisition');
+     
+      setModalMessage('Failed submitting requisition');
+      setIsSuccess(false); // Set the error state
+      setShowModal(true); // Show the modal
     }
   };
 
@@ -181,6 +198,25 @@ const LogisticRequestForm = () => {
           <button className='Log-submit-btn' type="submit">Submit Request</button>
         </form>
       </div>
+        {/* Modal pop message on success or error message */}
+     {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

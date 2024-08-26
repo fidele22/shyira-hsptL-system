@@ -1,15 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { FaQuestionCircle, FaEdit, FaTimes, FaTrash,FaCheck } from 'react-icons/fa';
+import { FaQuestionCircle,FaTimesCircle, FaEdit, FaCheckCircle,FaTimes, FaTrash,FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 import './ViewRequest.css'; // Import CSS for styling
 
 
 const ForwardedRequests = () => {
+  const [requests, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
   const [forwardedRequests, setForwardedRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [logisticUsers, setLogisticUsers] = useState([]);
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
+    // Search parameters state
+    const [searchParams, setSearchParams] = useState({
+      department: '',
+      date: ''
+    });
+  
 
   useEffect(() => {
     fetchForwardedRequests();
@@ -80,14 +93,38 @@ const ForwardedRequests = () => {
       );
 
       // Forward the updated request to the approved collection
-      await axios.post(`http://localhost:5000/api/forwardedrequests/approved/${selectedRequest._id}`);
-      alert('requestion Approved successfully')
+     // await axios.post(`http://localhost:5000/api/forwardedrequests/approved/${selectedRequest._id}`);
+     
+      setModalMessage('requistion updated successfully');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
     } catch (error) {
       console.error('Error updating request:', error);
+      setModalMessage('Failed to update requisition');
+      setIsSuccess(false); // Set the success state
+      setShowModal(true); // Show the modal
     }
   };
 
  //
+ const handleApproveSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post(`http://localhost:5000/api/forwardedrequests/approved/${selectedRequest._id}`);
+     
+    setModalMessage('requistion Approved successfully');
+    setIsSuccess(true); // Set the success state
+    setShowModal(true); // Show the modal
+    fetchForwardedRequests('')
+  } catch (error) {
+    console.error('Error updating request:', error);
+    setModalMessage('Failed to Approve requisition');
+    setIsSuccess(false); // Set the success state
+    setShowModal(true); // Show the modal
+  }
+};
+
+
   //fetching signature
   const [user, setUser] = useState(null);
 
@@ -107,24 +144,70 @@ const ForwardedRequests = () => {
 
     fetchUserProfile();
   }, []);
+//search logic
+
+const handleSearchChange = (e) => {
+  const { name, value } = e.target;
+  setSearchParams({
+    ...searchParams,
+    [name]: value
+  });
+};
+
+const handleSearchSubmit = (e) => {
+  e.preventDefault();
+  const { department, date } = searchParams;
+  const filtered = requests.filter(request => {
+    return (!department || request.department.toLowerCase().includes(department.toLowerCase())) &&
+           (!date || new Date(request.date).toDateString() === new Date(date).toDateString());
+  });
+  setFilteredRequests(filtered);
+};
 
   if (!user) return <p>Loading...</p>;
 
   return (
     <div className={`verified-requist ${selectedRequest ? 'dim-background' : ''}`}>
+       <form onSubmit={handleSearchSubmit} className="search-form">
+       <div className='search-department'>
+        <label htmlFor="">Search by department</label>
+       <input
+          type="text"
+          name="department"
+          placeholder="Search by department"
+          value={searchParams.department}
+          onChange={handleSearchChange}
+        />
+       </div>
+      
+        <div className='search-date'>
+        <label htmlFor="">Search by date</label>
+        <input
+          type="date"
+          name="date"
+          placeholder="Search by date"
+          value={searchParams.date}
+          onChange={handleSearchChange}
+        />
+        </div>
+        
+        <button type="submit" className='search-btn'>Search</button>
+      </form>
       <h2>Item Requisition Verified</h2>
+      
       <div className="verified-request-navigation">
         <ul>
           {forwardedRequests.slice().reverse().map((request, index) => (
             <li key={index}>
               <p onClick={() => handleRequestClick(request._id)}>
-          Requisition Form from department of <u><b>{request.department}</b> </u>done on {new Date(request.date).toDateString()}
+          Requisition Form from department of <u><b>{request.department}</b> </u>done on {new Date(request.updatedAt).toDateString()}
           <span>{!request.clicked ? 'New Request' : ''}</span> <label htmlFor=""><FaCheck /> Verified</label>
         </p>
             </li>
           ))}
         </ul>
       </div>
+      
       {selectedRequest && (
         <div className="request-details-overlay">
           <div className="request-details">
@@ -135,7 +218,7 @@ const ForwardedRequests = () => {
             <h1>WESTERN PROVINCE</h1>
             <h1>DISTRIC: NYABIHU</h1>
             <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
-            <h1>DEPARTMENT:  </h1>
+            <h1>DEPARTMENT: <span>{selectedRequest.department}</span>  </h1>
 
           </div>
                 <table>
@@ -189,13 +272,13 @@ const ForwardedRequests = () => {
                   </tbody>
                 </table>
                 
-               
+                <button className='submit-an-update' onClick={handleUpdateSubmit}>update</button>
                 <button type="button" className='cancel-btn' onClick={handleCancelClick}>Cancel</button>
               </form>
             ) : (
               <>
                <div className="form-navigation">
-               <button className='approve-request-btn' onClick={handleUpdateSubmit}>Approve Request</button>
+               <button className='approve-request-btn' onClick={handleApproveSubmit}>Approve Request</button>
              <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
           </div>
               <div className="image-request-recieved">
@@ -205,7 +288,8 @@ const ForwardedRequests = () => {
             <h1>WESTERN PROVINCE</h1>
             <h1>DISTRIC: NYABIHU</h1>
             <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
-            <h1>DEPARTMENT:  </h1>
+            <h1>DEPARTMENT: <span>{selectedRequest.department}</span>  </h1>
+           
 
           </div>
 
@@ -233,6 +317,25 @@ const ForwardedRequests = () => {
                     ))}
                   </tbody>
                 </table>
+ {/* Modal pop message on success or error message */}
+ {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
 
                 <div className="daf-signature-section">
                 <div className="hod-signature">
@@ -261,12 +364,7 @@ const ForwardedRequests = () => {
                       </div>
                     ))}
                   </div>
-                 {/*<div className="daf-signature">
-                    <h3>Daf signature:</h3>
-                  <p>{us er.firstName} {user.lastName}</p>
-                  {user.signature && <img src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
-                  </div>*/}
-                  
+                 
                 </div>
                 <button className='edit-btn' onClick={handleEditClick}>Edit</button>
                 

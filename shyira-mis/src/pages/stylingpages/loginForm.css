@@ -236,3 +236,21 @@ button.ghost:hover{
   width: 40px;
 }
 
+.password-container {
+  position: relative;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 60px;
+  top: 78%;
+  transform: translateY(-60%);
+  cursor: pointer;
+}
+.confirm-password-toggle-icon{
+  position: absolute;
+  right: 60px;
+  top: 84%;
+  transform: translateY(-60%);
+  cursor: pointer;  
+}

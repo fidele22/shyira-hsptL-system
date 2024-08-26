@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 //import PrivateRoute from './Component/ProtectedRoute'
 import SignIn from './pages/Signup'
+import ForgotPassword from './pages/ForgetPassword';
+import ResetPassword from './pages/ResetPasswordPage';
 import AdminDashboard from './pages/Dashboards/admindashboard/AdminDashboard';
 import ProtectedRoute from './Component/ProtectedRoute';
 import LogisticDashboard from './pages/Dashboards/logisticdashboard/LogisticDashboard';
@@ -19,6 +21,8 @@ function App() {
         <Routes>
         
           <Route path="/" element={<SignIn />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/admin-dashboard/*" element={<ProtectedRoute component={AdminDashboard} />} />
           <Route path="/logistic/*" element={<ProtectedRoute component={LogisticDashboard} />} />
           <Route path="/accountant/*" element={<ProtectedRoute component={AccountantDashboard} />} />

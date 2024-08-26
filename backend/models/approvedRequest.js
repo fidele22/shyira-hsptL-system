@@ -14,7 +14,6 @@ const approvedRequestSchema = new mongoose.Schema({
   ],
   hodName: { type: String, required: false},
   hodSignature: String,
-  date: { type: Date, required: true },
   clicked: { type: Boolean, default: false },
   
 }, { timestamps: true });

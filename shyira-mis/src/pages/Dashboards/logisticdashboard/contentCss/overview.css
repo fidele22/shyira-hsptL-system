@@ -10,7 +10,6 @@
     
   }
  .welcome-nav{
-    
     background-color: #0b53a0eb;
     height: 15vh;
     padding: 40px;
@@ -34,17 +33,17 @@
     margin-bottom: 20px;
   }
   
-  .overview-section {
+  .logistic-overview-section {
     margin-top: 30px;
   }
   
-  .overview-section h2 {
+  .logistic-overview-section h1 {
     font-size: 24px;
     margin-bottom: 10px;
   }
   
   .overview-section p {
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 20px;
   }
   .overview-section img{
@@ -52,7 +51,7 @@
     height: 20vh;
   
   }
-  .overview-widgets {
+  .logistic-overview-widgets {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
@@ -77,7 +76,9 @@
     font-size: 16px;
     margin-bottom: 15px;
   }
-  
+  .widget label{
+font-size: 100px;
+  }
   .additional-section {
     margin-top: 30px;
     padding: 20px;

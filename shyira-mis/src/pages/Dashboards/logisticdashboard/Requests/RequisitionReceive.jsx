@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaQuestionCircle, FaEdit, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaQuestionCircle, FaCheckCircle,FaEdit,FaTimesCircle, FaTimes, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -13,6 +13,11 @@ const LogisticRequestForm = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
+
   const [editFormData, setEditFormData] = useState({
     
   
@@ -95,13 +100,19 @@ const LogisticRequestForm = () => {
   
     try {
       await axios.put(`http://localhost:5000/api/UserRequest/${selectedRequest._id}`, editFormData, { clicked: true });
-      alert('Request Updated successfull!');
+      
+      setModalMessage('Requisition Updated successfull!!');
+      setIsSuccess(true); // Set the error state
+      setShowModal(true); // Show the modal
       fetchRequests(); // Refresh the list of requests
       setSelectedRequest(null); // Close the details view
 
      
     } catch (error) {
       console.error('Error updating request:', error);
+      setModalMessage('Failed to Update requisition!');
+      setIsSuccess(false); // Set the error state
+      setShowModal(true); // Show the modal
     }
   };
 //send verified
@@ -109,12 +120,18 @@ const handleVerifySubmit = async () => {
   
   try {
     await axios.put(`http://localhost:5000/api/UserRequest/verified/${selectedRequest._id}`, { clicked: true });
-    alert('Request Verified successfull!');
+  
+    setModalMessage('Requisition Verified successfull!');
+    setIsSuccess(true); // Set the error state
+    setShowModal(true); // Show the modal
     fetchRequests(); // Refresh the list of requests
     setSelectedRequest(null); // Close the details view
 
   } catch (error) {
     console.error('Error updating request:', error);
+    setModalMessage('Failed to verify requisition!!');
+    setIsSuccess(false); // Set the error state
+    setShowModal(true); // Show the modal
   }
 };
 
@@ -183,6 +200,24 @@ const handleVerifySubmit = async () => {
     fetchUserProfile();
   }, []);
 
+
+  const handleRejectClick = async (requestId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/UserRequest/rejected/${requestId}`, { clicked: true });
+      
+      setModalMessage(' requisition rejected Successful!!');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
+      fetchRequests(); // Refresh the list of requests
+      setSelectedRequest(null);
+    } catch (error) {
+      console.error('Error marking request as received:', error);
+   
+      setModalMessage('Failed to reject requisition');
+      setIsSuccess(false); // Set the success state
+      setShowModal(true); // Show the modal
+    }
+  };
   if (!user) return <p>Loading...</p>;
 
   return (
@@ -219,15 +254,19 @@ const handleVerifySubmit = async () => {
       <ul>
     {filteredRequests.slice().reverse().map((request, index) => (
       <li key={index}>
+       
         <p onClick={() => handleRequestClick(request._id)}>
           Requisition Form from {request.department} done on {new Date(request.date).toDateString()}
           <span>{!request.clicked ? 'New Request' : ''}</span>
+         
         </p>
+        <button className='mark-received-btn' onClick={() => handleRejectClick(request._id)}>Reject </button> 
       </li>
+      
     ))}
   </ul>
       </div>
-  
+   
       {selectedRequest && (
       
       
@@ -306,8 +345,8 @@ const handleVerifySubmit = async () => {
               <>
           <div className="form-navigation">
          
-          <button className='submit-an-update' onClick={ handleVerifySubmit}>Verify Request</button>
-         
+          <button className='verify-requisition' onClick={ handleVerifySubmit}>Verify Request</button>
+        
              <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
           </div>
          <div id="pdf-content">
@@ -387,7 +426,25 @@ const handleVerifySubmit = async () => {
          
        </div>
       )}
-      
+       {/* Modal pop message on success or error message */}
+     {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
       </div>
     
   );

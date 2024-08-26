@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes, FaCheckCircle } from 'react-icons/fa';
+import { FaTimes, FaCheckCircle,FaTimesCircle } from 'react-icons/fa';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -15,9 +15,13 @@ const ApprovedRequests = () => {
   const [logisticUsers, setLogisticUsers] = useState([]);
   const [dafUsers, setDafUsers] = useState([]);
 
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
   useEffect(() => {
     fetchApprovedRequests();
-    fetchRecievedRequests();
+  
     fetchLogisticUsers();
     fetchDafUsers();
   }, []);
@@ -58,18 +62,8 @@ const ApprovedRequests = () => {
       setLoading(false);
     }
   };
-    //fetching recieved request from approved collection
-    const fetchRecievedRequests = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/UserRequest/recieved-request');
-       
-        setRequests(response.data);
-        setFilteredRequests(response.data); 
-      } catch (error) {
-        console.error('Error fetching approved requests:', error);
-      }
-    };
-
+  
+ 
     
   const filterRequests = () => {
     const { department, date } = searchParams;
@@ -98,12 +92,17 @@ const ApprovedRequests = () => {
   const handleReceivedClick = async (requestId) => {
     try {
       const response = await axios.post(`http://localhost:5000/api/approve/receive/${requestId}`);
-      alert(response.data.message);
+      console.log(response.data.message);
+      setModalMessage('To Sign reception requisition Successful!!');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
       fetchApprovedRequests(); // Refresh the list after reposting
-      alert('Marking as recieved successful')
     } catch (error) {
       console.error('Error marking request as received:', error);
-      alert('Failed to mark request as received');
+   
+      setModalMessage('Failed to sign reception requisition');
+      setIsSuccess(false); // Set the success state
+      setShowModal(true); // Show the modal
     }
   };
 
@@ -127,7 +126,6 @@ const ApprovedRequests = () => {
     try {
       const canvas = await html2canvas(input);
       const data = canvas.toDataURL('image/png');
-
       const pdf = new jsPDF();
       const imgProps = pdf.getImageProperties(data);
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -183,19 +181,38 @@ const ApprovedRequests = () => {
                 <span>{request.clicked ? '' : 'New Request: '}</span>
                 <label><FaCheckCircle /> Approved</label>
               </p>
-              <button onClick={() => handleReceivedClick(request._id)}>Mark as Received</button> 
+              <button className='mark-received-btn' onClick={() => handleReceivedClick(request._id)}>Mark as Received</button> 
             </li>
           ))}
         </ul>
       </div>
+ {/* Modal pop message on success or error message */}
+ {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
 
       {selectedRequest && (
         <div className="approved-request-overlay">
-          <div className="approved-form-navigation">
+          <div className="form-navigation">
             <button className='request-dowload-btn' onClick={downloadPDF}>Download PDF</button>
             <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
           </div>
-          <div className="approved-request">
+          <div className="request-details">
             <div id='pdf-content'>
               <div className="image-request-recieved">
                 <img src="/image/logo2.png" alt="Logo" className="logo" />
@@ -229,12 +246,7 @@ const ApprovedRequests = () => {
                 </tbody>
               </table>
               <div>
-              <button
-                onClick={handleReceivedClick}
-                className="received-btn"
-              >
-                Received
-              </button>
+             
               </div>
               <div className="approved-signature-section">
                 <div>

@@ -3,11 +3,10 @@ import Navigation from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import Navbar from './Navigationbar/Dafnavigationbar';
 import Overview from './Overview';
-import ViewRequest from './request/ViewRequest'
+import ViewRequest from './UserRequisitions/ViewRequisition'
 import ViewLogisticRequest from './requestOfLogistic/viewLogisticRequest'
 import ViewFuelRequest from './fuelRequest/fuelRequisition'
 import DafProfile from './DafProfile'
-//import OrderSupplies from './OrderSupplies';
 import './DafDashboard.css';
 
 

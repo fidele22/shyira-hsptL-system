@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './logisticProfile.css'
+import './logisticProfile.css';
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,6 +15,12 @@ const UserProfile = () => {
     serviceName: '',
     departmentName: '',
   });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [signatureFile, setSignatureFile] = useState(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -45,13 +52,36 @@ const UserProfile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handlePasswordChange = (e) => {
+    setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    setSignatureFile(e.target.files[0]);
+  };
+
   const handleSave = async () => {
     try {
-      const response = await axios.put('http://localhost:5000/api/profile/update', formData, {
+      const formDataToSend = new FormData();
+      formDataToSend.append('firstName', formData.firstName);
+      formDataToSend.append('lastName', formData.lastName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('positionName', formData.positionName);
+      formDataToSend.append('serviceName', formData.serviceName);
+      formDataToSend.append('departmentName', formData.departmentName);
+
+      if (signatureFile) {
+        formDataToSend.append('signature', signatureFile);
+      }
+
+      const response = await axios.put('http://localhost:5000/api/profile', formDataToSend, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
+
       setUser(response.data);
       setIsEditing(false);
       alert('Profile updated successfully!');
@@ -61,6 +91,24 @@ const UserProfile = () => {
     }
   };
 
+  const handleSaveWithoutSignature = async () => {
+    try {
+      const response = await axios.put('http://localhost:5000/api/profile', formData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      setUser(response.data);
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile.');
+    }
+  };
+
+ 
   if (!user) return <p>Loading...</p>;
 
   return (
@@ -71,72 +119,37 @@ const UserProfile = () => {
           <form className="profile-form">
             <div className="form-group">
               <label>First Name:</label>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
+              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label>Last Name:</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-              />
+              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label>Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label>Phone:</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label>Position:</label>
-              <input
-                type="text"
-                name="positionName"
-                value={formData.positionName}
-                onChange={handleChange}
-              />
+              <input type="text" name="positionName" value={formData.positionName} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label>Service:</label>
-              <input
-                type="text"
-                name="serviceName"
-                value={formData.serviceName}
-                onChange={handleChange}
-              />
+              <input type="text" name="serviceName" value={formData.serviceName} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label>Department:</label>
-              <input
-                type="text"
-                name="departmentName"
-                value={formData.departmentName}
-                onChange={handleChange}
-              />
+              <input type="text" name="departmentName" value={formData.departmentName} onChange={handleChange} />
             </div>
-            <button type="button" className="save-button" onClick={handleSave}>
+            <button
+              type="button"
+              className="save-button"
+              onClick={signatureFile ? handleSave : handleSaveWithoutSignature}
+            >
               Save Changes
             </button>
             <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
@@ -156,8 +169,10 @@ const UserProfile = () => {
           <button className="edit-button" onClick={() => setIsEditing(true)}>
             Edit Profile
           </button>
+          
         </>
       )}
+     
     </div>
   );
 };

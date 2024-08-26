@@ -177,7 +177,7 @@ const ApprovedRequests = () => {
             <h1>WESTERN PROVINCE</h1>
             <h1>DISTRIC: NYABIHU</h1>
             <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
-            <h1>DEPARTMENT: <span></span> </h1>
+            <h1>DEPARTMENT: <span>{selectedRequest.department}</span> </h1>
 
           </div>
          <table>

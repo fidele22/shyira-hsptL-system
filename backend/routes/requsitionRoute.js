@@ -4,10 +4,12 @@ const path = require('path');
 const jwt = require('jsonwebtoken'); 
 const JWT_SECRET = 'your_jwt_secret';// Ensure this is included
 const UserRequest = require('../models/UserRequest');
+
 const stockItem = require('../models/stockItems');
-const ForwardedRequest = require('../models/requestFromLgst');
-//const ApprovedRequest = require('../models/approvedRequest')
+const ItemRequisitionVerified = require('../models/itemRequisitionVerified');
+const ItemRequisitionRejected = require ('../models/itemRequisitionRejected')
 const RecievedRequest = require('../models/itemRequestRecieved')
+
 
 const router = express.Router();
 
@@ -112,6 +114,16 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+// Route to get the count of user requests
+router.get('/count', async (req, res) => {
+  try {
+    const requestCount = await UserRequest.countDocuments();
+    res.json({ count: requestCount });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 // Get all received requests for a specific user
 router.get('/recieved-request', async (req, res) => {
   try {
@@ -181,6 +193,15 @@ router.put('/:id', async (req, res) => {
 
 router.put('/verified/:id', async (req, res) => {
   try {
+     // Find the request by ID
+     const request = await UserRequest.findById(req.params.id);
+     if (!request) {
+       return res.status(404).json({ message: 'Request not found' });
+     }
+ 
+     // Update the status to 'verified'
+     request.status = 'verified';
+ 
     const updateData = { ...req.body };
     
     // Ensure clicked field is updated
@@ -208,13 +229,59 @@ router.put('/verified/:id', async (req, res) => {
       hodSignature: updatedRequest.hodSignature,
       logisticName: updatedRequest.logisticName,
       logisticSignature: updatedRequest.logisticSignature,
-      date: updatedRequest.date,
-      updatedAt: updatedRequest.updatedAt
+   
+     // updatedAt: updatedRequest.updatedAt
     };
 
-    const forwardedRequest = new ForwardedRequest(forwardData);
+    const forwardedRequest = new ItemRequisitionVerified(forwardData);
     await forwardedRequest.save();
     
+        // Optionally, remove the user request from the UserRequest collection
+    await UserRequest.findByIdAndDelete(req.params.id);
+    res.json(updatedRequest);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+router.put('/rejected/:id', async (req, res) => {
+  try {
+  
+    const updateData = { ...req.body };
+    
+    // Ensure clicked field is updated
+    if (req.body.clicked !== undefined) {
+      updateData.clicked = req.body.clicked;
+    }
+
+    const updatedRequest = await UserRequest.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!updatedRequest) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    // Forward the updated request to another collection
+    const forwardData = {
+      userId: updatedRequest.userId,
+      department: updatedRequest.department,
+      items: updatedRequest.items.map(item => ({
+        itemId: item.itemId,
+        itemName: item.itemName,
+        quantityRequested: item.quantityRequested,
+        quantityReceived: item.quantityReceived,
+        observation: item.observation
+      })),
+      hodName: updatedRequest.hodName,
+      hodSignature: updatedRequest.hodSignature,
+      logisticName: updatedRequest.logisticName,
+      logisticSignature: updatedRequest.logisticSignature,
+   
+     // updatedAt: updatedRequest.updatedAt
+    };
+
+    const forwardedRequest = new ItemRequisitionRejected(forwardData);
+    await forwardedRequest.save();
+    
+        // Optionally, remove the user request from the UserRequest collection
+    await UserRequest.findByIdAndDelete(req.params.id);
     res.json(updatedRequest);
   } catch (error) {
     res.status(500).json({ message: error.message });

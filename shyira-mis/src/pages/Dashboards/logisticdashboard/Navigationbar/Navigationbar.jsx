@@ -35,7 +35,7 @@ const Navbar = ({ setCurrentPage }) => {
   };
 
   return (
-    <div className="logistic-navigation">
+    <div className="navigation">
       <h2>Logistic Dashboard</h2>
       <ul>
         <li onClick={() => setCurrentPage('overview')}>

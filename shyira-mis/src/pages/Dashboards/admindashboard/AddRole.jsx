@@ -47,7 +47,9 @@ const ServiceForm = () => {
         <button type="submit">Add Role</button>
       </form>
       </div>
-      
+      <div className="role-managment">
+        
+    </div> 
     </div>
   );
 };

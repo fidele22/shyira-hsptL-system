@@ -1,102 +1,190 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import '../logisticdashboard/logisticProfile.css';
 
-
-const DashboardOverview = () => {
-  const [lastName, setLastName] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [signature, setSignature] = useState('');
-  const [position, setPosition] = useState('');
-  const [service, setService] = useState('');
-  const [department, setDepartment] = useState('');
+const UserProfile = () => {
+  const [user, setUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    positionName: '',
+    serviceName: '',
+    departmentName: '',
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [signatureFile, setSignatureFile] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found');
-        return;
-      }
-
+    const fetchUserProfile = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users/profile', {
+        const response = await axios.get('http://localhost:5000/api/users/profile', {
           headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          setFirstName(data.firstName);
-          setLastName(data.lastName);
-          setPhone(data.phone);
-          setEmail(data.email);
-          setSignature(data.signature);
-          setPosition(data.position || 'N/A');
-          setService(data.service || 'N/A');
-          setDepartment(data.department || 'N/A');
-        } else {
-          console.error('Failed to fetch user data');
-        }
+        setUser(response.data);
+        setFormData({
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          email: response.data.email,
+          phone: response.data.phone,
+          positionName: response.data.positionName,
+          serviceName: response.data.serviceName,
+          departmentName: response.data.departmentName,
+        });
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching profile:', error);
       }
     };
 
-    fetchUserData();
+    fetchUserProfile();
   }, []);
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePasswordChange = (e) => {
+    setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    setSignatureFile(e.target.files[0]);
+  };
+
+  const handleSave = async () => {
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('firstName', formData.firstName);
+      formDataToSend.append('lastName', formData.lastName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('positionName', formData.positionName);
+      formDataToSend.append('serviceName', formData.serviceName);
+      formDataToSend.append('departmentName', formData.departmentName);
+      if (signatureFile) {
+        formDataToSend.append('signature', signatureFile);
+      }
+
+      const response = await axios.put('http://localhost:5000/api/profile/update', formDataToSend, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setUser(response.data);
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile.');
+    }
+  };
+
+  const handlePasswordSave = async () => {
+    try {
+      const response = await axios.put('http://localhost:5000/api/profile/change-password', passwordData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      alert('Password changed successfully!');
+      setIsChangingPassword(false);
+    } catch (error) {
+      console.error('Error changing password:', error);
+      alert('Failed to change password.');
+    }
+  };
+
+  if (!user) return <p>Loading...</p>;
+
   return (
-    <div className='loginsignup-container'>
-      <h1>Accounts Details</h1>
-      <form>
-        <div className='loginsignup-fields'>
-          <div className='flex-container'>
-            <div className='left'>
-              <label>First Name</label>
-              {firstName}
+    <div className="profile-container">
+      {isEditing ? (
+        <>
+          <h1>Edit Profile</h1>
+          <form className="profile-form" encType="multipart/form-data">
+            {/* Profile Fields */}
+            {/* Add fields for profile update */}
+            {/* Signature Image */}
+            <div className="form-group">
+              <label>Signature Image:</label>
+              <input type="file" onChange={handleFileChange} />
             </div>
-            <div className='right'>
-              <label>Last Name</label>
-              {lastName}
+            <button type="button" className="save-button" onClick={handleSave}>
+              Save Changes
+            </button>
+            <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
+              Cancel
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          <h1>{user.firstName} {user.lastName}</h1>
+          <p className="profile-detail"><strong>Email:</strong> {user.email}</p>
+          <p className="profile-detail"><strong>Phone:</strong> {user.phone}</p>
+          <p className="profile-detail"><strong>Position:</strong> {user.positionName}</p>
+          <p className="profile-detail"><strong>Service:</strong> {user.serviceName}</p>
+          <p className="profile-detail"><strong>Department:</strong> {user.departmentName}</p>
+          {user.signature && <img className="profile-signature" src={`http://localhost:5000/${user.signature}`} alt="Signature" />}
+          <button className="edit-button" onClick={() => setIsEditing(true)}>
+            Edit Profile
+          </button>
+          <button className="change-password-button" onClick={() => setIsChangingPassword(true)}>
+            Change Password
+          </button>
+        </>
+      )}
+      {isChangingPassword && (
+        <div className="password-change">
+          <h2>Change Password</h2>
+          <form className="password-form">
+            <div className="form-group">
+              <label>Current Password:</label>
+              <input
+                type="password"
+                name="currentPassword"
+                value={passwordData.currentPassword}
+                onChange={handlePasswordChange}
+                required
+              />
             </div>
-          </div>
-          <div className='flex-container'>
-            <div className='left'>
-              <label>Position</label>
-              {position}
+            <div className="form-group">
+              <label>New Password:</label>
+              <input
+                type="password"
+                name="newPassword"
+                value={passwordData.newPassword}
+                onChange={handlePasswordChange}
+                required
+              />
             </div>
-            <div className='right'>
-              <label>Service</label>
-              {service}
+            <div className="form-group">
+              <label>Confirm New Password:</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={passwordData.confirmPassword}
+                onChange={handlePasswordChange}
+                required
+              />
             </div>
-          </div>
-          <div className='flex-container'>
-            <div className='left'>
-              <label>Department</label>
-              {department}
-            </div>
-            <div className='right'>
-              <label>Phone number</label>
-              {phone}
-            </div>
-          </div>
-          <div className='flex-container'>
-            <div className='left'>
-              <label>Email address</label>
-              {email}
-            </div>
-            <div className='right'>
-              <label>Signature</label>
-              {signature}
-            </div>
-          </div>
+            <button type="button" onClick={handlePasswordSave}>Save Password</button>
+            <button type="button" onClick={() => setIsChangingPassword(false)}>Cancel</button>
+          </form>
         </div>
-        <button type="submit">Edit your profile</button>
-      </form>
+      )}
     </div>
   );
 };
 
-export default DashboardOverview;
+export default UserProfile;

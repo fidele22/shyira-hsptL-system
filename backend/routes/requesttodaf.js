@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ForwardedRequest = require('../models/requestFromLgst');
+const ItemRequisitionVerified = require('../models/itemRequisitionVerified');
 const ApprovedRequest = require('../models/approvedRequest');
 const ForwardedFuelRequest = require('../models/fuelRequestVerified')
 const ApprovedFuelRequest = require ('../models/approvedfuelRequest')
@@ -9,10 +9,20 @@ const ApprovedFuelRequest = require ('../models/approvedfuelRequest')
 // Fetch all verified requests
 router.get('/items', async (req, res) => {
   try {
-    const requests = await ForwardedRequest.find();
+    const requests = await ItemRequisitionVerified.find();
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+// Route to get the count of user requests
+router.get('/count-Verified-item', async (req, res) => {
+  try {
+    const requestVerifiedCount = await ItemRequisitionVerified.countDocuments();
+    res.json({ count: requestVerifiedCount });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 router.get('/fuel', async (req, res) => {
@@ -27,7 +37,7 @@ router.get('/fuel', async (req, res) => {
 // Fetch a specific verified by  request ID
 router.get('/:id', async (req, res) => {
   try {
-    const request = await ForwardedRequest.findById(req.params.id);
+    const request = await ItemRequisitionVerified.findById(req.params.id);
     res.json(request);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -45,7 +55,7 @@ router.get('/fuel/:id', async (req, res) => {
 // Update a forwarded item  requisition
 router.put('/:id', async (req, res) => {
   try {
-    const updatedRequest = await ForwardedRequest.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedRequest = await ItemRequisitionVerified.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(updatedRequest);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -55,7 +65,7 @@ router.put('/:id', async (req, res) => {
 // Forward a request to the approved collection
 router.post('/approved/:id', async (req, res) => {
   try {
-    const forwardedRequest = await ForwardedRequest.findById(req.params.id);
+    const forwardedRequest = await ItemRequisitionVerified.findById(req.params.id);
     
     if (!forwardedRequest) {
       return res.status(404).json({ message: 'Forwarded request not found' });
@@ -73,6 +83,10 @@ router.post('/approved/:id', async (req, res) => {
     });
 
     await approvedRequest.save();
+
+          // Optionally, remove the user request from the UserRequest collection
+          await ItemRequisitionVerified.findByIdAndDelete(req.params.id);
+
     res.status(201).json(approvedRequest);
   } catch (error) {
     res.status(500).json({ message: error.message });

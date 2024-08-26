@@ -41,14 +41,14 @@ const DataDisplay = ({ onItemSelect }) => {
         <thead>
           <tr>
             <th>Item Name</th>
-            <th>Quantity Available</th>
+          {/*<th>Quantity Available</th>*/}  
           </tr>
         </thead>
         <tbody>
           {filteredData.map((item, index) => (
             <tr key={index}>
               <td>{item.name}</td>
-              <td>{item.quantity}</td>
+             {/*<td>{item.quantity}</td>*/} 
             </tr>
           ))}
         </tbody>

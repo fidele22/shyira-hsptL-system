@@ -2,6 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const Position = require('../models/position');
+const User = require('../models/user')
+const Role = require ('../models/userRoles');
+const position = require('../models/position');
 
 
 // POST /api/positions
@@ -56,5 +59,30 @@ router.delete('/positions/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.get('/dashboard/stats', async (req, res) => {
+  try {
+   // const  userId  = req.params;// Assuming user ID is available in req.user
+
+    // Count user requests
+    const userCount = await User.countDocuments();
+
+    // Count approved requests
+    const positionCount = await position.countDocuments();
+
+     // Count approved requests
+     const roleCount = await Role.countDocuments();
+
+    res.json({
+      userCount,
+      positionCount,
+      roleCount,
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

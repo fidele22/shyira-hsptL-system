@@ -6,6 +6,7 @@ const DashboardOverview = () => {
   const [userName, setUserName] = useState('');
   const [requestCount, setRequestCount] = useState(0);
   const [approvedCount, setApprovedCount] = useState(0);
+  const [rejecteddCount , setRejectedCount] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,7 +43,7 @@ const DashboardOverview = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/api/dashboard/stats', {
+        const response = await axios.get('http://localhost:5000/api/approve/dashboard/stats', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -51,6 +52,7 @@ const DashboardOverview = () => {
         if (response.status === 200) {
           setRequestCount(response.data.requestCount);
           setApprovedCount(response.data.approvedCount);
+          setRejectedCount(response.data.rejectedCount);
         } else {
           console.error('Failed to fetch dashboard stats');
         }
@@ -65,19 +67,25 @@ const DashboardOverview = () => {
 
   return (
     <div className="hod-overview-content">
+      <div className="welcome-nav">
       <h1>Welcome back, {userName}!</h1>
-
+      </div>
       <section className="overview-section">
-        <h2>Overview</h2>
+        <h2>Here are user's Overview:</h2>
+
         <p>Here you can find essential logistic information relevant to hospital operations.</p>
         <div className="overview-widgets">
           <div className="widget">
-            <h3>Current Requests</h3>
-            <p>Total requests sent: {requestCount}</p>
+            <h3>Number of requisition you sent waited to be verified</h3>
+           <label htmlFor="">{requestCount}</label> 
           </div>
           <div className="widget">
-            <h3>Number of Approved Requests</h3>
-            <p>Total approved requests: {approvedCount}</p>
+            <h3>Number of Approved Requisition</h3>
+            <label htmlFor=""> {approvedCount}</label>
+          </div>
+          <div className="widget">
+            <h3>Number of rejected Requisition</h3>
+            <label htmlFor="">{rejecteddCount}</label>
           </div>
         </div>
       </section>

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import logo from '../../../Component/image/land.jpg'
 import './contentCss/overview.css';
 
 const DashboardOverview = () => {
   const [userName, setUserName] = useState('');
+  const [requestCount, setRequestCount] = useState(0);
+  const [requestVerifiedCount, setRequestVerifiedCount] = useState(0);
+  const [requestApprovedCount, setRequestApprovedCount] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,7 +41,52 @@ const DashboardOverview = () => {
       }
     };
 
+ // count requisition from different users
+    const fetchRequestCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/UserRequest/count');
+        if (response.ok) {
+          const data = await response.json();
+          setRequestCount(data.count);
+        } else {
+          console.error('Failed to fetch request count');
+        }
+      } catch (error) {
+        console.error('Error fetching request count:', error);
+      }
+    };
+
+    const fetchItemVerifiedCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/forwardedrequests/count-verified-item');
+        if (response.ok) {
+          const data = await response.json();
+          setRequestVerifiedCount(data.count);
+        } else {
+          console.error('Failed to fetch request count');
+        }
+      } catch (error) {
+        console.error('Error fetching request count:', error);
+      }
+    };
+    const fetchItemApprovedCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/approve/count-approved-item');
+        if (response.ok) {
+          const data = await response.json();
+          setRequestApprovedCount(data.count);
+        } else {
+          console.error('Failed to fetch request count');
+        }
+      } catch (error) {
+        console.error('Error fetching request count:', error);
+      }
+    };
+ 
     fetchUserData();
+    fetchRequestCount();
+    fetchItemVerifiedCount();
+    fetchItemApprovedCount();
   }, []);
 
   return (
@@ -48,31 +97,31 @@ const DashboardOverview = () => {
      
 
       {/* Overview Sections */}
-      <section className="overview-section">
+      <section className="logistic-overview-section">
+
         <h2>Logistic Overview</h2>
-        <img src={logo} alt="" />
+       
         <p>Here you can find essential logistic information relevant to hospital operations.</p>
         {/* Add relevant widgets and summaries here */}
-        <div className="overview-widgets">
+        <div className="logistic-overview-widgets">
           <div className="widget">
-            <h3>Current Requests</h3>
-            <p>View and manage current logistic requests from hospital departments.</p>
-            {/* Example: Display a list of recent logistic requests */}
-            <ul>
-              <li>Request 1</li>
-              <li>Request 2</li>
-              <li>Request 3</li>
-            </ul>
+            <h3>Number of item requisition you have:</h3>
+            <p>View and manage requisition from hospital departments.</p>
+            {/* Example: Display a number */}
+            <label>{requestCount}</label>
           </div>
           <div className="widget">
-            <h3>Inventory Status</h3>
-            <p>Check the current status of hospital inventory and supplies.</p>
-            {/* Example: Display inventory status charts or summaries */}
+            <h3>Number of item requisition waited to approve</h3>
+            <p>Check the  status of hospital requisition verified but not approved.</p>
+            {/* numver of  verified request but doestn't approved*/}
+            <label>{requestVerifiedCount}</label>
+
           </div>
           <div className="widget">
-            <h3>Upcoming Deliveries</h3>
-            <p>Track scheduled deliveries and logistics updates.</p>
+            <h3>Number of item requisition approved</h3>
+            <p>Here is the number of requisition has been approved but doesn't signed as recieved by user .</p>
             {/* Example: Display upcoming delivery schedules */}
+            <label htmlFor="">{requestApprovedCount}</label>
           </div>
         </div>
       </section>

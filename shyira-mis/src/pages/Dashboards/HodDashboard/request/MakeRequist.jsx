@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaQuestionCircle, FaEdit,FaTimes, FaTimesCircle, FaCheck,
+  FaCheckCircle, FaCheckDouble, FaCheckSquare } from 'react-icons/fa';
 import SearchableDropdown from '../../logisticdashboard/Requests/searchable'
 import './makeRequist.css'; // Import CSS for styling
 
@@ -9,6 +11,11 @@ const LogisticRequestForm = () => {
   const [date, setDate] = useState('');
   const [itemOptions, setItemOptions] = useState([]);
   const [user, setUser] = useState(null);
+
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -66,10 +73,18 @@ const LogisticRequestForm = () => {
       });
   
       console.log(response.data);
-      alert('Requisition submitted successfully!');
+
+      setModalMessage('Submit requisition to logistic successfully');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
+      // Refresh the list after posting
     } catch (error) {
       console.error('Error submitting requisition:', error);
-      alert('Error submitting requisition');
+      
+      setModalMessage('Failed to submit requisition');
+      setIsSuccess(false); // Set the success state
+      setShowModal(true); // Show the modal
+   // Refresh the list after posting
     }
   };
 
@@ -151,7 +166,7 @@ const LogisticRequestForm = () => {
                 required
               />
             </div>
-            <div className="done-date">
+            {/** <div className="done-date">
               <label htmlFor="date">Date:</label>
               <input
                 type="date"
@@ -159,7 +174,8 @@ const LogisticRequestForm = () => {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
-            </div>
+            </div>*/}
+            
           </div>
 
           <h2>REQUISITION FORM</h2>
@@ -215,6 +231,25 @@ const LogisticRequestForm = () => {
               ))}
             </tbody>
           </table>
+ {/* Modal pop message on success or error message */}
+ {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
 
           <div>
             <label htmlFor="hodName">Name of HOD</label>

@@ -4,6 +4,7 @@ import Footer from '../footer/Footer'
 import Navbar from './Navigationbar/Hodnavigationbar';
 import Overview from './Overview';
 import ViewRequestStatus from './request/ViewApprovedRequest'
+import RejectedRequest from './request/rejectedRequisition'
 import MakeRequest from './request/MakeRequist'
 import FuelRequest from './fuelRequest/fuelrequest'
 //import ViewFuelRequest from './fuelRequest/viewfuelRequest'
@@ -32,7 +33,9 @@ const LogisticDashboard = () => {
         return <ViewRequestStatus />;
           case 'logistic-profile':
   
-          
+      case 'view-request-jected':
+        return <RejectedRequest/>  
+
       case 'logistic-profile':
           return <HodProfile />;
 

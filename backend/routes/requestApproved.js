@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'your_jwt_secret';// Ensure this is included
 const ApprovedRequest = require('../models/approvedRequest');
 const RecievedRequest = require('../models/itemRequestRecieved')
+const RejectRequest =require ('../models/itemRequisitionRejected')
+const UserRequest =require ('../models/UserRequest')
 
 // Repost approved request to received collection
 router.post('/receive/:requestId', async (req, res) => {
@@ -25,7 +27,6 @@ router.post('/receive/:requestId', async (req, res) => {
       items: approvedRequest.items,
       hodName: approvedRequest.hodName,
       hodSignature: approvedRequest.hodSignature,
-      date: new Date(), // Set the current date
       clicked: true,
     });
 
@@ -70,45 +71,60 @@ router.get('/approved', authMiddleware, async (req, res) => {
     if (!approvedRequests || approvedRequests.length === 0) {
       return res.status(404).json({ message: 'No approved requests found for this user.' });
     }
-
+   
     res.json(approvedRequests);
   } catch (error) {
     console.error('Error fetching requests:', error);
     res.status(500).json({ message: error.message });
   }
 });
-
+  // Get all received requests for a specific user
+  router.get('/rejected-request',authMiddleware, async (req, res) => {
+    try {
+      const userId = req.userId; 
+      const rejectedRequests = await RejectRequest.find({ userId: userId });
+  
+      if (rejectedRequests.length === 0) {
+        return res.status(404).json({ message: 'No rejected requests found for this user' });
+      }
+  
+      res.json(rejectedRequests);
+    } catch (error) {
+      console.error('Error fetching received requests by userId:', error);
+      res.status(500).json({ message: 'Error fetching received requests', error });
+    }
+  });
 // Get all approved requests for a specific user
-router.get('/user/:userId', async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const approvedRequests = await ApprovedRequest.find({ userId: userId });
-    if (approvedRequests.length === 0) {
-      return res.status(404).json({ message: 'No approved requests found for this user' });
-    }
-    res.json(approvedRequests);
-  } catch (error) {
-    console.error('Error fetching approved requests by userId:', error);
-    res.status(500).json({ message: 'Error fetching approved requests', error });
-  }
-});
-// Get all received requests for a specific user
-router.get('/user/:userId', async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const receivedRequests = await RecievedRequest.find({ userId: userId });
-
-    if (receivedRequests.length === 0) {
-      return res.status(404).json({ message: 'No received requests found for this user' });
-    }
-
-    res.json(receivedRequests);
-  } catch (error) {
-    console.error('Error fetching received requests by userId:', error);
-    res.status(500).json({ message: 'Error fetching received requests', error });
-  }
-});
-
+//router.get('/user/:userId', async (req, res) => {
+//  try {
+//    const { userId } = req.params;
+//    const approvedRequests = await ApprovedRequest.find({ userId: userId });
+//    if (approvedRequests.length === 0) {
+//      return res.status(404).json({ message: 'No approved requests found for this user' });
+//    }
+//    res.json(approvedRequests);
+//  } catch (error) {
+//    console.error('Error fetching approved requests by userId:', error);
+//    res.status(500).json({ message: 'Error fetching approved requests', error });
+//  }
+//});
+//// Get all received requests for a specific user
+//router.get('/received/user/:userId', async (req, res) => {
+//  try {
+//    const { userId } = req.params;
+//    const receivedRequests = await RecievedRequest.find({ userId: userId });
+//
+//    if (receivedRequests.length === 0) {
+//      return res.status(404).json({ message: 'No received requests found for this user' });
+//    }
+//
+//    res.json(receivedRequests);
+//  } catch (error) {
+//    console.error('Error fetching received requests by userId:', error);
+//    res.status(500).json({ message: 'Error fetching received requests', error });
+//  }
+//});
+//
   // Get all approved requests
  router.get('/', async (req, res) => {
    try {
@@ -118,7 +134,16 @@ router.get('/user/:userId', async (req, res) => {
      res.status(500).json({ message: 'Error fetching approved requests', error });
    }
  });
- 
+ // Route to get the count of user requests
+router.get('/count-approved-item', async (req, res) => {
+  try {
+    const requestApprovededCount = await ApprovedRequest.countDocuments();
+    res.json({ count: requestApprovededCount });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
   // get approved one by one according to it ID
   router.get('/:id', async (req, res) => {
     try {
@@ -133,20 +158,25 @@ router.get('/user/:userId', async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   });
+
+
+
   // Get counts for user dashboard
-router.get('/dashboard/stats', async (req, res) => {
+router.get('/dashboard/stats', authMiddleware, async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming user ID is available in req.user
+    const userId = req.userId; // Assuming user ID is available in req.user
 
     // Count user requests
-    const requestCount = await UserRequest.countDocuments({ hodName: userId });
+    const requestCount = await UserRequest.countDocuments({ userId: userId });
 
     // Count approved requests
-    const approvedCount = await ApprovedRequest.countDocuments({ hodName: userId });
+    const approvedCount = await ApprovedRequest.countDocuments({ userId: userId });
 
+    const rejectedCount = await RejectRequest.countDocuments({ userId: userId });
     res.json({
       requestCount,
       approvedCount,
+      rejectedCount,
     });
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaQuestionCircle, FaEdit, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaQuestionCircle, FaEdit,FaTimes, FaTimesCircle, FaCheck,
+  FaCheckCircle, FaCheckDouble, FaCheckSquare } from 'react-icons/fa';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
@@ -14,6 +15,10 @@ const StockDetails = ({ item,onClose}) => {
   const [endDate, setEndDate] = useState('');
   const [editedStock, setEditedStock] = useState(null);
   //const [showStockDetails, setShowStockDetails] = useState(true);
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
 
   const fetchStockDetails = async () => {
     try {
@@ -63,10 +68,15 @@ const StockDetails = ({ item,onClose}) => {
     try {
       await axios.put(`http://localhost:5000/api/stocks/${editedStock._id}`, editedStock);
       setStockDetails(stockDetails.map((entry) => (entry._id === editedStock._id ? editedStock : entry)));
-      alert('Stock updated successfully');
+      setModalMessage('Update stock done successful');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
     } catch (error) {
       console.error('Error updating stock:', error);
-      alert('Failed to update stock');
+ 
+      setModalMessage('Failed to update stock');
+      setIsSuccess(true); // Set the success state
+      setShowModal(true); // Show the modal
     }
   };
 
@@ -221,6 +231,25 @@ const StockDetails = ({ item,onClose}) => {
             <p className="detail-close-btn" onClick={() => setShowDetails(false)}><FaTimes /></p>
           </>
         )}
+     {/* Modal pop message on success or error message */}
+     {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
 
         {showHistory && (
           <div className="stockHistory-overlay">

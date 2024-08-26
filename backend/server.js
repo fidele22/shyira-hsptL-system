@@ -53,7 +53,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/positions', positionRoutes);
 app.use('/api/roles', userRoleRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/profile/update',userProfileRoutes)
+app.use('/api/profile',userProfileRoutes)
 app.use('/api', loginRoute);
 app.use('/api/approve', approvedRoutes);
 app.use('/api/LogisticRequest', logisticRequestsRoutes);

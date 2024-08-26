@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 import axios from 'axios';
 import './stylingpages/loginForm.css'; // Adjust your CSS file path
 
@@ -17,6 +18,15 @@ const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+
+  // Add state for password visibility toggle
+const [showPassword, setShowPassword] = useState(false);
+
+// Toggle function
+const togglePasswordVisibility = () => {
+  setShowPassword(!showPassword);
+};
+
   const navigate = useNavigate();
 
   const validateLoginForm = () => {
@@ -259,10 +269,16 @@ const AuthForm = () => {
           <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder='Email address'  />
           {registerErrors.email && <p className="error">{registerErrors.email}</p>}
 
-          <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder='Password'  />
+          <input  type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} placeholder='Password'  />
+          <span onClick={togglePasswordVisibility} className="password-toggle-icon">
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </span>
           {registerErrors.password && <p className="error">{registerErrors.password}</p>}
 
-          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder='Confirm Password'  />
+          <input type={showPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder='Confirm Password'  />
+          <span onClick={togglePasswordVisibility} className="confirm-password-toggle-icon">
+      {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </span>
           {registerErrors.confirmPassword && <p className="error">{registerErrors.confirmPassword}</p>}
 
           <button className='login-btn' type="submit">Register</button>
@@ -276,7 +292,7 @@ const AuthForm = () => {
           {errors.email && <p className="error">{errors.email}</p>}
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password'  />
           {errors.password && <p className="error">{errors.password}</p>}
-          <a href="#">Forgot your password?</a>
+          <a href="/forgot-password">Forgot your password?</a>
           <button className='login-btn'>Login</button>
           <span>Don't have an account? <Link to="#" onClick={handleSignUpClick}>Sign Up</Link></span>
         </form>

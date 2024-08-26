@@ -163,13 +163,13 @@ const ApprovedRequests = () => {
       {selectedRequest && (
 
         <div className="approved-request-overlay">
-         <div className="approved-form-navigation">
+         <div className="form-navigation">
          
        
          <button className='request-dowload-btn' onClick={downloadPDF}>Download Pdf</button>
           <label className='request-cancel-btn' onClick={() => setSelectedRequest(null)}><FaTimes /></label>
          </div>  
-          <div className="approved-request" >
+          <div className="request-details" >
           <div id='pdf-content'>
           <div className="image-request-recieved">
           <img src="/image/logo2.png" alt="Logo" className="logo" />
@@ -178,7 +178,7 @@ const ApprovedRequests = () => {
             <h1>WESTERN PROVINCE</h1>
             <h1>DISTRIC: NYABIHU</h1>
             <h1>HEALTH FACILITY: SHYIRA DISTRICT HOSPITAL</h1>
-            <h1>DEPARTMENT: <span></span> </h1>
+            <h1>DEPARTMENT: <span>{selectedRequest.department}</span>  </h1>
 
           </div>
          <table>

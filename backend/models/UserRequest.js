@@ -16,9 +16,17 @@ const UserRequestSchema = new mongoose.Schema({
   hodName: { type: String, required: true },
   hodSignature: { type: String },
   clicked: { type: Boolean, default: false },  //display new request word before click
-    // Add this field
+  
+  status: {
+    type: String,
+    enum: ['pending', 'verified', 'approved', 'rejected'], // Enum to limit status values
+    default: 'pending', // Default status is 'pending'
+  },
+  createdAt: {
+      type: Date,
+      default: Date.now
+    },
 
-  date: { type: Date, required: true },
 });
 
 // Pre save middleware to set quantityReceived to quantityRequested if not provided

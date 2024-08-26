@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
+import { FaQuestionCircle, FaEdit,FaTimes, FaTimesCircle, FaCheck,
+  FaCheckCircle, FaCheckDouble, FaCheckSquare } from 'react-icons/fa';
+
 
 const ExcelUpload = () => {
   const [file, setFile] = useState(null);
+
+
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [modalMessage, setModalMessage] = useState(''); //
+  const [isSuccess, setIsSuccess] = useState(true);
+
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -23,9 +33,18 @@ const ExcelUpload = () => {
           headers: {
             'Content-Type': 'application/json'
           }
+          
         });
+    
+        setModalMessage('upload items in stock successful');
+        setIsSuccess(true); // Set the success state
+        setShowModal(true); // Show the modal
       } catch (error) {
         console.error('Error uploading data:', error);
+      
+        setModalMessage('Failed to upload items data');
+        setIsSuccess(false); // Set the error state
+        setShowModal(true); // Show the modal
       }
     };
     reader.readAsArrayBuffer(file);
@@ -33,8 +52,37 @@ const ExcelUpload = () => {
 
   return (
     <div className="import-container">
-      <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+      <div className="upload-data">
+      <label htmlFor="">Here add items in stock with its data , with uploading file of .xlsx, .xls format</label>
+      <input type="file" accept=".xlsx, .xls" onChange={handleFileChange}    required />
       <button onClick={handleUpload}>Upload</button>
+      
+      <div className="upload-data-info">
+      <label htmlFor="">Here is how excel column must be structure</label> 
+        
+      </div>
+      </div>
+     
+       {/* Modal pop message on success or error message */}
+     {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {isSuccess ? (
+              <div className="modal-success">
+                <FaCheckCircle size={54} color="green" />
+                <p>{modalMessage}</p>
+              </div>
+            ) : (
+              <div className="modal-error">
+                <FaTimesCircle size={54} color="red" />
+                <p>{modalMessage}</p>
+              </div>
+            )}
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
