@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     await mongoose.connect('mongodb://0.0.0.0:27017/shyiradb', { 
-      useNewUrlParser: true, 
-      useUnifiedTopology: true 
+     
     });
     console.log('MongoDB connected');
   } catch (error) {
