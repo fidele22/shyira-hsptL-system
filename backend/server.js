@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config(); // Load environment variables from .env file
-
+const MongoStore = require('connect-mongo');
 const session = require('express-session');
 const connectDB = require('./config/db');
 const departmentRoutes = require('./routes/departmentRoutes')
@@ -36,6 +36,7 @@ app.use(session({
   secret: 'your_secret_key',
   resave: false,
   saveUninitialized: true,
+  store: MongoStore.create({ mongoUrl: 'mongodb://0.0.0.0:27017/shyiradb' }),
   cookie: { secure: false } // Set to true in production with HTTPS
 }));
 
