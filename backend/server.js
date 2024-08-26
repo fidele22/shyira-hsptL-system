@@ -36,7 +36,7 @@ app.use(session({
   secret: 'your_secret_key',
   resave: false,
   saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: 'mongodb://0.0.0.0:27017/shyiradb' }),
+  store: MongoStore.create({ mongoUrl: 'mongodb+srv://fidelehirwa23:K9Z0AKzw5EHhJ6nH@cluster0.pcjespr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0' }),
   cookie: { secure: false } // Set to true in production with HTTPS
 }));
 
