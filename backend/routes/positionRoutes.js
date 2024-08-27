@@ -4,7 +4,7 @@ const router = express.Router();
 const Position = require('../models/position');
 const User = require('../models/user')
 const Role = require ('../models/userRoles');
-const position = require('../models/position');
+
 
 
 // POST /api/positions
@@ -68,7 +68,7 @@ router.get('/dashboard/stats', async (req, res) => {
     const userCount = await User.countDocuments();
 
     // Count approved requests
-    const positionCount = await position.countDocuments();
+    const positionCount = await Position.countDocuments();
 
      // Count approved requests
      const roleCount = await Role.countDocuments();
