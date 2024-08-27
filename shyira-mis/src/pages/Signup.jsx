@@ -114,7 +114,7 @@ const togglePasswordVisibility = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/services');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/services`);
         setServices(response.data);
       } catch (error) {
         console.error('Error fetching services:', error);
