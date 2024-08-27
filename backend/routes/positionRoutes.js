@@ -15,10 +15,11 @@ router.post('/addPosition', async (req, res) => {
     await position.save();
     res.status(201).json(position);
   } catch (error) {
-    console.error('Error creating position:', error);
+    console.error('Error creating service:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 // GET /api/positions - Fetch all positions
 router.get('/', async (req, res) => {
   try {
