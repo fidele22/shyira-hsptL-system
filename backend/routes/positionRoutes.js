@@ -15,7 +15,7 @@ router.post('/addPosition', async (req, res) => {
     await position.save();
     res.status(201).json(position);
   } catch (error) {
-    console.error('Error creating service:', error);
+    console.error('Error creating position:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
