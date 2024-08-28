@@ -49,10 +49,10 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete position
-router.delete('delete/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-   const positionId = req.params.id
-    const position = await Position.findByIdAndDelete(positionId);
+  
+    const position = await Position.findByIdAndDelete(req.params.id);
     if (!position) {
       return res.status(404).json({ message: 'Position not found' });
     }
