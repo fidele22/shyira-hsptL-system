@@ -6,15 +6,13 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'your_jwt_secret';
 const User = require('../models/user');
-const Position = require('../models/position');
-const Service = require('../models/service');
-const Department = require('../models/department');
+
 // Ensure you have a secret key
 
-// Multer configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Make sure this directory exists
+    const uploadPath = process.env.UPLOAD_PATH || path.join(__dirname, 'uploads/');
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
@@ -22,6 +20,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+
+
 
 const registerUser = async (req, res) => {
   try {
@@ -51,7 +53,7 @@ const registerUser = async (req, res) => {
       departmentName,
       phone,
       email,
-      role: 'hod',
+      role: 'HOD',
       signature,
       password: hashedPassword
     });
