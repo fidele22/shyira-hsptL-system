@@ -46,7 +46,9 @@ app.use(session({
 //
 
 // Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, process.env.UPLOAD_PATH || 'uploads')));
+
 app.get('/', (req, res) => {
   res.send('Static file serving test');
 });
