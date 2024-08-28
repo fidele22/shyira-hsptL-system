@@ -49,9 +49,8 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete position
-router.delete('delete/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-  
     const position = await Position.findByIdAndDelete(req.params.id);
     if (!position) {
       return res.status(404).json({ message: 'Position not found' });
@@ -59,9 +58,9 @@ router.delete('delete/:id', async (req, res) => {
     res.json({ message: 'Position deleted' });
   } catch (error) {
     console.error('Error deleting position:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
-})
+});
 
 router.get('/dashboard/stats', async (req, res) => {
   try {
