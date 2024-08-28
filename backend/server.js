@@ -155,6 +155,13 @@ app.post('/api/logout', (req, res) => {
 
 
 
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Catch-all route to serve the frontend's index.html for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
 
 
