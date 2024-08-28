@@ -68,7 +68,19 @@ await StockHistory.save(stockHistory);
   res.status(500).send({ success: false, error: error.message });
 }
 });
-
+// DELETE /api/stocks/:id - Delete stock item
+router.delete('/:id', async (req, res) => {
+  try {
+    const stock = await Stock.findByIdAndDelete(req.params.id);
+    if (!stock) {
+      return res.status(404).json({ message: 'Stock item not found' });
+    }
+    res.json({ message: 'Stock item deleted' });
+  } catch (error) {
+    console.error('Error deleting stock item:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // Add stock entry for an item created
 //router.post('/', async (req, res) => {
 //const { itemId, entry = {}, exit = {}, balance = {} } = req.body;
