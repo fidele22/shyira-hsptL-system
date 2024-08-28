@@ -34,7 +34,8 @@ router.get('/', async (req, res) => {
 });
 
 // Update position
-router.put('/positions/:id', async (req, res) => {
+// PUT /api/positions/:id - Update position
+router.put('/:id', async (req, res) => {
   try {
     const position = await Position.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!position) {
@@ -48,9 +49,10 @@ router.put('/positions/:id', async (req, res) => {
 });
 
 // Delete position
-router.delete('/positions/:id', async (req, res) => {
+router.delete('delete/:id', async (req, res) => {
   try {
-    const position = await Position.findByIdAndDelete(req.params.id);
+   const positionId = req.params.id
+    const position = await Position.findByIdAndDelete(positionId);
     if (!position) {
       return res.status(404).json({ message: 'Position not found' });
     }
@@ -59,7 +61,7 @@ router.delete('/positions/:id', async (req, res) => {
     console.error('Error deleting position:', error);
     res.status(500).json({ message: 'Server error' });
   }
-});
+})
 
 router.get('/dashboard/stats', async (req, res) => {
   try {

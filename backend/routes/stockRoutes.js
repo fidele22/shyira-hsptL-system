@@ -19,49 +19,94 @@ router.post('/add', async (req, res) => {
     });
 
     await newItem.save();
-    res.status(201).json(newItem);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-})
-// Add stock entry for an item created
-router.post('/', async (req, res) => {
-const { itemId, entry = {}, exit = {}, balance = {} } = req.body;
+   // Automatically create corresponding stock data for each item
+   const stockDatas = savedItems.map(item => ({
+    itemId: item._id,
+    entry: {
+      quantity: item.quantity,
+      pricePerUnit: item.pricePerUnit,
+      totalAmount: item.totalAmount
+    },
+    exit: {
+      quantity: 0,
+      pricePerUnit: 0,
+      totalAmount: 0
+    },
+    balance: {
+      quantity: item.quantity,
+      pricePerUnit: item.pricePerUnit,
+      totalAmount: item.totalAmount
+    }
+  }));
 
-try {
-const newStock = new Stock({
-itemId,
+  await StockData.save(stockDatas);
+// Automatically create corresponding initial stock history for each item
+const stockHistory = savedItems.map(item => ({
+itemId: item._id,
 entry: {
-quantity: entry.quantity || 0,
-pricePerUnit: entry.pricePerUnit || 0,
-totalAmount: entry.totalAmount || 0
+  quantity: item.quantity,
+  pricePerUnit: item.pricePerUnit,
+  totalAmount: item.totalAmount
 },
 exit: {
-quantity: exit.quantity || 0,
-pricePerUnit: exit.pricePerUnit || 0,
-totalAmount: exit.totalAmount || 0
+  quantity: 0,
+  pricePerUnit: 0,
+  totalAmount: 0
 },
 balance: {
-quantity: balance.quantity || 0,
-pricePerUnit: balance.pricePerUnit || 0,
-totalAmount: balance.totalAmount || 0
+  quantity: item.quantity,
+  pricePerUnit: item.pricePerUnit,
+  totalAmount: item.totalAmount
 }
-});
+}));
 
-const savedStock = await newStock.save();
-res.status(201).json(savedStock);
+await StockHistory.save(stockHistory);
+
+  res.status(200).send({ success: true });
 } catch (error) {
-res.status(400).json({ message: 'Error adding stock entry', error });
+  console.error(error); // Log the error
+  res.status(500).send({ success: false, error: error.message });
 }
 });
 
-// Middleware to validate ObjectId
-function isValidObjectId(id) {
-return mongoose.Types.ObjectId.isValid(id);
-}
-
-// fetching item name
-// GET request to fetch all stock items
+// Add stock entry for an item created
+//router.post('/', async (req, res) => {
+//const { itemId, entry = {}, exit = {}, balance = {} } = req.body;
+//
+//try {
+//const newStock = new Stock({
+//itemId,
+//entry: {
+//quantity: entry.quantity || 0,
+//pricePerUnit: entry.pricePerUnit || 0,
+//totalAmount: entry.totalAmount || 0
+//},
+//exit: {
+//quantity: exit.quantity || 0,
+//pricePerUnit: exit.pricePerUnit || 0,
+//totalAmount: exit.totalAmount || 0
+//},
+//balance: {
+//quantity: balance.quantity || 0,
+//pricePerUnit: balance.pricePerUnit || 0,
+//totalAmount: balance.totalAmount || 0
+//}
+//});
+//
+//const savedStock = await newStock.save();
+//res.status(201).json(savedStock);
+//} catch (error) {
+//res.status(400).json({ message: 'Error adding stock entry', error });
+//}
+//});
+//
+//// Middleware to validate ObjectId
+//function isValidObjectId(id) {
+//return mongoose.Types.ObjectId.isValid(id);
+//}
+//
+//// fetching item name
+//// GET request to fetch all stock items
 router.get('/', async (req, res) => {
   try {
     const items = await StockItem.find();
