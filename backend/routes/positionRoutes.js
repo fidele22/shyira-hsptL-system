@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete position
-router.delete('/:id', async (req, res) => {
+router.delete('delete/:id', async (req, res) => {
   try {
   
     const position = await Position.findByIdAndDelete(req.params.id);
