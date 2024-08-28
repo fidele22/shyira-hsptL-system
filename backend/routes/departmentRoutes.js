@@ -27,4 +27,33 @@ router.get('/', async (req, res) => {
     
   }
 });
+
+// Update position
+// PUT /api/positions/:id - Update position
+router.put('/:id', async (req, res) => {
+  try {
+    const department = await Department.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!department) {
+      return res.status(404).json({ message: 'Position not found' });
+    }
+    res.json(position);
+  } catch (error) {
+    console.error('Error updating position:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete position
+router.delete('/:id', async (req, res) => {
+  try {
+    const department = await Department.findByIdAndDelete(req.params.id);
+    if (!department) {
+      return res.status(404).json({ message: 'Position not found' });
+    }
+    res.json({ message: 'Position deleted' });
+  } catch (error) {
+    console.error('Error deleting position:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
 module.exports = router;

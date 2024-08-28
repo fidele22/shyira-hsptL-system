@@ -218,6 +218,9 @@ router.post('/verified/:id', async (req, res) => {
     });
 
     await approvedRequest.save();
+
+         // Optionally, remove the user request from the UserRequest collection
+         await LogisticRequest.findByIdAndDelete(req.params.id);
     res.status(201).json(approvedRequest);
   } catch (error) {
     res.status(500).json({ message: error.message });
