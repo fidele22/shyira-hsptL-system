@@ -27,6 +27,8 @@ const StockData = require('./models/stockData')
 
 
 const app = express();
+app.use(express.json()); // Or use body-parser's JSON parser
+app.use(bodyParser.json()); // If using body-parser
 
 // Allow requests from your Vercel frontend
 const allowedOrigins = ['https://shyira-mis-frontend.vercel.app'];
