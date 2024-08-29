@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const cors = require('cors'); // Make sure this line is present
 const path = require('path');
 require('dotenv').config(); // Load environment variables from .env file
 const MongoStore = require('connect-mongo');
