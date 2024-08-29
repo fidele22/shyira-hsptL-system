@@ -80,7 +80,7 @@ router.post('/forgot-password', async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '8h' });
-    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const resetLink = `https://shyira-mis-frontend.vercel.app/reset-password/${token}`;
 
     await sendResetPasswordEmail(user.email, resetLink);
 
