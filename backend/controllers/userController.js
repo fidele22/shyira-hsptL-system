@@ -21,8 +21,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
-
+// Your route that handles the file upload
 
 
 const registerUser = async (req, res) => {
@@ -69,6 +68,7 @@ const registerUser = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
