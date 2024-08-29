@@ -27,11 +27,21 @@ const StockData = require('./models/stockData')
 
 
 const app = express();
-app.use(bodyParser.json());
-const cors = require('cors');
-app.use(cors({
-  origin: 'https://shyira-mis-frontend.onrender.com'
-}));
+
+// Allow requests from your Vercel frontend
+const allowedOrigins = ['https://shyira-mis-frontend.vercel.app/'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 connectDB();
 
