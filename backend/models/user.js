@@ -36,10 +36,8 @@ const UserSchema = new mongoose.Schema({
     type:String,
     required: true,
   },
-  signature: {
-    type: String,// We'll store the path to the uploaded file
-    required:false,
-  },
+  signature: { type: mongoose.Schema.Types.ObjectId, ref: 'uploads' }, // Reference to GridFS file
+
   password: {
     type: String,
     required: true,
