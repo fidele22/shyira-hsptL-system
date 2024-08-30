@@ -26,6 +26,8 @@ const upload = multer({ storage });
 // Registration route
 const registerUser = async (req, res) => {
   try {
+    console.log('Uploaded file:', req.file); // Add this to debug
+
     const { positionName, serviceName, departmentName, firstName, lastName, phone, email, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
@@ -67,6 +69,7 @@ const registerUser = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
