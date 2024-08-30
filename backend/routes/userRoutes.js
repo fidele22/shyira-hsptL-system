@@ -2,10 +2,75 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken'); // Add this line to import jsonwebtoken
 const jwtSecret = 'your_jwt_secret_key';
-const { upload, registerUser, loginUser, getUsers, updateUser, deleteUser, authenticate, getProfile } = require('../controllers/userController');
-const User = require('../models/user'); // Make sure to import your User model
+const { upload,  loginUser, getUsers, updateUser, deleteUser, authenticate, getProfile } = require('../controllers/userController');
+const User = require('../models/user');
+const multer = require('multer');
+const crypto = require('crypto');
+const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
+const gfs = require('../config/gfs'); // Make sure to import your User model
+const storage = multer.memoryStorage(); // Use memory storage
+//const upload = multer({ storage });
 
-router.post('/register', upload.single('signature'), registerUser);
+router.post('/register', upload.single('signature'), async (req, res) => {
+  try {
+    const { positionName, serviceName, departmentName, firstName, lastName, phone, email, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ msg: 'Passwords do not match' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ msg: 'User already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    let signatureFileId = null;
+    if (req.file) {
+      const fileId = crypto.randomBytes(16).toString('hex'); // Create unique file ID
+
+      const writeStream = gfs.createWriteStream({
+        filename: req.file.originalname,
+        mode: 'w',
+        content_type: req.file.mimetype,
+        metadata: { fieldname: req.file.fieldname },
+        id: fileId
+      });
+
+      writeStream.write(req.file.buffer);
+      writeStream.end();
+
+      writeStream.on('close', (file) => {
+        signatureFileId = file._id; // Get the file ID
+      });
+    }
+
+    const newUser = new User({
+      firstName,
+      lastName,
+      positionName,
+      serviceName,
+      departmentName,
+      phone,
+      email,
+      role: 'HOD',
+      signature: signatureFileId,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ msg: 'User registered successfully', newUser });
+
+  } catch (err) {
+    console.error('Error registering user:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+//router.post('/register', upload.single('signature'), registerUser);
 router.post('/login', loginUser);
 router.get('/', getUsers);
 router.put('/:id', updateUser);
