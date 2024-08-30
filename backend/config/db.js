@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://fidelehirwa23:K9Z0AKzw5EHhJ6nH@cluster0.pcjespr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { 
+    await mongoose.connect('mongodb://localhost:27017/shyiradb', { 
       // You can add options here if needed
+     // useNewUrlParser: true, 
+     // useUnifiedTopology: true,
     });
+    
     console.log('MongoDB connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);

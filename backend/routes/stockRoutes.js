@@ -39,7 +39,7 @@ router.post('/add', async (req, res) => {
     }
   }));
 
-  await StockData.save(stockDatas);
+  await StockData.save();
 // Automatically create corresponding initial stock history for each item
 const stockHistory = savedItems.map(item => ({
 itemId: item._id,
@@ -60,7 +60,7 @@ balance: {
 }
 }));
 
-await StockHistory.save(stockHistory);
+await StockHistory.save();
 
   res.status(200).send({ success: true });
 } catch (error) {

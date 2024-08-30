@@ -48,10 +48,10 @@ app.use(cors(corsOptions));
 connectDB();
 
 app.use(session({
-  secret: 'your_secret_key',
+  secret: 'shyira-mis-logistic-managment',
   resave: false,
   saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: 'mongodb+srv://fidelehirwa23:K9Z0AKzw5EHhJ6nH@cluster0.pcjespr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0' }),
+  store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/shyiradb' }),
   cookie: { secure: false } // Set to true in production with HTTPS
 }));
 
