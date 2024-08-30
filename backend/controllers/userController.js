@@ -1,7 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const { GridFsStorage } = require('multer-gridfs-storage');
+const GridFsStorage = require('multer-gridfs-storage');
+
 const path = require('path');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
