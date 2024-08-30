@@ -4,17 +4,17 @@ const jwt = require('jsonwebtoken'); // Add this line to import jsonwebtoken
 const jwtSecret = 'your_jwt_secret_key';
 const { upload,  loginUser, getUsers, updateUser, deleteUser, authenticate, getProfile } = require('../controllers/userController');
 const User = require('../models/user');
-const multer = require('multer');
-const express = require('express');
+
+
 
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const crypto = require('crypto');
 const gfs = require('../config/gfs');
-const User = require('../models/user');
+
 
 const storage = multer.memoryStorage(); // Use memory storage
-const upload = multer({ storage });
+//const upload = multer({ storage });
 
 router.post('/register', upload.single('signature'), async (req, res) => {
   try {
