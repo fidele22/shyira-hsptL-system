@@ -5,12 +5,16 @@ const jwtSecret = 'your_jwt_secret_key';
 const { upload,  loginUser, getUsers, updateUser, deleteUser, authenticate, getProfile } = require('../controllers/userController');
 const User = require('../models/user');
 const multer = require('multer');
+const express = require('express');
+
+const bcrypt = require('bcrypt');
+const multer = require('multer');
 const crypto = require('crypto');
-const { MongoClient } = require('mongodb');
-const mongoose = require('mongoose');
-const gfs = require('../config/gfs'); // Make sure to import your User model
+const gfs = require('../config/gfs');
+const User = require('../models/user');
+
 const storage = multer.memoryStorage(); // Use memory storage
-//const upload = multer({ storage });
+const upload = multer({ storage });
 
 router.post('/register', upload.single('signature'), async (req, res) => {
   try {
@@ -29,7 +33,7 @@ router.post('/register', upload.single('signature'), async (req, res) => {
 
     let signatureFileId = null;
     if (req.file) {
-      const fileId = crypto.randomBytes(16).toString('hex'); // Create unique file ID
+      const fileId = new mongoose.Types.ObjectId(); // Generate a new ObjectId
 
       const writeStream = gfs.createWriteStream({
         filename: req.file.originalname,
@@ -39,12 +43,17 @@ router.post('/register', upload.single('signature'), async (req, res) => {
         id: fileId
       });
 
-      writeStream.write(req.file.buffer);
-      writeStream.end();
+      writeStream.on('error', (err) => {
+        console.error('GridFS write error:', err);
+        res.status(500).json({ msg: 'Error uploading file' });
+      });
 
       writeStream.on('close', (file) => {
         signatureFileId = file._id; // Get the file ID
       });
+
+      writeStream.write(req.file.buffer);
+      writeStream.end();
     }
 
     const newUser = new User({
@@ -69,6 +78,9 @@ router.post('/register', upload.single('signature'), async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 });
+
+
+
 
 //router.post('/register', upload.single('signature'), registerUser);
 router.post('/login', loginUser);
