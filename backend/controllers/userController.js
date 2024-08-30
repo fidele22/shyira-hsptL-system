@@ -1,33 +1,31 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const path = require('path');
 const router = express.Router();
-
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'your_jwt_secret';
 const User = require('../models/user');
+const { gfs } = require('../config/db'); // Import GridFS stream
 
-// Ensure you have a secret key
+const JWT_SECRET = 'your_jwt_secret';
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadPath = process.env.UPLOAD_PATH || path.join(__dirname, 'uploads/');
-    cb(null, uploadPath);
+// Create a storage engine for GridFS
+const storage = new GridFsStorage({
+  url: 'mongodb+srv://fidelehirwa23:K9Z0AKzw5EHhJ6nH@cluster0.pcjespr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+  file: (req, file) => {
+    return {
+      filename: Date.now() + '-' + file.originalname, // Unique filename
+      bucketName: 'uploads', // Collection name in MongoDB
+    };
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Your route that handles the file upload
-
-
+// Registration route
 const registerUser = async (req, res) => {
   try {
-    console.log('Request body:', req.body); // Debugging output
-
     const { positionName, serviceName, departmentName, firstName, lastName, phone, email, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
@@ -41,8 +39,11 @@ const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with bcrypt
 
-    // Save the path of the uploaded signature, adjust as per your schema
-    const signature = req.file ? req.file.path : '';
+    // If a file was uploaded, store the GridFS file ID
+    let signatureFileId = null;
+    if (req.file) {
+      signatureFileId = req.file.id; // The ID of the file in GridFS
+    }
 
     const newUser = new User({
       firstName,
@@ -53,13 +54,11 @@ const registerUser = async (req, res) => {
       phone,
       email,
       role: 'HOD',
-      signature,
-      password: hashedPassword
+      signature: signatureFileId, // Store the GridFS file ID in the user document
+      password: hashedPassword,
     });
 
     await newUser.save();
-
-   
 
     res.status(201).json({ msg: 'User registered successfully', newUser });
 
@@ -68,7 +67,6 @@ const registerUser = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
-
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
