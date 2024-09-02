@@ -17,7 +17,7 @@ const recievedRequestSchema = new mongoose.Schema({
   ],
   hodName: { type: String, required: false},
   hodSignature: String,
- 
+  date:{type:Date},
   clicked: { type: Boolean, default: false },
   
 }, { timestamps: true });

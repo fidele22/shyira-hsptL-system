@@ -35,7 +35,7 @@ router.post('/add', async (req, res) => {
     balance: {
       quantity: item.quantity,
       pricePerUnit: item.pricePerUnit,
-      totalAmount: item.totalAmount
+      totalAmount: item.totalAmount,
     }
   }));
 
@@ -82,9 +82,9 @@ router.delete('/:id', async (req, res) => {
   }
 });
 // Add stock entry for an item created
+
 //router.post('/', async (req, res) => {
 //const { itemId, entry = {}, exit = {}, balance = {} } = req.body;
-//
 //try {
 //const newStock = new Stock({
 //itemId,

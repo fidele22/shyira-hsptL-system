@@ -225,6 +225,7 @@ router.put('/verified/:id', async (req, res) => {
         quantityReceived: item.quantityReceived,
         observation: item.observation
       })),
+      date: updatedRequest.date,
       hodName: updatedRequest.hodName,
       hodSignature: updatedRequest.hodSignature,
       logisticName: updatedRequest.logisticName,
@@ -269,6 +270,7 @@ router.put('/rejected/:id', async (req, res) => {
         quantityReceived: item.quantityReceived,
         observation: item.observation
       })),
+      date: updatedRequest.date,
       hodName: updatedRequest.hodName,
       hodSignature: updatedRequest.hodSignature,
       logisticName: updatedRequest.logisticName,

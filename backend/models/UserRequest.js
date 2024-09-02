@@ -13,6 +13,7 @@ const UserRequestSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   department: { type: String, required: true },
   items: [itemSchema],
+  date:{type:Date},
   hodName: { type: String, required: true },
   hodSignature: { type: String },
   clicked: { type: Boolean, default: false },  //display new request word before click

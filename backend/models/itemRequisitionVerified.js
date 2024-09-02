@@ -14,7 +14,7 @@ const itemRequisitionVerifiedSchema = new mongoose.Schema({
   ],
   hodName: { type: String, required: false},
   hodSignature: { type: String },
-
+  date:{type:Date},
   logisticName: { type: String }, // Add this field
   logisticSignature: { type: String }, // Add this field
   updatedAt: { type: Date, default: Date.now }
